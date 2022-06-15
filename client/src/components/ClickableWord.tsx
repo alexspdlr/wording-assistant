@@ -23,7 +23,7 @@ const ClickableWord = styled('span')<ClickableWordProps>(
   border-radius: 0.3em;
   border: 0.1em solid transparent;
   color: #333333;
-  font-size: 24px;
+  font-size: 24px; 
   padding-top: 0.1em;
   padding-bottom: -0.1em; 
   padding-left: 0.035em;

@@ -3,18 +3,6 @@ import ClickableWord from './components/ClickableWord';
 import './App.css';
 import { workerData } from 'worker_threads';
 
-/*
-
-this is some string
-
-1. words = output?.split(' ')
-2. row_i = append word until row_i.length > 50 -> new row
-3. 
-
-
-
-*/
-
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');
   const words = text?.split(' ');
