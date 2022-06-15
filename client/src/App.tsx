@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import ClickableWord from './components/ClickableWord';
 import './App.css';
 import { workerData } from 'worker_threads';
+import TextArea from './components/TextArea';
+import Button from './components/Button';
+import Popover from './components/Popover';
+import { Fade } from '@mui/material';
 
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');
@@ -28,6 +32,7 @@ const outputToRows = (output: string, maxCharactersPerRow: number) => {
 interface WordIdentifier {
   row: number;
   word: number;
+  HTMLelement: HTMLElement;
 }
 
 function App() {
@@ -36,14 +41,16 @@ function App() {
   );
   const [rows, setRows] = useState<string[]>([]);
   const [waiting, setWaiting] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const [hoveredWord, setHoveredWord] = useState<WordIdentifier | null>(null);
   const [selectedWord, setSelectedWord] = useState<WordIdentifier | null>(null);
-  const maxCharactersPerRow = 50;
+  const maxCharactersPerRow = 60;
 
   const useOutsideAlerter = (ref: React.MutableRefObject<any>) => {
     useEffect(() => {
       const handleClickOutside = (event: { target: any }) => {
         if (ref.current && !ref.current.contains(event.target)) {
+          setPopoverOpen(false);
           setSelectedWord(null);
         }
       };
@@ -55,7 +62,9 @@ function App() {
   };
 
   const handleSelectWord = (event: any, row: number, word: number) => {
+    setPopoverOpen(true);
     setSelectedWord({
+      HTMLelement: event.target,
       row,
       word,
     });
@@ -92,7 +101,7 @@ function App() {
     <div className='App'>
       {!waiting ? (
         <header className='App-header'>
-          <textarea
+          <TextArea
             id='w3review'
             name='w3review'
             rows={4}
@@ -100,11 +109,11 @@ function App() {
             onChange={handleInputChange}
             defaultValue={input}
           />
-          <button type='button' onClick={handleSubmit}>
-            Send
-          </button>
 
-          <div>result :</div>
+          <Button type='button' onClick={handleSubmit}>
+            Rephrase
+          </Button>
+
           <p
             style={{
               textAlign: 'left',
@@ -114,7 +123,11 @@ function App() {
             }}
           >
             {rows.map((row, i) => (
-              <div>
+              <div
+                style={{
+                  fontSize: 0,
+                }}
+              >
                 {row?.split(' ').map((word, j) => (
                   <ClickableWord
                     ref={wrapperRef}
@@ -124,6 +137,7 @@ function App() {
                       setHoveredWord({
                         row: i,
                         word: j,
+                        HTMLelement: e.currentTarget,
                       })
                     }
                     onMouseLeave={() => setHoveredWord(null)}
@@ -144,6 +158,10 @@ function App() {
               </div>
             ))}
           </p>
+
+          <Popover open={popoverOpen} anchorEl={selectedWord?.HTMLelement}>
+            The content of the Popover.
+          </Popover>
         </header>
       ) : (
         <header className='App-header'>Wait ...</header>
