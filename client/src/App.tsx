@@ -29,6 +29,27 @@ const outputToRows = (output: string, maxCharactersPerRow: number) => {
   return rows;
 };
 
+const detectWordIndex = (
+  targetRow: number,
+  targetWord: number,
+  rows: string[]
+) => {
+  let targetIndex = 0;
+
+  rows.forEach((row, i) => {
+    const wordsInRow = row?.split(' ');
+
+    if (i < targetRow) {
+      targetIndex += wordsInRow.length;
+    }
+    if (i === targetRow) {
+      targetIndex += targetWord;
+    }
+  });
+
+  return targetIndex;
+};
+
 interface WordIdentifier {
   row: number;
   word: number;
@@ -44,6 +65,7 @@ function App() {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [hoveredWord, setHoveredWord] = useState<WordIdentifier | null>(null);
   const [selectedWord, setSelectedWord] = useState<WordIdentifier | null>(null);
+  const [alternatives, setAlternatives] = useState<string[]>([]);
   const maxCharactersPerRow = 60;
 
   const useOutsideAlerter = (ref: React.MutableRefObject<any>) => {
@@ -52,6 +74,7 @@ function App() {
         if (ref.current && !ref.current.contains(event.target)) {
           setPopoverOpen(false);
           setSelectedWord(null);
+          setAlternatives([]);
         }
       };
       document.addEventListener('mousedown', handleClickOutside);
@@ -61,14 +84,26 @@ function App() {
     }, [ref]);
   };
 
-  const handleSelectWord = (event: any, row: number, word: number) => {
+  const handleSelectWord = async (event: any, row: number, word: number) => {
     setPopoverOpen(true);
     setSelectedWord({
       HTMLelement: event.target,
       row,
       word,
     });
-    console.log(`selected value - row: ${row} , word ${word}`);
+
+    const targetIndex = detectWordIndex(row, word, rows);
+
+    const response = await fetch(`/show-rephrasing-options`, {
+      method: 'POST',
+      body: JSON.stringify({
+        targetWordIndex: targetIndex,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    }).then((response) => response.json());
+    setAlternatives(response.rephrasingAlternatives);
   };
 
   const wrapperRef = useRef(null);
@@ -76,7 +111,7 @@ function App() {
 
   const handleSubmit = async () => {
     setWaiting(true);
-    const response = await fetch(`/result`, {
+    const response = await fetch(`/generate-rephrasing-base`, {
       method: 'POST',
       body: JSON.stringify({
         input: input,
@@ -160,7 +195,11 @@ function App() {
           </p>
 
           <Popover open={popoverOpen} anchorEl={selectedWord?.HTMLelement}>
-            The content of the Popover.
+            {alternatives.length === 0 ? (
+              <p> ... </p>
+            ) : (
+              alternatives.map((alternative) => <p> {alternative} </p>)
+            )}
           </Popover>
         </header>
       ) : (
