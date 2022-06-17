@@ -5,45 +5,55 @@ const moveTextCursor = async (page, textAreaSelector, target) => {
   const stringLength = await page.evaluate(async (textAreaSelector) => {
     return document.querySelector(textAreaSelector).value.length;
   }, textAreaSelector);
-  const currentCursorPoisition = await page.evaluate(
-    async (textAreaSelector) => {
-      return document.querySelector(textAreaSelector).selectionStart;
-    },
-    textAreaSelector
-  );
-
-  /*
-        if(target === 'start'){
-            // Move text cursor to beginning of text area 
-            for (const i of [...Array(-currentCursorPoisition).keys()]) {
-              await page.keyboard.press('ArrowLeft'); 
-            }
-            return;
-        }
-        */
 
   if (target === 'end') {
     /* Move text cursor to end of text area */
-    const difference = stringLength - currentCursorPoisition;
 
-    for (const i of [...Array(difference).keys()]) {
-      await page.keyboard.press('ArrowRight');
-    }
+    await page.evaluate(
+      async (textAreaSelector, stringLength) => {
+        return (document.querySelector(textAreaSelector).selectionStart =
+          stringLength);
+      },
+      textAreaSelector,
+      stringLength
+    );
 
-    // return await repeat(-difference, page.keyboard.press('ArrowRight'));
+    await page.evaluate(
+      async (textAreaSelector, stringLength) => {
+        return (document.querySelector(textAreaSelector).selectionEnd =
+          stringLength);
+      },
+      textAreaSelector,
+      stringLength
+    );
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('ArrowLeft');
+
     return;
   }
-  /*
-      const difference = target - currentCursorPoisition;
 
-      if (difference >= 0) {
-        await repeat(difference, page.keyboard.press('ArrowRight'));
-        return;
-      } else {
-        await repeat(difference, page.keyboard.press('ArrowLeft'));
-        return;
-      }
-      */
+  const customTarget = target === 0 ? target : target + 1;
+
+  await page.evaluate(
+    async (textAreaSelector, customTarget) => {
+      return (document.querySelector(textAreaSelector).selectionStart =
+        customTarget);
+    },
+    textAreaSelector,
+    customTarget
+  );
+
+  await page.evaluate(
+    async (textAreaSelector, customTarget) => {
+      return (document.querySelector(textAreaSelector).selectionEnd =
+        customTarget);
+    },
+    textAreaSelector,
+    customTarget
+  );
+
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowLeft');
 };
 
 export default moveTextCursor;

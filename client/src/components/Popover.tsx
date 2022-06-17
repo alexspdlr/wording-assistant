@@ -36,17 +36,20 @@ interface CustomPopoverProps {
   open: boolean;
   anchorEl: HTMLElement | undefined;
   alternatives: string[];
+  onClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
 }
 
 const CustomPopover = ({
   open,
   anchorEl,
   alternatives,
+  onClose,
 }: CustomPopoverProps) => {
   return (
     <Popover
       open={open}
       anchorEl={anchorEl}
+      onClose={onClose}
       transitionDuration={{ enter: 400, exit: 250 }}
       anchorOrigin={{
         vertical: 'bottom',

@@ -15,14 +15,17 @@ app.get('/', (req, res) => {
 });
 
 app.post('/generate-rephrasing-base', async (req, res) => {
+  console.log('/generate-rephrasing-base');
   await generateRephrasingBase(req, res, page);
 });
 
 app.post('/show-rephrasing-options', async (req, res) => {
+  console.log('/show-rephrasing-options');
   await showRephrasingOptions(req, res, page);
 });
 
 app.post('/close-rephrasing-options', async (req, res) => {
+  console.log('/close-rephrasing-options');
   await closeRephrasingOptions(req, res, page);
 });
 

@@ -1,3 +1,5 @@
+import moveTextCursor from '../utils/moveTextCursor.js';
+
 const showRephrasingOptions = async (req, res, page) => {
   const targetWordWordIndex = req.body.targetWordIndex;
 
@@ -6,25 +8,18 @@ const showRephrasingOptions = async (req, res, page) => {
     '#target-dummydiv',
     (div) => div.innerHTML
   );
-
-  console.log('targetWordIndex: ', targetWordWordIndex);
-  console.log('targetWord: ', rephrasingBase.split(' ')[targetWordWordIndex]);
-
-  /* Tab into text area of rephrasing base */
-  for (const i of [...Array(6).keys()]) {
-    await page.keyboard.press('Tab');
-  }
-
   /* Position text cursor at first character of target word */
   const characterLength = rephrasingBase.length;
   const targetWordCharacterIndex = rephrasingBase
     .split(' ')
     .slice(0, targetWordWordIndex)
     .join(' ').length;
-  const characterDifference = characterLength - targetWordCharacterIndex - 3;
-  for (const i of [...Array(characterDifference).keys()]) {
-    await page.keyboard.press('ArrowLeft');
-  }
+
+  await moveTextCursor(
+    page,
+    '[dl-test=translator-target-input]',
+    targetWordCharacterIndex
+  );
 
   /* Wait until popover is rendered and filled with alternatives */
   await page.waitForSelector('[dl-test=translator-target-alternatives-popup]');
@@ -45,8 +40,6 @@ const showRephrasingOptions = async (req, res, page) => {
         (item) => item.innerHTML
       )
   );
-  console.log('rephrasingAlternatives: ', rephrasingAlternatives);
-
   res.json({
     rephrasingAlternatives: rephrasingAlternatives,
   });

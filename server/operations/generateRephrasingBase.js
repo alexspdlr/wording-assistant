@@ -48,6 +48,16 @@ const generateRephrasingBase = async (req, res, page) => {
   /* Store translation result */
   const result = await page.$eval('#target-dummydiv', (div) => div.innerHTML);
 
+  /* Tab into text area of rephrasing base*/
+
+  const textResultsDisplayed =
+    (await page.$('[dl-test=translator-target-result-as-text-container]')) !==
+    null;
+  const numberOfTabs = textResultsDisplayed ? 6 : 7;
+  for (const i of [...Array(numberOfTabs).keys()]) {
+    await page.keyboard.press('Tab');
+  }
+
   res.json({
     result: result,
   });

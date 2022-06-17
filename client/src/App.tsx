@@ -5,7 +5,7 @@ import { workerData } from 'worker_threads';
 import TextArea from './components/TextArea';
 import Button from './components/Button';
 import Popover from './components/Popover';
-import { Fade } from '@mui/material';
+import { CloseReason, Fade } from '@mui/material';
 
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');
@@ -68,33 +68,22 @@ function App() {
   const [alternatives, setAlternatives] = useState<string[]>([]);
   const maxCharactersPerRow = 60;
 
-  const useOutsideAlerter = (ref: React.MutableRefObject<any>) => {
-    useEffect(() => {
-      const handleClickOutside = async (event: { target: any }) => {
-        if (ref.current && !ref.current.contains(event.target)) {
-          // alert('unfocus!');
-          /*
-          await fetch(`/close-rephrasing-options`, {
-            method: 'POST',
-            body: JSON.stringify({
-              action: 'close',
-            }),
-            headers: {
-              'Content-type': 'application/json; charset=UTF-8',
-            },
-          }).then((response) => {
-            setPopoverOpen(false);
-            setSelectedWord(null);
-            setAlternatives([]);
-          });
-          */
-        }
-      };
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, [ref]);
+  const handleDeselectWord = async (
+    event: {},
+    reason: 'backdropClick' | 'escapeKeyDown'
+  ) => {
+    setPopoverOpen(false);
+    setSelectedWord(null);
+    setAlternatives([]);
+    await fetch(`/close-rephrasing-options`, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'close',
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
   };
 
   const handleSelectWord = async (event: any, row: number, word: number) => {
@@ -118,9 +107,6 @@ function App() {
     }).then((response) => response.json());
     setAlternatives(response.rephrasingAlternatives);
   };
-
-  const wrapperRef = useRef(null);
-  useOutsideAlerter(wrapperRef);
 
   const handleSubmit = async () => {
     setWaiting(true);
@@ -178,7 +164,6 @@ function App() {
               >
                 {row?.split(' ').map((word, j) => (
                   <ClickableWord
-                    ref={wrapperRef}
                     id={`clickable-word_row${i}_word-${j}`}
                     key={`clickable-word_row${i}_word-${j}`}
                     onMouseEnter={(e) =>
@@ -211,6 +196,7 @@ function App() {
             open={popoverOpen}
             anchorEl={selectedWord?.HTMLelement}
             alternatives={alternatives}
+            onClose={handleDeselectWord}
           />
         </header>
       ) : (
