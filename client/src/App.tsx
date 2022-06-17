@@ -70,11 +70,24 @@ function App() {
 
   const useOutsideAlerter = (ref: React.MutableRefObject<any>) => {
     useEffect(() => {
-      const handleClickOutside = (event: { target: any }) => {
+      const handleClickOutside = async (event: { target: any }) => {
         if (ref.current && !ref.current.contains(event.target)) {
-          setPopoverOpen(false);
-          setSelectedWord(null);
-          setAlternatives([]);
+          // alert('unfocus!');
+          /*
+          await fetch(`/close-rephrasing-options`, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'close',
+            }),
+            headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+            },
+          }).then((response) => {
+            setPopoverOpen(false);
+            setSelectedWord(null);
+            setAlternatives([]);
+          });
+          */
         }
       };
       document.addEventListener('mousedown', handleClickOutside);
