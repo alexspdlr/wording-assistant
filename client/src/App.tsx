@@ -194,13 +194,11 @@ function App() {
             ))}
           </p>
 
-          <Popover open={popoverOpen} anchorEl={selectedWord?.HTMLelement}>
-            {alternatives.length === 0 ? (
-              <p> ... </p>
-            ) : (
-              alternatives.map((alternative) => <p> {alternative} </p>)
-            )}
-          </Popover>
+          <Popover
+            open={popoverOpen}
+            anchorEl={selectedWord?.HTMLelement}
+            alternatives={alternatives}
+          />
         </header>
       ) : (
         <header className='App-header'>Wait ...</header>

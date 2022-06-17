@@ -1,37 +1,53 @@
 import React, { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { Popover, Fade } from '@mui/material';
+import Loader from './Loader';
 
 const PopoverContainer = styled('div')(
   (props) => ` 
-    padding: 10px; 
-    font-size: 18px; 
-    font-weight: 400;  
-    color: #333
+  -webkit-transition: all 0.25s ease-out;
+  -moz-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out; 
+  font-size: 22px; 
+  font-weight: 400;  
+  color: #333;
+  height: auto; 
     `
 );
 
-const mockList = [
-  'Alternative A ...',
-  'Alternative B ...',
-  'Alternative C ...',
-  'Alternative D ...',
-  'Alternative E ...',
-];
+const Alternative = styled('div')(
+  (props) => ` 
+  padding: 6px 11px 6px 11px; 
+  font-weight: 300; 
+  cursor: pointer; 
+  -webkit-transition: all 0.25s ease-out;
+  -moz-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out; 
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  &:hover {
+    background-color: rgba(0, 99, 149, 0.2); 
+  }
+    `
+);
 
 interface CustomPopoverProps {
   open: boolean;
   anchorEl: HTMLElement | undefined;
-  children: ReactNode;
+  alternatives: string[];
 }
 
-const CustomPopover = ({ open, anchorEl, children }: CustomPopoverProps) => {
+const CustomPopover = ({
+  open,
+  anchorEl,
+  alternatives,
+}: CustomPopoverProps) => {
   return (
     <Popover
       open={open}
       anchorEl={anchorEl}
-      TransitionComponent={Fade}
-      transitionDuration={{ enter: 300, exit: 250 }}
+      transitionDuration={{ enter: 400, exit: 250 }}
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'left',
@@ -41,19 +57,36 @@ const CustomPopover = ({ open, anchorEl, children }: CustomPopoverProps) => {
         horizontal: 'left',
       }}
       sx={{
-        mt: 0.5,
-        p: 2,
+        mt: 0.4,
+        p: '0px !important',
         boxShadow: `0 1px 4px 0 rgb(0 0 0 / 10%);`,
+        overflowY: 'scroll',
+        msOverflowStyle: 'none',
+        scrollbarWidth: 'none',
+        '*::-webkit-scrollbar': {
+          display: 'none',
+        },
       }}
       PaperProps={{
         sx: {
           borderRadius: '4px',
-          boxShadow:
-            'rgba(0, 0, 0, 0.13) 0px 1px 4px, rgba(0, 0, 0, 0.23) 0px 1px 4px ',
+          boxShadow: '0 1px 4px 0 rgb(0 0 0 / 10%)',
+          border: '1px solid #dae1e8',
+          maxHeight: '250px',
         },
       }}
     >
-      <PopoverContainer>{children}</PopoverContainer>
+      <PopoverContainer>
+        {alternatives.length > 0 ? (
+          <div>
+            {alternatives.map((alternative) => (
+              <Alternative>{alternative}</Alternative>
+            ))}
+          </div>
+        ) : (
+          <Loader />
+        )}
+      </PopoverContainer>
     </Popover>
   );
 };
