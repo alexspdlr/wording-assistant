@@ -1,6 +1,12 @@
 const generateRephrasingBase = async (req, res, page) => {
   const clienSourceInput = req.body.input;
 
+  await page.setCacheEnabled(false);
+  await page.reload();
+
+  /* Wait until translation is finished */
+  await page.waitForSelector('#source-dummydiv');
+
   /* Paste client input into translator input */
   await page.evaluate((clienSourceInput) => {
     const translatorSourceInput = document.querySelector(
