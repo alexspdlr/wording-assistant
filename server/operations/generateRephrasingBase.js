@@ -1,10 +1,11 @@
 const generateRephrasingBase = async (req, res, page) => {
   const clienSourceInput = req.body.input;
 
+  /* Generate clean setup by reloading page & deleting cache */
   await page.setCacheEnabled(false);
   await page.reload();
 
-  /* Wait until translation is finished */
+  /* Wait until page is loaded */
   await page.waitForSelector('#source-dummydiv');
 
   /* Paste client input into translator input */
@@ -55,7 +56,6 @@ const generateRephrasingBase = async (req, res, page) => {
   const result = await page.$eval('#target-dummydiv', (div) => div.innerHTML);
 
   /* Tab into text area of rephrasing base*/
-
   const textResultsDisplayed =
     (await page.$('[dl-test=translator-target-result-as-text-container]')) !==
     null;

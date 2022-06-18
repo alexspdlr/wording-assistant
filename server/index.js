@@ -4,6 +4,7 @@ import generateRephrasingBase from './operations/generateRephrasingBase.js';
 import setup from './operations/setup.js';
 import showRephrasingOptions from './operations/showRephrasingOptions.js';
 import closeRephrasingOptions from './operations/closeRephrasingOptions.js';
+import selectRephrasingOption from './operations/selectRephrasingOption.js';
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -27,6 +28,11 @@ app.post('/show-rephrasing-options', async (req, res) => {
 app.post('/close-rephrasing-options', async (req, res) => {
   console.log('/close-rephrasing-options');
   await closeRephrasingOptions(req, res, page);
+});
+
+app.post('/select-rephrasing-option', async (req, res) => {
+  console.log('/select-rephrasing-option');
+  await selectRephrasingOption(req, res, page);
 });
 
 /*
