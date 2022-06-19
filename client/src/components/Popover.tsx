@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { MouseEventHandler, ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { Popover, Fade, Divider, Collapse } from '@mui/material';
 import Loader from './Loader';
@@ -54,6 +54,22 @@ interface CustomPopoverProps {
   onClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
 }
 
+const rephrase = async (alternative: string) => {
+  console.log('target value: ', alternative);
+
+  const response = await fetch(`/select-rephrasing-option`, {
+    method: 'POST',
+    body: JSON.stringify({
+      selectedOption: alternative,
+    }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+  }).then((response) => response.json());
+
+  alert(response.rephrasingResult);
+};
+
 const CustomPopover = ({
   open,
   anchorEl,
@@ -103,7 +119,9 @@ const CustomPopover = ({
             {alternatives.length > 0 ? (
               <>
                 {alternatives.map((alternative, i) => (
-                  <Alternative>{alternative}</Alternative>
+                  <Alternative onClick={() => rephrase(alternative)}>
+                    {alternative}
+                  </Alternative>
                 ))}
               </>
             ) : (
