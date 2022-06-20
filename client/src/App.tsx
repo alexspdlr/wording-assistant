@@ -190,30 +190,36 @@ function App() {
   return (
     <div className='App'>
       {navigator.language}
-      {!waiting ? (
-        <header className='App-header'>
-          <TextArea
-            id='w3review'
-            name='w3review'
-            rows={4}
-            cols={50}
-            onChange={handleInputChange}
-            defaultValue={input}
-          />
 
+      <header className='App-header'>
+        <TextArea
+          id='w3review'
+          name='w3review'
+          rows={4}
+          cols={50}
+          onChange={handleInputChange}
+          defaultValue={input}
+          disabled={waiting}
+        />
+
+        {waiting ? (
+          <h6>Rephrasing ...</h6>
+        ) : (
           <Button type='button' onClick={handleSubmit}>
             Rephrase
           </Button>
+        )}
 
-          <p
-            style={{
-              textAlign: 'left',
-              position: 'absolute',
-              top: '60%',
-              left: '30%',
-            }}
-          >
-            {rows.map((row, i) => (
+        <p
+          style={{
+            textAlign: 'left',
+            position: 'absolute',
+            top: '60%',
+            left: '30%',
+          }}
+        >
+          {!waiting &&
+            rows.map((row, i) => (
               <div
                 style={{
                   fontSize: 0,
@@ -252,19 +258,16 @@ function App() {
                 ))}
               </div>
             ))}
-          </p>
+        </p>
 
-          <Popover
-            open={popoverOpen}
-            anchorEl={selectedWord?.HTMLelement}
-            alternatives={alternatives}
-            onClose={handleDeselectWord}
-            rephrase={rephrase}
-          />
-        </header>
-      ) : (
-        <header className='App-header'>Wait ...</header>
-      )}
+        <Popover
+          open={popoverOpen}
+          anchorEl={selectedWord?.HTMLelement}
+          alternatives={alternatives}
+          onClose={handleDeselectWord}
+          rephrase={rephrase}
+        />
+      </header>
     </div>
   );
 }
