@@ -164,6 +164,7 @@ function App() {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     setWaiting(true);
     const response = await fetch(`/generate-rephrasing-base`, {
       method: 'POST',
@@ -176,6 +177,7 @@ function App() {
     }).then((response) => response.json());
 
     setRows(outputToRows(response.result, maxCharactersPerRow));
+    setLoading(false);
     setWaiting(false);
   };
 

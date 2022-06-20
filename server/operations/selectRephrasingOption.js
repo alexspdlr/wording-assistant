@@ -46,29 +46,57 @@ const selectRephrasingOption = async (req, res, page) => {
         console.log(
           '------------------------------------------------------------------'
         );
+        console.log(
+          'response.request().postData(): ',
+          response.request().postData()
+        );
 
         if (!isJsonObject(response.request().postData())) {
           console.log('Body is not a JSON Object');
+        } else {
+          console.log(
+            'JSON.parse(response.request().postData()): ',
+            JSON.parse(response.request().postData())
+          );
+
+          if (JSON.parse(response.request().postData()).params) {
+            console.log(
+              'JSON.parse(response.request().postData()).params: ',
+              JSON.parse(response.request().postData()).params
+            );
+            console.log(
+              'JSON.parse(response.request().postData()).params.jobs: ',
+              JSON.parse(response.request().postData()).params.jobs
+            );
+
+            console.log(
+              'JSON.parse(response.request().postData()).params.jobs[kind=default]: ',
+              JSON.parse(response.request().postData()).params.jobs.some(
+                (job) => job.kind === 'default'
+              )
+            );
+          } else {
+            console.log("postData doesnt include attribute 'params'");
+          }
         }
 
         return (
           response.request().postData() &&
           isJsonObject(response.request().postData()) &&
-          JSON.parse(response.request().postData()).params &&
-          JSON.parse(response.request().postData()).params.jobs.some(
-            (job) => job.kind === 'default'
-          )
+          JSON.parse(response.request().postData()) &&
+          ((JSON.parse(response.request().postData()).params &&
+            JSON.parse(response.request().postData()).params.jobs.some(
+              (job) => job.kind === 'default'
+            )) ||
+            JSON.parse(response.request().postData()).clientExperiments)
         );
       },
       { timeout: 5000 }
     );
   } catch (e) {
     /* Result did not change after 5 seconds */
-    console.log('!!!!!!!!!!!!!!!!!!!!!!');
     console.log('target did not change after 5 seconds');
     console.log('error: ', e);
-    console.log('postData: ', JSON.parse(response.request().postData()));
-    console.log('!!!!!!!!!!!!!!!!!!!!!!');
   }
 
   /* Store rephrasing result */
