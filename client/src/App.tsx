@@ -119,8 +119,6 @@ function App() {
 
   const rephrase = async (alternative: string) => {
     setLoading(true);
-    console.log('target value: ', alternative);
-
     if (!selectedWord) {
       alert('Error: No word is selected.');
     }
@@ -128,7 +126,6 @@ function App() {
     const loadingRows = rows
       .filter((row, i) => i <= selectedWord!.rowIndex)
       .map((row, i) => {
-        console.log('row: ', i, row);
         if (i < selectedWord!.rowIndex) {
           return row;
         }
@@ -141,8 +138,6 @@ function App() {
 
         return loadingRow;
       });
-
-    console.log('loadingRows: ', loadingRows);
 
     setRows(loadingRows);
     setPopoverOpen(false);
