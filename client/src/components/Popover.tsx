@@ -51,29 +51,15 @@ interface CustomPopoverProps {
   open: boolean;
   anchorEl: HTMLElement | undefined;
   alternatives: string[];
+  rephrase: Function;
   onClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
 }
-
-const rephrase = async (alternative: string) => {
-  console.log('target value: ', alternative);
-
-  const response = await fetch(`/select-rephrasing-option`, {
-    method: 'POST',
-    body: JSON.stringify({
-      selectedOption: alternative,
-    }),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
-  }).then((response) => response.json());
-
-  alert(response.rephrasingResult);
-};
 
 const CustomPopover = ({
   open,
   anchorEl,
   alternatives,
+  rephrase,
   onClose,
 }: CustomPopoverProps) => {
   return (

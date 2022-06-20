@@ -1,3 +1,5 @@
+import isJsonObject from '../utils/isJsonObject.js';
+
 const selectRephrasingOption = async (req, res, page) => {
   const selectedOption = req.body.selectedOption;
 
@@ -35,12 +37,24 @@ const selectRephrasingOption = async (req, res, page) => {
     );
   });
 
+  /* Wait for preflight */
+
   /* Wait until the request for rewording is followed by a response (from DeepL) */
   try {
     await page.waitForResponse(
       async (response) => {
+        console.log(
+          '------------------------------------------------------------------'
+        );
+
+        if (!isJsonObject(response.request().postData())) {
+          console.log('Body is not a JSON Object');
+        }
+
         return (
           response.request().postData() &&
+          isJsonObject(response.request().postData()) &&
+          JSON.parse(response.request().postData()).params &&
           JSON.parse(response.request().postData()).params.jobs.some(
             (job) => job.kind === 'default'
           )
@@ -50,8 +64,11 @@ const selectRephrasingOption = async (req, res, page) => {
     );
   } catch (e) {
     /* Result did not change after 5 seconds */
-    console.log('error: ', e);
+    console.log('!!!!!!!!!!!!!!!!!!!!!!');
     console.log('target did not change after 5 seconds');
+    console.log('error: ', e);
+    console.log('postData: ', JSON.parse(response.request().postData()));
+    console.log('!!!!!!!!!!!!!!!!!!!!!!');
   }
 
   /* Store rephrasing result */
