@@ -137,7 +137,7 @@ function App() {
           .split(' ')
           .slice(0, selectedWord!.wordIndex)
           .join(' ')
-          .concat(` ${alternative}`);
+          .concat(` ${alternative.replace('...', '')}`);
 
         return loadingRow;
       });
