@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { MouseEventHandler, ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { Popover, Fade, Divider, Collapse } from '@mui/material';
 import Loader from './Loader';
@@ -51,6 +51,7 @@ interface CustomPopoverProps {
   open: boolean;
   anchorEl: HTMLElement | undefined;
   alternatives: string[];
+  rephrase: Function;
   onClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
 }
 
@@ -58,6 +59,7 @@ const CustomPopover = ({
   open,
   anchorEl,
   alternatives,
+  rephrase,
   onClose,
 }: CustomPopoverProps) => {
   return (
@@ -103,7 +105,9 @@ const CustomPopover = ({
             {alternatives.length > 0 ? (
               <>
                 {alternatives.map((alternative, i) => (
-                  <Alternative>{alternative}</Alternative>
+                  <Alternative onClick={() => rephrase(alternative)}>
+                    {alternative}
+                  </Alternative>
                 ))}
               </>
             ) : (

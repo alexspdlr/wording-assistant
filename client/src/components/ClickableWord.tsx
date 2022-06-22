@@ -5,6 +5,7 @@ interface ClickableWordProps {
   children: any;
   willBeReplaced: boolean;
   selected: boolean;
+  loading: boolean;
 }
 
 const ClickableWord = styled('span')<ClickableWordProps>(
@@ -19,7 +20,7 @@ const ClickableWord = styled('span')<ClickableWordProps>(
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
   ${props.willBeReplaced && 'opacity:0.275;'};  
-  cursor: pointer;  
+  cursor: ${props.loading ? `wait` : `pointer`};     
   border-radius: 4px; 
   border: 2px solid transparent;
   color: #333333;
@@ -27,13 +28,18 @@ const ClickableWord = styled('span')<ClickableWordProps>(
   font-weight: 400; 
   padding-top: 0.1em;
   padding-bottom: 0.1em;  
-  padding-left: 0.035em;
+  padding-left: 0.035em; 
   padding-right: 0.035em;
   &:hover {
+    ${
+      !props.loading &&
+      `
     background-color: rgba(0, 99, 149, 0.05);
     border: 2px solid rgba(0, 99, 149, 1);
     padding-left: 0.35em;
-    padding-right: 0.35em;
+    padding-right: 0.35em; 
+    `
+    }
   }
 
   ${

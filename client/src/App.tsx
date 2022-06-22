@@ -30,8 +30,8 @@ const outputToRows = (output: string, maxCharactersPerRow: number) => {
 };
 
 const detectWordIndex = (
-  targetRow: number,
-  targetWord: number,
+  targetRowIndex: number,
+  targetWordIndex: number,
   rows: string[]
 ) => {
   let targetIndex = 0;
@@ -39,11 +39,11 @@ const detectWordIndex = (
   rows.forEach((row, i) => {
     const wordsInRow = row?.split(' ');
 
-    if (i < targetRow) {
+    if (i < targetRowIndex) {
       targetIndex += wordsInRow.length;
     }
-    if (i === targetRow) {
-      targetIndex += targetWord;
+    if (i === targetRowIndex) {
+      targetIndex += targetWordIndex;
     }
   });
 
@@ -51,8 +51,8 @@ const detectWordIndex = (
 };
 
 interface WordIdentifier {
-  row: number;
-  word: number;
+  rowIndex: number;
+  wordIndex: number;
   HTMLelement: HTMLElement;
 }
 
@@ -66,12 +66,14 @@ function App() {
   const [hoveredWord, setHoveredWord] = useState<WordIdentifier | null>(null);
   const [selectedWord, setSelectedWord] = useState<WordIdentifier | null>(null);
   const [alternatives, setAlternatives] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const maxCharactersPerRow = 60;
 
   const handleDeselectWord = async (
     event: {},
     reason: 'backdropClick' | 'escapeKeyDown'
   ) => {
+    setLoading(true);
     setPopoverOpen(false);
     setSelectedWord(null);
     setAlternatives([]);
@@ -84,17 +86,23 @@ function App() {
         'Content-type': 'application/json; charset=UTF-8',
       },
     });
+    setLoading(false);
   };
 
-  const handleSelectWord = async (event: any, row: number, word: number) => {
+  const handleSelectWord = async (
+    event: any,
+    rowIndex: number,
+    wordIndex: number
+  ) => {
+    setLoading(true);
     setPopoverOpen(true);
     setSelectedWord({
       HTMLelement: event.target,
-      row,
-      word,
+      rowIndex,
+      wordIndex,
     });
 
-    const targetIndex = detectWordIndex(row, word, rows);
+    const targetIndex = detectWordIndex(rowIndex, wordIndex, rows);
 
     const response = await fetch(`/show-rephrasing-options`, {
       method: 'POST',
@@ -106,9 +114,52 @@ function App() {
       },
     }).then((response) => response.json());
     setAlternatives(response.rephrasingAlternatives);
+    setLoading(false);
+  };
+
+  const rephrase = async (alternative: string) => {
+    setLoading(true);
+    if (!selectedWord) {
+      alert('Error: No word is selected.');
+    }
+
+    const loadingRows = rows
+      .filter((row, i) => i <= selectedWord!.rowIndex)
+      .map((row, i) => {
+        if (i < selectedWord!.rowIndex) {
+          return row;
+        }
+
+        const loadingRow = row
+          .split(' ')
+          .slice(0, selectedWord!.wordIndex)
+          .join(' ')
+          .concat(` ${alternative.replace('...', '')}`);
+
+        return loadingRow;
+      });
+
+    setRows(loadingRows);
+    setPopoverOpen(false);
+    setSelectedWord(null);
+    setAlternatives([]);
+
+    const response = await fetch(`/select-rephrasing-option`, {
+      method: 'POST',
+      body: JSON.stringify({
+        selectedOption: alternative,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    }).then((response) => response.json());
+
+    setRows(outputToRows(response.rephrasingResult, maxCharactersPerRow));
+    setLoading(false);
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     setWaiting(true);
     const response = await fetch(`/generate-rephrasing-base`, {
       method: 'POST',
@@ -121,7 +172,7 @@ function App() {
     }).then((response) => response.json());
 
     setRows(outputToRows(response.result, maxCharactersPerRow));
-
+    setLoading(false);
     setWaiting(false);
   };
 
@@ -133,30 +184,37 @@ function App() {
 
   return (
     <div className='App'>
-      {!waiting ? (
-        <header className='App-header'>
-          <TextArea
-            id='w3review'
-            name='w3review'
-            rows={4}
-            cols={50}
-            onChange={handleInputChange}
-            defaultValue={input}
-          />
+      {navigator.language}
 
+      <header className='App-header'>
+        <TextArea
+          id='w3review'
+          name='w3review'
+          rows={4}
+          cols={50}
+          onChange={handleInputChange}
+          defaultValue={input}
+          disabled={waiting}
+        />
+
+        {waiting ? (
+          <h6>Rephrasing ...</h6>
+        ) : (
           <Button type='button' onClick={handleSubmit}>
             Rephrase
           </Button>
+        )}
 
-          <p
-            style={{
-              textAlign: 'left',
-              position: 'absolute',
-              top: '60%',
-              left: '30%',
-            }}
-          >
-            {rows.map((row, i) => (
+        <p
+          style={{
+            textAlign: 'left',
+            position: 'absolute',
+            top: '60%',
+            left: '30%',
+          }}
+        >
+          {!waiting &&
+            rows.map((row, i) => (
               <div
                 style={{
                   fontSize: 0,
@@ -164,25 +222,30 @@ function App() {
               >
                 {row?.split(' ').map((word, j) => (
                   <ClickableWord
+                    loading={loading}
                     id={`clickable-word_row${i}_word-${j}`}
                     key={`clickable-word_row${i}_word-${j}`}
                     onMouseEnter={(e) =>
+                      !loading &&
                       setHoveredWord({
-                        row: i,
-                        word: j,
+                        rowIndex: i,
+                        wordIndex: j,
                         HTMLelement: e.currentTarget,
                       })
                     }
                     onMouseLeave={() => setHoveredWord(null)}
-                    onClick={(e) => handleSelectWord(e, i, j)}
+                    onClick={(e) => !loading && handleSelectWord(e, i, j)}
                     selected={
-                      selectedWord?.row === i && selectedWord?.word === j
+                      selectedWord?.rowIndex === i &&
+                      selectedWord?.wordIndex === j
                     }
                     willBeReplaced={
-                      (!!hoveredWord && hoveredWord?.row < i) ||
-                      (hoveredWord?.row === i && hoveredWord?.word < j) ||
-                      (!!selectedWord && selectedWord?.row < i) ||
-                      (selectedWord?.row === i && selectedWord?.word < j)
+                      (!!hoveredWord && hoveredWord?.rowIndex < i) ||
+                      (hoveredWord?.rowIndex === i &&
+                        hoveredWord?.wordIndex < j) ||
+                      (!!selectedWord && selectedWord?.rowIndex < i) ||
+                      (selectedWord?.rowIndex === i &&
+                        selectedWord?.wordIndex < j)
                     }
                   >
                     {word}
@@ -190,18 +253,16 @@ function App() {
                 ))}
               </div>
             ))}
-          </p>
+        </p>
 
-          <Popover
-            open={popoverOpen}
-            anchorEl={selectedWord?.HTMLelement}
-            alternatives={alternatives}
-            onClose={handleDeselectWord}
-          />
-        </header>
-      ) : (
-        <header className='App-header'>Wait ...</header>
-      )}
+        <Popover
+          open={popoverOpen}
+          anchorEl={selectedWord?.HTMLelement}
+          alternatives={alternatives}
+          onClose={handleDeselectWord}
+          rephrase={rephrase}
+        />
+      </header>
     </div>
   );
 }

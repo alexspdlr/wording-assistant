@@ -1,5 +1,3 @@
-import repeat from './repeat.js';
-
 const moveTextCursor = async (page, textAreaSelector, target) => {
   await page.waitForSelector(textAreaSelector);
   const stringLength = await page.evaluate(async (textAreaSelector) => {
