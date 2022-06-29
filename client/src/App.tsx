@@ -6,6 +6,7 @@ import TextArea from './components/TextArea';
 import Button from './components/Button';
 import Popover from './components/Popover';
 import { CloseReason, Fade } from '@mui/material';
+import Appbar from './components/Appbar';
 
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');
@@ -184,7 +185,7 @@ function App() {
 
   return (
     <div className='App'>
-      {navigator.language}
+      <Appbar />
 
       <header className='App-header'>
         <TextArea
