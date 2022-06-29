@@ -8,6 +8,7 @@ import useBreakpoint from '../utils/hooks/useBreakpoint';
 import { Breakpoint } from '../types/breakpoint';
 import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
 import useScrollPosition from '../utils/hooks/useScrollPosition';
+import compareBreakpoint from '../utils/breakpointIsInRange';
 
 interface AppBodyStyledProps {
   horizontalPadding: number;
@@ -63,7 +64,6 @@ const ActiveToolButton = styled('button')(
 
 const AppBody = () => {
   const activeBreakpoint = useBreakpoint();
-  const scrollPosition = useScrollPosition();
   return (
     <AppBodyStyled
       horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}

@@ -6,6 +6,9 @@ import pageMarginFromBreakpoint from '../../utils/pageMarginFromBreakpoint';
 import Button from '../Button';
 import { ReactComponent as Logo } from '../../assets/Logo.svg';
 import { ReactComponent as LogoText } from '../../assets/LogoText.svg';
+import NavItem from './NavItem';
+import Chip from '../Chip';
+import compareBreakpoint from '../../utils/breakpointIsInRange';
 
 interface AppBarStyledProps {
   horizontalPadding: number;
@@ -29,12 +32,12 @@ const AppBarStyled = styled('div')(
   `
 );
 
-interface ContainerProps {
+interface AppbarContainerProps {
   horizontalPadding: number;
 }
 
-const Container = styled('div')(
-  (props: ContainerProps) => ` 
+const AppbarContainer = styled('div')(
+  (props: AppbarContainerProps) => ` 
   max-width: 1400px; 
   height: 100%;  
   display: flex; 
@@ -43,6 +46,24 @@ const Container = styled('div')(
   height: 100%;
   width: calc(100% - ${2 * props.horizontalPadding}px);     
   `
+);
+
+const StyledLogo = styled(Logo)(
+  (props) => `
+  margin-bottom: -11px;
+  width: 50px;
+  margin-right: 10px;
+  cursor: pointer;
+`
+);
+
+const StyledLogoText = styled(LogoText)(
+  (props) => `
+  width: 64px;
+  height: auto;
+  margin-bottom: -5px;
+  margin-right: 5px; 
+`
 );
 
 const Left = styled('div')(
@@ -67,39 +88,28 @@ font-weight: 500;
 `
 );
 
-interface LinkProps {
-  isFirstItem?: boolean;
-}
-
-const Link = styled('div')(
-  (props: LinkProps) => `
-  padding-bottom: 15px; 
-  ${!props.isFirstItem && 'margin-left: 32px;'} 
-  pointer: cursor;  
-  border-bottom: 3px solid #ffffff;   
-  &:hover {
-    border-bottom: 3px solid rgba(0, 99, 149, 1);  
-    cursor: pointer;  
-    ${!props.isFirstItem && 'color: rgba(0, 99, 149, 1);'} 
-  }
-`
+const WordingAssistantNavItem = () => (
+  <NavItem isFirstItem>
+    <div>
+      <StyledLogoText />
+      Wording Assistant
+    </div>
+  </NavItem>
 );
 
-const Chip = styled('div')(
-  (props) => `
-  border-radius: 4px; 
-  background-color: #037171;
-  font-size: 10px;
-  font-weight: 600;
-  color: #fff;
-  width: auto; 
-  padding-top: 6px;
-  padding-bottom: 6px;
-  padding-left: 8px; 
-  padding-right:8px;  
-  margin-left: 5px;
-  margin-bottom: -3px; 
-`
+const RepositoryNavItem = () => (
+  <NavItem>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
+      }}
+    >
+      Repository
+      <Chip>GITHUB</Chip>
+    </div>
+  </NavItem>
 );
 
 const AppBar = () => {
@@ -110,71 +120,30 @@ const AppBar = () => {
       horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
       isScrolledToTop={scrollPosition === 0}
     >
-      <Container horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}>
+      <AppbarContainer
+        horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
+      >
         <Left>
-          <div
-            style={{
-              fontSize: '16px',
-              display: 'flex',
-              alignItems: 'flex-end',
-            }}
-          >
-            <Logo
-              style={{
-                marginBottom: '-11px',
-                width: '50px',
-                marginRight: '10px',
-                cursor: 'pointer',
-              }}
-            />
-          </div>
-          <Link isFirstItem>
-            <div>
-              <LogoText
-                style={{
-                  width: '64px',
-                  height: 'auto',
-                  marginBottom: '-5px',
-                  marginRight: '5px',
-                }}
-              />
-              Wording Assistant
-            </div>
-          </Link>
-          {!(activeBreakpoint === '3XS' || activeBreakpoint === '2XS') && (
-            <Link>Documentation</Link>
+          <StyledLogo />
+
+          <WordingAssistantNavItem />
+          {compareBreakpoint(activeBreakpoint, '>', '2XS') && (
+            <NavItem>Documentation</NavItem>
           )}
-          {!(
-            activeBreakpoint === '3XS' ||
-            activeBreakpoint === '2XS' ||
-            activeBreakpoint === 'XS'
-          ) && <Link>Idea</Link>}
-          {!(
-            activeBreakpoint === '3XS' ||
-            activeBreakpoint === '2XS' ||
-            activeBreakpoint === 'XS'
-          ) && <Link>Tech Stack</Link>}
-          {(activeBreakpoint === '2XL' ||
-            activeBreakpoint === 'XL' ||
-            activeBreakpoint === 'L') && (
-            <Link>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'flex-end',
-                }}
-              >
-                Repository
-                <Chip>GITHUB</Chip>
-              </div>
-            </Link>
+          {compareBreakpoint(activeBreakpoint, '>', 'XS') && (
+            <NavItem>Idea</NavItem>
+          )}
+          {compareBreakpoint(activeBreakpoint, '>', 'XS') && (
+            <NavItem>Tech Stack</NavItem>
+          )}
+          {compareBreakpoint(activeBreakpoint, '>', 'M') && (
+            <RepositoryNavItem />
           )}
         </Left>
         <Right>
           <Button>Need help ?</Button>
         </Right>
-      </Container>
+      </AppbarContainer>
     </AppBarStyled>
   );
 };
