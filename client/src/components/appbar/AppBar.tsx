@@ -131,7 +131,7 @@ const AppBar = () => {
             <NavItem>Documentation</NavItem>
           )}
           {compareBreakpoint(activeBreakpoint, '>', 'XS') && (
-            <NavItem>Idea</NavItem>
+            <NavItem>Process</NavItem>
           )}
           {compareBreakpoint(activeBreakpoint, '>', 'XS') && (
             <NavItem>Tech Stack</NavItem>

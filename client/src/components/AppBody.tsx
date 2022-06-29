@@ -2,13 +2,13 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { ReactComponent as Logo } from '../assets/Logo.svg';
 import { ReactComponent as LogoText } from '../assets/LogoText.svg';
-import { ReactComponent as IconRephrase } from '../assets/IconRephrase.svg';
 import Button from './Button';
 import useBreakpoint from '../utils/hooks/useBreakpoint';
 import { Breakpoint } from '../types/breakpoint';
 import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
 import useScrollPosition from '../utils/hooks/useScrollPosition';
 import compareBreakpoint from '../utils/breakpointIsInRange';
+import ActiveToolButton from './ActiveToolButton';
 
 interface AppBodyStyledProps {
   horizontalPadding: number;
@@ -45,20 +45,18 @@ const Container = styled('div')(
   `
 );
 
-const ActiveToolButton = styled('button')(
-  (props) => ` 
-  height: 65px; 
-  background-color: #ffffff;
-  border-radius: 8px;
+interface PaperProps {
+  gridArea?: string;
+}
+
+const Paper = styled('div')(
+  (props: PaperProps) => ` 
+  background-color: #ffffff; 
+  border-radius: 8px; 
   border: 1px solid rgb(218, 225, 232);
-  border-bottom: 0px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
-  overflow: hidden;
-  padding: 0px; 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px 0px; 
+  display: flex; 
+  ${props.gridArea && `grid-area: ${props.gridArea};`} 
   `
 );
 
@@ -69,73 +67,76 @@ const AppBody = () => {
       horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
     >
       <Container horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}>
-        <div
-          style={{
-            gridArea: '1 / 1 / 2 / 3',
-            display: 'flex',
-          }}
-        >
-          <ActiveToolButton>
+        <div style={{ display: 'flex', gridArea: '1 / 1 / 2 / 3' }}>
+          <ActiveToolButton />
+        </div>
+        <Paper gridArea='2 / 1 / 3 / 2'>
+          <div
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             <div
               style={{
-                height: '100%',
+                height: 56,
                 display: 'flex',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                paddingLeft: 16,
-                paddingRight: 16,
+                borderBottom: '1px solid #F1F1F1',
+                paddingLeft: 24,
+                paddingRight: 24,
+                fontWeight: 600,
               }}
             >
-              <IconRephrase fill='rgb(27, 30, 37)' />
-              <div
-                style={{
-                  paddingLeft: 15,
-                  fontWeight: 600,
-                  fontSize: 16,
-                  color: 'rgb(27, 30, 37)',
-                  marginBottom: -2,
-                  fontFamily: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;`,
-                }}
-              >
-                Rephrase text
-              </div>
+              Input text <button>switch</button>
             </div>
+            <div>type to translate</div>
+          </div>
+        </Paper>
+        <Paper gridArea='2 / 2 / 3 / 3'>
+          <div
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             <div
               style={{
-                height: 4,
-                width: '100%',
-                backgroundColor: 'rgba(0, 99, 149, 1)',
+                height: 56,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                borderBottom: '1px solid #F1F1F1',
+                paddingLeft: 24,
+                paddingRight: 24,
+                fontWeight: 600,
               }}
-            />
-          </ActiveToolButton>
-        </div>
-        <div
-          style={{
-            gridArea: '2 / 1 / 3 / 2',
-            backgroundColor: '#ffffff',
-            borderRadius: 8,
-            border: '1px solid rgb(218, 225, 232)',
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px 0px',
-          }}
-        ></div>
-        <div
-          style={{
-            gridArea: '2 / 2 / 3 / 3',
-            backgroundColor: '#ffffff',
-            borderRadius: 8,
-            border: '1px solid rgb(218, 225, 232)',
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px 0px',
-          }}
-        ></div>
-        <div
-          style={{
-            gridArea: '3 / 1 / 4 / 3',
-            backgroundColor: '#ffffff',
-            borderRadius: 8,
-            border: '1px solid rgb(218, 225, 232)',
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px 0px',
-          }}
-        ></div>
+            >
+              Rephrase
+            </div>
+            <div>wait for rephrasing base</div>
+          </div>
+        </Paper>
+        <Paper gridArea='3 / 1 / 4 / 3'>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              fontWeight: 400,
+              color: 'rgb(110, 110, 110)',
+              paddingLeft: 24,
+              paddingRight: 24,
+            }}
+          >
+            Switch between Edit &amp; Rephrase mode to craft beautiful text.
+          </div>
+        </Paper>
       </Container>
     </AppBodyStyled>
   );
