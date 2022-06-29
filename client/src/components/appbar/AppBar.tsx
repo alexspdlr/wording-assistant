@@ -1,39 +1,47 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { ReactComponent as Logo } from '../assets/Logo.svg';
-import { ReactComponent as LogoText } from '../assets/LogoText.svg';
-import Button from './Button';
-import useBreakpoint from '../utils/hooks/useBreakpoint';
-import { Breakpoint } from '../types/breakpoint';
-import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
+import useBreakpoint from '../../utils/hooks/useBreakpoint';
+import useScrollPosition from '../../utils/hooks/useScrollPosition';
+import pageMarginFromBreakpoint from '../../utils/pageMarginFromBreakpoint';
+import Button from '../Button';
+import { ReactComponent as Logo } from '../../assets/Logo.svg';
+import { ReactComponent as LogoText } from '../../assets/LogoText.svg';
 
-interface AppbarStyledProps {
+interface AppBarStyledProps {
   horizontalPadding: number;
+  isScrolledToTop: boolean;
 }
 
-const AppbarStyled = styled('div')(
-  (props: AppbarStyledProps) => `
+const AppBarStyled = styled('div')(
+  (props: AppBarStyledProps) => `
   background-color : rgba(255, 255, 255, 1);
+  top: 0; 
   height: 60px; 
   display: flex; 
-  flex-direction: column;
-  align-items: center;
-  width: auto;
-  padding-left: ${props.horizontalPadding}px; 
-  padding-right: ${props.horizontalPadding}px;   
-  transition: all 0.5s ease; 
+  justify-content: center; 
+  position: fixed;  
+  width: 100%; 
+  padding-right: ${props.horizontalPadding}; 
+  padding-left: ${props.horizontalPadding};   
+  ${
+    !props.isScrolledToTop && 'box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px 0px;'
+  } 
   `
 );
 
+interface ContainerProps {
+  horizontalPadding: number;
+}
+
 const Container = styled('div')(
-  (props) => ` 
-  width: 100%;   
-  max-width: 1600px; 
-  height: 100%; 
+  (props: ContainerProps) => ` 
+  max-width: 1400px; 
+  height: 100%;  
   display: flex; 
   justify-content: space-between;  
   flex-direction: row;  
   height: 100%;
+  width: calc(100% - ${2 * props.horizontalPadding}px);     
   `
 );
 
@@ -94,13 +102,15 @@ const Chip = styled('div')(
 `
 );
 
-const Appbar = () => {
+const AppBar = () => {
   const activeBreakpoint = useBreakpoint();
+  const scrollPosition = useScrollPosition();
   return (
-    <AppbarStyled
+    <AppBarStyled
       horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
+      isScrolledToTop={scrollPosition === 0}
     >
-      <Container>
+      <Container horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}>
         <Left>
           <div
             style={{
@@ -131,7 +141,9 @@ const Appbar = () => {
               Wording Assistant
             </div>
           </Link>
-          <Link>Documentation</Link>
+          {!(activeBreakpoint === '3XS' || activeBreakpoint === '2XS') && (
+            <Link>Documentation</Link>
+          )}
           {!(
             activeBreakpoint === '3XS' ||
             activeBreakpoint === '2XS' ||
@@ -163,8 +175,8 @@ const Appbar = () => {
           <Button>Need help ?</Button>
         </Right>
       </Container>
-    </AppbarStyled>
+    </AppBarStyled>
   );
 };
 
-export default Appbar;
+export default AppBar;

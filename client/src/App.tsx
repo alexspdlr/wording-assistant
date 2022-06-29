@@ -5,8 +5,9 @@ import { workerData } from 'worker_threads';
 import TextArea from './components/TextArea';
 import Button from './components/Button';
 import Popover from './components/Popover';
-import { CloseReason, Fade } from '@mui/material';
-import Appbar from './components/Appbar';
+import useScrollPosition from './utils/hooks/useScrollPosition';
+import AppBody from './components/AppBody';
+import AppBar from './components/appbar/AppBar';
 
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');
@@ -185,7 +186,9 @@ function App() {
 
   return (
     <div className='App'>
-      <Appbar />
+      <AppBar />
+
+      <AppBody />
 
       <header className='App-header'>
         <TextArea
