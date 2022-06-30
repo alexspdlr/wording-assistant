@@ -9,6 +9,7 @@ import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
 import useScrollPosition from '../utils/hooks/useScrollPosition';
 import compareBreakpoint from '../utils/breakpointIsInRange';
 import ActiveToolButton from './ActiveToolButton';
+import ToggleSwitch from './ToggleSwitch';
 
 interface AppBodyStyledProps {
   horizontalPadding: number;
@@ -91,7 +92,7 @@ const AppBody = () => {
                 fontWeight: 600,
               }}
             >
-              Input text <button>switch</button>
+              Input text <ToggleSwitch />
             </div>
             <div>type to translate</div>
           </div>
