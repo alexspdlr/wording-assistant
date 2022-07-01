@@ -10,6 +10,7 @@ import useScrollPosition from '../utils/hooks/useScrollPosition';
 import compareBreakpoint from '../utils/breakpointIsInRange';
 import ActiveToolButton from './ActiveToolButton';
 import ToggleSwitch from './ToggleSwitch';
+import { InputEl } from './InputEl';
 
 interface AppBodyStyledProps {
   horizontalPadding: number;
@@ -18,7 +19,7 @@ interface AppBodyStyledProps {
 const AppBodyStyled = styled('div')(
   (props: AppBodyStyledProps) => `
   background-color: #f7f7f7; 
-  height: 830px; 
+  min-height: 830px; 
   margin-top: 60px;
   display: flex; 
   justify-content: center; 
@@ -39,7 +40,7 @@ const Container = styled('div')(
   padding-bottom: 56px; 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 76px 604px 58px;
+  grid-template-rows: 76px auto 58px; 
   grid-column-gap: 8px;
   grid-row-gap: 8px;
   width: calc(100% - ${2 * props.horizontalPadding}px); 
@@ -60,6 +61,86 @@ const Paper = styled('div')(
   ${props.gridArea && `grid-area: ${props.gridArea};`} 
   `
 );
+
+const InputContainer = styled('div')(
+  (props) => `
+  height: 100%;
+  display: flex;
+  `
+);
+
+const InputHintHeading = styled('p')(
+  (props) => `
+  font-size: 24px;
+  font-weight: 300;
+  color: rgb(110, 110, 110); 
+  margin: 0px; 
+  line-height: 24px;
+  margin-top: -2px; 
+  `
+);
+
+const InputHintBody = styled('p')(
+  (props) => `
+  font-size: 16px;
+  font-weight: 300;
+  color: rgb(110, 110, 110); 
+  line-height: 20px;
+  margin: 0px; 
+  padding-top: 12px;
+  `
+);
+
+const InputTextField = styled('textarea')(
+  (props) => `
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
+  position: absolute;
+  top: 0; 
+  background-color: transparent; 
+  width: 100%; 
+  height: auto;
+  border: 0px; 
+  padding: 0px; 
+  display: flex; 
+  align-items: start;  
+  resize: none;
+  `
+);
+
+const Input = () => {
+  return (
+    <InputContainer>
+      <div
+        style={{
+          width: 'calc(100% - 50px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'strech',
+        }}
+      >
+        <div
+          style={{
+            margin: '24px',
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            textAlign: 'left',
+            backgroundColor: 'red',
+            position: 'relative',
+          }}
+        >
+          <InputHintHeading>Paste or write your text.</InputHintHeading>
+          <InputHintBody>
+            Paste (Ctrl + V) or write the complete input text here. You can then
+            rephrase it sentence by sentence.
+          </InputHintBody>
+          <InputTextField />
+        </div>
+      </div>
+      <div style={{ width: '50px' }}> </div>
+    </InputContainer>
+  );
+};
 
 const AppBody = () => {
   const activeBreakpoint = useBreakpoint();
@@ -94,7 +175,7 @@ const AppBody = () => {
             >
               Input text <ToggleSwitch />
             </div>
-            <div>type to translate</div>
+            <InputEl />
           </div>
         </Paper>
         <Paper gridArea='2 / 2 / 3 / 3'>
@@ -120,7 +201,7 @@ const AppBody = () => {
             >
               Rephrase
             </div>
-            <div>wait for rephrasing base</div>
+            <div>{''}</div>
           </div>
         </Paper>
         <Paper gridArea='3 / 1 / 4 / 3'>

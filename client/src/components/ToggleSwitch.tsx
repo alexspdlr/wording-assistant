@@ -6,9 +6,9 @@ const Switch = styled('div')(
   () => `
   position: relative;
   height: 32px;
-  background-color: #F7F7F7;
+  background-color: #f7f7f7;
   border-radius: 6px;
-  border: 1px solid #E9E9E9;
+  box-shadow: inset 0 0px 2px rgba(0, 0, 0, 0.2);
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
@@ -34,7 +34,7 @@ const SwitchSelection = styled('span')(
     margin-top: 2px;
     margin-left: 2px; 
     margin-right: 2px;  
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0px 2px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), 0 0px 2px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     transition: left 0.25s ease-out;
   `
@@ -46,16 +46,16 @@ interface SwitchLabel {
 const SwitchLabel = styled('label')(
   (props: SwitchLabel) => `
     position: relative;
-    z-index: 2;
+    z-index: 2; 
     float: left;
     width: 80px;
     line-height: 32px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 12.5px;
     text-align: center;
-    cursor: pointer;
-    color: ${props.active ? '#0F2B46;' : '#727271;'}
-    transition: color 0.3s ease-out; 
+    cursor: ${props.active ? 'default;' : 'pointer;'}
+    color: ${props.active ? '#0F2B46;' : '#7a7a7a;'}
+    transition: color 0.25s ease-out; 
   `
 );
 

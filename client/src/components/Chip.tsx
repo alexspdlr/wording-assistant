@@ -12,7 +12,7 @@ const Chip = styled('div')(
   padding-bottom: 6px;
   padding-left: 8px; 
   padding-right:8px;  
-  margin-left: 5px;
+  margin-left: 8px;
   margin-bottom: -3px; 
 `
 );
