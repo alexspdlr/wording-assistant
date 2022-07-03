@@ -58,6 +58,9 @@ const Paper = styled('div')(
   border: 1px solid rgb(218, 225, 232);
   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px 0px; 
   display: flex; 
+  &:focus-within {
+    border: 1px solid rgb(0, 99, 149);
+  }
   ${props.gridArea && `grid-area: ${props.gridArea};`} 
   `
 );

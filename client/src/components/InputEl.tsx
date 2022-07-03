@@ -3,9 +3,10 @@ import { breakpoints } from '@mui/system';
 import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { Breakpoint } from '../types/breakpoint';
+import compareBreakpoint from '../utils/breakpointIsInRange';
 import useBreakpoint from '../utils/hooks/useBreakpoint';
 
-interface InputTextSize {
+interface TextSize {
   fontSize: number;
   lineHeight: number;
 }
@@ -13,7 +14,7 @@ interface InputTextSize {
 const inputTextSize = (
   breakpoint: Breakpoint,
   textLength: number
-): InputTextSize => {
+): TextSize => {
   switch (breakpoint) {
     case '2XL':
       if (textLength < 55) {
@@ -232,13 +233,38 @@ const InputContainer = styled('div')(
     `
 );
 
+const inputHintHeadingFontSize = (activeBreakpoint: Breakpoint): TextSize => {
+  if (compareBreakpoint(activeBreakpoint, '>', 'S')) {
+    return {
+      fontSize: 26,
+      lineHeight: 32.5,
+    };
+  }
+
+  if (compareBreakpoint(activeBreakpoint, '>', '2XS')) {
+    return {
+      fontSize: 24,
+      lineHeight: 30,
+    };
+  }
+
+  return {
+    fontSize: 16,
+    lineHeight: 20,
+  };
+};
+interface InputHintHeadingProps {
+  fontSize: number;
+  lineHeight: number;
+}
+
 const InputHintHeading = styled('p')(
-  (props) => `
-    font-size: 24px;
+  (props: InputHintHeadingProps) => `
     font-weight: 300;
     color: rgb(110, 110, 110); 
     margin: 0px; 
-    line-height: 30px;
+    line-height: ${props.lineHeight}px;
+    font-size: ${props.fontSize}px;
     `
 );
 
@@ -255,9 +281,14 @@ const InputHintBody = styled('p')(
 
 interface InputProps {
   hideHint: boolean;
+  activeBreakpoint: Breakpoint;
 }
 
 const Input = (props: InputProps) => {
+  const inputHintHeadingTextSize = inputHintHeadingFontSize(
+    props.activeBreakpoint
+  );
+
   return (
     <InputContainer>
       <div
@@ -276,11 +307,15 @@ const Input = (props: InputProps) => {
             textAlign: 'left',
           }}
         >
-          <InputHintHeading>
+          <InputHintHeading
+            fontSize={inputHintHeadingTextSize.fontSize}
+            lineHeight={inputHintHeadingTextSize.lineHeight}
+          >
             {!props.hideHint && 'Paste or write your text.'}
           </InputHintHeading>
           <InputHintBody>
             {!props.hideHint &&
+              compareBreakpoint(props.activeBreakpoint, '>', '2XS') &&
               'Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'}
           </InputHintBody>
         </div>
@@ -346,7 +381,10 @@ function InputEl() {
         display: 'flex',
       }}
     >
-      <Input hideHint={value ? value.length > 0 : false} />
+      <Input
+        hideHint={value ? value.length > 0 : false}
+        activeBreakpoint={activeBreakpoint}
+      />
       <TextArea ref={textareaRef} onChange={textAreaChange}>
         {value}
       </TextArea>
