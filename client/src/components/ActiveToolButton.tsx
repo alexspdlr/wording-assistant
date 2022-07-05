@@ -5,7 +5,7 @@ const ActiveToolButtonWrapper = styled('button')(
   (props) => ` 
     height: 65px; 
     background-color: #ffffff;
-    border-radius: 8px;
+    border-radius: 8px 8px 4px 4px;
     border: 1px solid rgb(218, 225, 232);
     border-bottom: 0px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
@@ -27,8 +27,8 @@ const ActiveToolButton = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          paddingLeft: 16,
-          paddingRight: 16,
+          paddingLeft: 13,
+          paddingRight: 13,
         }}
       >
         <IconRephrase fill='rgb(27, 30, 37)' />
@@ -39,7 +39,8 @@ const ActiveToolButton = () => {
             fontSize: 16,
             color: 'rgb(27, 30, 37)',
             marginBottom: -2,
-            fontFamily: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;`,
+            fontFamily:
+              "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
           }}
         >
           Rephrase text

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Breakpoint } from '../types/breakpoint';
 import compareBreakpoint from '../utils/breakpointIsInRange';
 import useBreakpoint from '../utils/hooks/useBreakpoint';
+import useWindowHeight from '../utils/hooks/useWindowSize';
 
 interface TextSize {
   fontSize: number;
@@ -222,9 +223,9 @@ const inputTextSize = (
 
 const InputContainer = styled('div')(
   (props) => `
+  position: absolute; 
+  z-index: 1; 
     display: flex;
-    position: absolute; 
-    z-index: 1; 
     margin-left: 24px;
     margin-top: 24px;
     margin-right: 64px;
@@ -326,7 +327,6 @@ const Input = (props: InputProps) => {
 
 const TextArea = styled('textarea')(
   (props) => `
-    z-index: 2;
     margin-left: 24px;
     margin-top: 24px;
     margin-right: 64px;
@@ -337,7 +337,7 @@ const TextArea = styled('textarea')(
     border: none;
     display: block;
     resize: none;
-    min-height: 500px;
+    z-index: 2;
     background-color: transparent;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
     font-weight: 400;
@@ -349,6 +349,8 @@ const TextArea = styled('textarea')(
 function InputEl() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const activeBreakpoint = useBreakpoint();
+  const windowHeight = useWindowHeight();
+
   // The value of the textarea
   const [value, setValue] = useState<String>();
 
@@ -359,7 +361,7 @@ function InputEl() {
 
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = '0px';
+      textareaRef.current.style.height = 'auto';
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = scrollHeight + 'px';
 
@@ -371,14 +373,17 @@ function InputEl() {
       textareaRef.current.style.fontSize = textSize.fontSize + 'px';
       textareaRef.current.style.lineHeight = textSize.lineHeight + 'px';
     }
-  }, [value, activeBreakpoint]);
+  }, [value, activeBreakpoint, windowHeight]);
 
   return (
     <div
       style={{
         width: '100%',
-        position: 'relative',
         display: 'flex',
+        minHeight: '55vh',
+        alignContent: 'stretch',
+        alignItems: 'stretch',
+        position: 'relative',
       }}
     >
       <Input

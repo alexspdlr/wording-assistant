@@ -11,6 +11,7 @@ import compareBreakpoint from '../utils/breakpointIsInRange';
 import ActiveToolButton from './ActiveToolButton';
 import ToggleSwitch from './ToggleSwitch';
 import { InputEl } from './InputEl';
+import useWindowHeight from '../utils/hooks/useWindowSize';
 
 interface AppBodyStyledProps {
   horizontalPadding: number;
@@ -18,8 +19,7 @@ interface AppBodyStyledProps {
 
 const AppBodyStyled = styled('div')(
   (props: AppBodyStyledProps) => `
-  background-color: #f7f7f7; 
-  min-height: 830px; 
+  background-color: #f7f7f7;   
   margin-top: 60px;
   display: flex; 
   justify-content: center; 
@@ -36,7 +36,7 @@ interface ContainerProps {
 const Container = styled('div')(
   (props: ContainerProps) => ` 
   max-width: 1400px; 
-  padding-top: 20px; 
+  padding-top: 18px; 
   padding-bottom: 56px; 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
