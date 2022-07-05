@@ -20,7 +20,6 @@ const AppBodyStyled = styled('div')(
   width: 100%;  
   padding-right: ${props.horizontalPadding}; 
   padding-left: ${props.horizontalPadding};   
-  overflow: scroll; 
   `
 );
 
