@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
-import { breakpoints } from '@mui/system';
-import React, { useEffect, useRef } from 'react';
-import { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Breakpoint } from '../types/breakpoint';
 import compareBreakpoint from '../utils/breakpointIsInRange';
 import useBreakpoint from '../utils/hooks/useBreakpoint';
@@ -250,8 +248,8 @@ const inputHintHeadingFontSize = (activeBreakpoint: Breakpoint): TextSize => {
   }
 
   return {
-    fontSize: 16,
-    lineHeight: 20,
+    fontSize: 22,
+    lineHeight: 24,
   };
 };
 interface InputHintHeadingProps {

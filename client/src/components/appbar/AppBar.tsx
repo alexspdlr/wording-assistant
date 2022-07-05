@@ -22,7 +22,8 @@ const AppBarStyled = styled('div')(
   height: 60px; 
   display: flex; 
   justify-content: center; 
-  position: fixed;  
+  position: fixed; 
+  z-index: 10;  
   width: 100%; 
   padding-right: ${props.horizontalPadding}; 
   padding-left: ${props.horizontalPadding};   
@@ -141,7 +142,9 @@ const AppBar = () => {
           )}
         </Left>
         <Right>
-          <Button>Need help ?</Button>
+          {compareBreakpoint(activeBreakpoint, '>', '2XS') && (
+            <Button>Need help ?</Button>
+          )}
         </Right>
       </AppbarContainer>
     </AppBarStyled>

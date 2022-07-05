@@ -1,13 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ClickableWord from './components/ClickableWord';
+import React, { useState } from 'react';
 import './App.css';
-import { workerData } from 'worker_threads';
-import TextArea from './components/TextArea';
-import Button from './components/Button';
-import Popover from './components/Popover';
-import useScrollPosition from './utils/hooks/useScrollPosition';
-import AppBody from './components/AppBody';
 import AppBar from './components/appbar/AppBar';
+import AppBody from './components/AppBody';
 
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');
@@ -190,7 +184,7 @@ function App() {
 
       <AppBody />
 
-      <header className='App-header'>
+      {/* <header className='App-header'>
         <TextArea
           id='w3review'
           name='w3review'
@@ -266,7 +260,7 @@ function App() {
           onClose={handleDeselectWord}
           rephrase={rephrase}
         />
-      </header>
+                  </header>*/}
     </div>
   );
 }

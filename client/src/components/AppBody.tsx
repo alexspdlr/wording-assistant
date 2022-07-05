@@ -1,17 +1,11 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import { ReactComponent as Logo } from '../assets/Logo.svg';
-import { ReactComponent as LogoText } from '../assets/LogoText.svg';
-import Button from './Button';
-import useBreakpoint from '../utils/hooks/useBreakpoint';
-import { Breakpoint } from '../types/breakpoint';
-import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
-import useScrollPosition from '../utils/hooks/useScrollPosition';
+import React from 'react';
 import compareBreakpoint from '../utils/breakpointIsInRange';
+import useBreakpoint from '../utils/hooks/useBreakpoint';
+import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
 import ActiveToolButton from './ActiveToolButton';
-import ToggleSwitch from './ToggleSwitch';
 import { InputEl } from './InputEl';
-import useWindowHeight from '../utils/hooks/useWindowSize';
+import ToggleSwitch from './ToggleSwitch';
 
 interface AppBodyStyledProps {
   horizontalPadding: number;
@@ -26,6 +20,7 @@ const AppBodyStyled = styled('div')(
   width: 100%;  
   padding-right: ${props.horizontalPadding}; 
   padding-left: ${props.horizontalPadding};   
+  overflow: scroll; 
   `
 );
 
@@ -42,12 +37,11 @@ const Container = styled('div')(
   display: grid;
   ${
     props.isMobileLayout
-      ? 'grid-template-columns: 1fr; grid-template-rows: repeat(2, 1fr) 58px;'
+      ? 'grid-template-columns: 100%; grid-template-rows: repeat(2, 1fr) 58px;'
       : 'grid-template-columns: repeat(2, 1fr); grid-template-rows: 76px auto 58px;'
   }
   grid-column-gap: 8px;
   grid-row-gap: 8px;
-
   width: calc(100% - ${2 * props.horizontalPadding}px); 
   `
 );
