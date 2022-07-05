@@ -390,7 +390,7 @@ function InputEl() {
         hideHint={value ? value.length > 0 : false}
         activeBreakpoint={activeBreakpoint}
       />
-      <TextArea ref={textareaRef} onChange={textAreaChange}>
+      <TextArea ref={textareaRef} onChange={textAreaChange} autoFocus>
         {value}
       </TextArea>
     </div>
