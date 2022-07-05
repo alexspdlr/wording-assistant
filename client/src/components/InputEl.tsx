@@ -350,6 +350,7 @@ function InputEl() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const activeBreakpoint = useBreakpoint();
   const windowHeight = useWindowHeight();
+  const isMobileLayout = compareBreakpoint(activeBreakpoint, '<', 'S');
 
   // The value of the textarea
   const [value, setValue] = useState<String>();
@@ -380,7 +381,7 @@ function InputEl() {
       style={{
         width: '100%',
         display: 'flex',
-        minHeight: '55vh',
+        minHeight: isMobileLayout ? '30vh' : '55vh',
         alignContent: 'stretch',
         alignItems: 'stretch',
         position: 'relative',

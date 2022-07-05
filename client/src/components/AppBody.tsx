@@ -31,6 +31,7 @@ const AppBodyStyled = styled('div')(
 
 interface ContainerProps {
   horizontalPadding: number;
+  isMobileLayout: boolean;
 }
 
 const Container = styled('div')(
@@ -39,10 +40,14 @@ const Container = styled('div')(
   padding-top: 18px; 
   padding-bottom: 56px; 
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 76px auto 58px; 
+  ${
+    props.isMobileLayout
+      ? 'grid-template-columns: 1fr; grid-template-rows: repeat(2, 1fr) 58px;'
+      : 'grid-template-columns: repeat(2, 1fr); grid-template-rows: 76px auto 58px;'
+  }
   grid-column-gap: 8px;
   grid-row-gap: 8px;
+
   width: calc(100% - ${2 * props.horizontalPadding}px); 
   `
 );
@@ -67,15 +72,26 @@ const Paper = styled('div')(
 
 const AppBody = () => {
   const activeBreakpoint = useBreakpoint();
+  const isMobileLayout = compareBreakpoint(activeBreakpoint, '<', 'S');
   return (
     <AppBodyStyled
       horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
     >
-      <Container horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}>
-        <div style={{ display: 'flex', gridArea: '1 / 1 / 2 / 3' }}>
-          <ActiveToolButton />
-        </div>
-        <Paper gridArea='2 / 1 / 3 / 2'>
+      <Container
+        horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
+        isMobileLayout={isMobileLayout}
+      >
+        {!isMobileLayout && (
+          <div
+            style={{
+              display: 'flex',
+              gridArea: '1 / 1 / 2 / 3',
+            }}
+          >
+            <ActiveToolButton />
+          </div>
+        )}
+        <Paper gridArea={isMobileLayout ? '1 / 1 / 2 / 2' : '2 / 1 / 3 / 2'}>
           <div
             style={{
               width: '100%',
@@ -101,7 +117,7 @@ const AppBody = () => {
             <InputEl />
           </div>
         </Paper>
-        <Paper gridArea='2 / 2 / 3 / 3'>
+        <Paper gridArea={isMobileLayout ? '2 / 1 / 3 / 2' : '2 / 2 / 3 / 3'}>
           <div
             style={{
               width: '100%',
@@ -127,7 +143,7 @@ const AppBody = () => {
             <div>{''}</div>
           </div>
         </Paper>
-        <Paper gridArea='3 / 1 / 4 / 3'>
+        <Paper gridArea={isMobileLayout ? '3 / 1 / 4 / 2' : '3 / 1 / 4 / 3'}>
           <div
             style={{
               width: '100%',
