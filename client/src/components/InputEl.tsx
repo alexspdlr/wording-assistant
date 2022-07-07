@@ -1,9 +1,13 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { Breakpoint } from '../types/breakpoint';
 import compareBreakpoint from '../utils/breakpointIsInRange';
 import useBreakpoint from '../utils/hooks/useBreakpoint';
 import useWindowHeight from '../utils/hooks/useWindowSize';
+import { ReactComponent as ClearIcon } from '../assets/ClearIcon.svg';
+import { ReactComponent as CopyIcon } from '../assets/CopyIcon.svg';
+import { ReactComponent as ShareIcon } from '../assets/ShareIcon.svg';
+import InputControlButton from './InputControlButton';
 
 interface TextSize {
   fontSize: number;
@@ -351,7 +355,7 @@ function InputEl() {
   const isMobileLayout = compareBreakpoint(activeBreakpoint, '<', 'S');
 
   // The value of the textarea
-  const [value, setValue] = useState<String>();
+  const [value, setValue] = useState<string>();
 
   // This function is triggered when textarea changes
   const textAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -374,12 +378,37 @@ function InputEl() {
     }
   }, [value, activeBreakpoint, windowHeight]);
 
+  const resetInput = () => {
+    setValue('');
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.value = '';
+    }
+    textareaRef.current?.focus();
+  };
+
+  const copyValue = () => {
+    navigator.clipboard
+      .writeText(value || '')
+      .then(() => {
+        alert(`"${value}" was copied to clipboard.`);
+      })
+      .catch((err) => {
+        alert(`Error copying text to clipboard: ${err}`);
+      });
+  };
+
+  const minHeightInput = isMobileLayout
+    ? '30vh'
+    : windowHeight > 990
+    ? '545px'
+    : '55vh';
+
   return (
     <div
       style={{
         width: '100%',
         display: 'flex',
-        minHeight: isMobileLayout ? '30vh' : '55vh',
+        minHeight: minHeightInput,
         alignContent: 'stretch',
         alignItems: 'stretch',
         position: 'relative',
@@ -389,9 +418,44 @@ function InputEl() {
         hideHint={value ? value.length > 0 : false}
         activeBreakpoint={activeBreakpoint}
       />
-      <TextArea ref={textareaRef} onChange={textAreaChange} autoFocus>
+      <TextArea
+        id='dl-input-el'
+        ref={textareaRef}
+        onChange={textAreaChange}
+        autoFocus
+      >
         {value}
       </TextArea>
+      <div
+        style={{
+          position: 'absolute',
+          top: '16px',
+          right: '16px',
+        }}
+      >
+        {value && value.length > 0 && (
+          <InputControlButton
+            onClick={resetInput}
+            icon={<ClearIcon />}
+            variant='dynamic'
+          />
+        )}
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '16px',
+          right: '16px',
+          display: 'flex',
+        }}
+      >
+        <InputControlButton
+          onClick={copyValue}
+          icon={<CopyIcon />}
+          variant='permanent'
+        />
+      </div>
     </div>
   );
 }

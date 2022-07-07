@@ -6,12 +6,13 @@ const Switch = styled('div')(
   () => `
   position: relative;
   height: 32px;
-  background-color: #f7f7f7;
+  background-color: rgba(218, 225, 232, 0.2);
   border-radius: 6px;
   box-shadow: inset 0 0px 2px rgba(0, 0, 0, 0.2);
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
+  transition: background-color 0.25s ease;
 `
 );
 
@@ -30,7 +31,7 @@ const SwitchSelection = styled('span')(
     left: 0px;
     width: 76px;
     height: 28px;
-    background: #fff; 
+    background-color: #fff; 
     margin-top: 2px;
     margin-left: 2px; 
     margin-right: 2px;  
@@ -53,7 +54,7 @@ const SwitchLabel = styled('label')(
     border-radius: 6px;
     font-size: 12.5px;
     text-align: center;
-    cursor: ${props.active ? 'default;' : 'pointer;'}
+    cursor: pointer; 
     color: ${props.active ? '#0F2B46;' : '#7a7a7a;'}
     transition: color 0.25s ease-out; 
   `
@@ -92,7 +93,7 @@ const ToggleSwitch = () => {
   const values = ['Edit', 'Reword'];
 
   const handleChange = (val: string) => {
-    setSelected(val);
+    setSelected(selected === 'Edit' ? 'Reword' : 'Edit');
   };
 
   const selectionStyle = () => {

@@ -60,9 +60,9 @@ const StyledLogo = styled(Logo)(
 
 const StyledLogoText = styled(LogoText)(
   (props) => `
-  width: 64px;
+  width: 66px;
   height: auto;
-  margin-bottom: -5px;
+  margin-bottom: -6px;
   margin-right: 5px; 
 `
 );

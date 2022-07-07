@@ -37,7 +37,7 @@ const Container = styled('div')(
   ${
     props.isMobileLayout
       ? 'grid-template-columns: 100%; grid-template-rows: repeat(2, 1fr) 58px;'
-      : 'grid-template-columns: repeat(2, 1fr); grid-template-rows: 76px auto 58px;'
+      : 'grid-template-columns: repeat(2, 1fr); grid-template-rows: 78px auto 58px;'
   }
   grid-column-gap: 8px;
   grid-row-gap: 8px;
