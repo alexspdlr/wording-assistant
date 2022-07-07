@@ -1,13 +1,15 @@
 import styled from '@emotion/styled';
-import { ReactComponent as IconRephrase } from '../assets/IconRephrase.svg';
+import { cloneElement, JSXElementConstructor, ReactElement } from 'react';
+
+interface ActiveToolButtonWrapperProps {
+  active: boolean;
+}
 
 const ActiveToolButtonWrapper = styled('button')(
-  (props) => ` 
+  (props: ActiveToolButtonWrapperProps) => ` 
     height: 65px; 
     background-color: #ffffff;
-    border-radius: 8px 8px 4px 4px;
     border: 1px solid rgb(218, 225, 232);
-    border-bottom: 0px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
     overflow: hidden;
     padding: 0px; 
@@ -15,42 +17,61 @@ const ActiveToolButtonWrapper = styled('button')(
     flex-direction: column;
     justify-content: space-between;
     cursor: pointer;
+   ${
+     props.active
+       ? 'border-bottom: 0px; border-radius: 8px 8px 4px 4px;'
+       : 'border-radius: 8px;'
+   }
+    ${!props.active && '&:hover {background-color: rgb(244, 249, 253)}'} 
     `
 );
 
-const ActiveToolButton = () => {
+interface ActiveToolButtonProps {
+  icon: ReactElement<any, string | JSXElementConstructor<any>>;
+  text: string;
+  active: boolean;
+}
+
+const ActiveToolButton = (props: ActiveToolButtonProps) => {
+  const { active, icon, text } = props;
+
   return (
-    <ActiveToolButtonWrapper>
+    <ActiveToolButtonWrapper active={active}>
       <div
         style={{
           height: '100%',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          paddingLeft: 13,
-          paddingRight: 13,
+          paddingLeft: 14,
+          paddingRight: 14,
         }}
       >
-        <IconRephrase fill='rgb(27, 30, 37)' />
+        {cloneElement(icon, {
+          style: {
+            color: active ? 'rgb(27, 30, 37)' : 'rgba(0, 99, 149, 1)',
+            height: 24,
+          },
+        })}
         <div
           style={{
-            paddingLeft: 15,
+            paddingLeft: 14,
             fontWeight: 600,
             fontSize: 16,
-            color: 'rgb(27, 30, 37)',
-            marginBottom: -2,
+            color: active ? 'rgb(27, 30, 37)' : 'rgba(0, 99, 149, 1)',
+            marginBottom: 0,
             fontFamily:
               "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
           }}
         >
-          Rephrase text
+          {text}
         </div>
       </div>
       <div
         style={{
           height: 3,
           width: '100%',
-          backgroundColor: 'rgba(0, 99, 149, 1)',
+          backgroundColor: active ? 'rgba(0, 99, 149, 1)' : 'transparent',
         }}
       />
     </ActiveToolButtonWrapper>

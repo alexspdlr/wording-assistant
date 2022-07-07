@@ -6,6 +6,8 @@ import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
 import ActiveToolButton from './ActiveToolButton';
 import { InputEl } from './InputEl';
 import ToggleSwitch from './ToggleSwitch';
+import { ReactComponent as RephraseTextIcon } from '../assets/RephraseTextIcon.svg';
+import { ReactComponent as RephraseFilesIcon } from '../assets/RephraseFilesIcon.svg';
 
 interface AppBodyStyledProps {
   horizontalPadding: number;
@@ -79,9 +81,19 @@ const AppBody = () => {
             style={{
               display: 'flex',
               gridArea: '1 / 1 / 2 / 3',
+              gap: '10px',
             }}
           >
-            <ActiveToolButton />
+            <ActiveToolButton
+              icon={<RephraseTextIcon />}
+              text='Rephrase text'
+              active
+            />
+            <ActiveToolButton
+              icon={<RephraseFilesIcon />}
+              text='Rephrase files'
+              active={false}
+            />
           </div>
         )}
         <Paper gridArea={isMobileLayout ? '1 / 1 / 2 / 2' : '2 / 1 / 3 / 2'}>

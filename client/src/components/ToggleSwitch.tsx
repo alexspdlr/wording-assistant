@@ -52,7 +52,7 @@ const SwitchLabel = styled('label')(
     width: 80px;
     line-height: 32px;
     border-radius: 6px;
-    font-size: 12.5px;
+    font-size: 13px;
     text-align: center;
     cursor: pointer; 
     color: ${props.active ? '#0F2B46;' : '#7a7a7a;'}

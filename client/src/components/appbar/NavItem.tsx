@@ -7,7 +7,7 @@ interface NavItemProps {
 const NavItem = styled('div')(
   (props: NavItemProps) => `
   padding-bottom: 15px; 
-  ${!props.isFirstItem && 'margin-left: 32px;'} 
+  ${!props.isFirstItem && 'margin-left: 30px;'} 
   pointer: cursor;  
   border-bottom: 3px solid #ffffff;   
   &:hover {

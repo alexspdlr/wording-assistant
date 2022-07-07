@@ -8,6 +8,7 @@ import { ReactComponent as ClearIcon } from '../assets/ClearIcon.svg';
 import { ReactComponent as CopyIcon } from '../assets/CopyIcon.svg';
 import { ReactComponent as ShareIcon } from '../assets/ShareIcon.svg';
 import InputControlButton from './InputControlButton';
+import { minHeight } from '@mui/system';
 
 interface TextSize {
   fontSize: number;
@@ -278,7 +279,7 @@ const InputHintBody = styled('p')(
     color: rgb(110, 110, 110); 
     line-height: 20px;
     margin: 0px; 
-    padding-top: 8px;
+    padding-top: 7px;
     `
 );
 
@@ -314,7 +315,7 @@ const Input = (props: InputProps) => {
             fontSize={inputHintHeadingTextSize.fontSize}
             lineHeight={inputHintHeadingTextSize.lineHeight}
           >
-            {!props.hideHint && 'Paste or write your text.'}
+            {!props.hideHint && 'Paste or write your text'}
           </InputHintHeading>
           <InputHintBody>
             {!props.hideHint &&
@@ -327,8 +328,13 @@ const Input = (props: InputProps) => {
   );
 };
 
+interface TextAreaProps {
+  minHeight: string;
+}
+
 const TextArea = styled('textarea')(
-  (props) => `
+  (props: TextAreaProps) => `
+    min-height: ${props.minHeight};
     margin-left: 24px;
     margin-top: 24px;
     margin-right: 64px;
@@ -398,17 +404,16 @@ function InputEl() {
   };
 
   const minHeightInput = isMobileLayout
-    ? '30vh'
+    ? '17vh'
     : windowHeight > 990
-    ? '545px'
-    : '55vh';
+    ? '439px'
+    : '45vh';
 
   return (
     <div
       style={{
         width: '100%',
         display: 'flex',
-        minHeight: minHeightInput,
         alignContent: 'stretch',
         alignItems: 'stretch',
         position: 'relative',
@@ -423,6 +428,7 @@ function InputEl() {
         ref={textareaRef}
         onChange={textAreaChange}
         autoFocus
+        minHeight={minHeightInput}
       >
         {value}
       </TextArea>
@@ -445,7 +451,7 @@ function InputEl() {
       <div
         style={{
           position: 'absolute',
-          bottom: '16px',
+          bottom: '8px',
           right: '16px',
           display: 'flex',
         }}
