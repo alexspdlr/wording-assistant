@@ -1,18 +1,19 @@
 import styled from '@emotion/styled';
 import React, { Component, useState } from 'react';
 import { render } from 'react-dom';
+import Tooltip from './Tooltip';
 
 const Switch = styled('div')(
   () => `
   position: relative;
   height: 32px;
-  background-color: rgba(218, 225, 232, 0.2);
+  background-color: #fafafa;
   border-radius: 6px;
-  box-shadow: inset 0 0px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset rgba(228, 228, 228, 1) 0px 0px 0px 1px, inset rgba(99, 99, 99, 0.2) 0px 0px 3px 0px;
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
-  transition: background-color 0.25s ease;
+
 `
 );
 
@@ -29,14 +30,14 @@ const SwitchSelection = styled('span')(
     z-index: 1;
     top: 0px;
     left: 0px;
-    width: 76px;
-    height: 28px;
+    width: 78px;
+    height: 30px;
     background-color: #fff; 
-    margin-top: 2px;
-    margin-left: 2px; 
-    margin-right: 2px;  
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), 0 0px 2px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    margin-top: 1px;
+    margin-left: 1px; 
+    margin-right: 1px;  
+    box-shadow: rgba(228, 228, 228, 1) 0px 0px 0px 1px;
+    border-radius: 5px;
     transition: left 0.25s ease-out;
   `
 );
@@ -52,11 +53,13 @@ const SwitchLabel = styled('label')(
     width: 80px;
     line-height: 32px;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 12px;
     text-align: center;
     cursor: pointer; 
     color: ${props.active ? '#0F2B46;' : '#7a7a7a;'}
     transition: color 0.25s ease-out; 
+    font-weight: 500; 
+    font-family: 'Inter', sans-serif;
   `
 );
 

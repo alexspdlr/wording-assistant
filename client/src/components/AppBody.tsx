@@ -8,6 +8,7 @@ import { InputEl } from './InputEl';
 import ToggleSwitch from './ToggleSwitch';
 import { ReactComponent as RephraseTextIcon } from '../assets/RephraseTextIcon.svg';
 import { ReactComponent as RephraseFilesIcon } from '../assets/RephraseFilesIcon.svg';
+import Tooltip from './Tooltip';
 
 interface AppBodyStyledProps {
   horizontalPadding: number;
@@ -117,7 +118,13 @@ const AppBody = () => {
                 fontWeight: 600,
               }}
             >
-              Input text <ToggleSwitch />
+              Input text{' '}
+              <Tooltip
+                content='Switch between Edit & Rephrase Mode'
+                delay={1000}
+              >
+                <ToggleSwitch />
+              </Tooltip>
             </div>
             <InputEl />
           </div>

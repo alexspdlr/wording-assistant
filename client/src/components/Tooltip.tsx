@@ -90,10 +90,11 @@ const Tip = styled('div')(
   z-index: ${props.isRevealed ? '100' : '-1'};
   white-space: nowrap;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif;
+    Arial, sans-serif !important;
+    font-weight: 400; 
     opacity: ${props.isRevealed ? '1' : '0'};
-    transition: opacity 300ms ease-in-out, z-index 300ms ease-in-out; 
-
+    transition: opacity 350ms ease-in-out, z-index 400ms ease-in-out; 
+ 
   &:before {
     content: " ";
     left: 50%;
