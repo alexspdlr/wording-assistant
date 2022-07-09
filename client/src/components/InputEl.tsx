@@ -9,6 +9,7 @@ import { ReactComponent as CopyIcon } from '../assets/CopyIcon.svg';
 import { ReactComponent as ShareIcon } from '../assets/ShareIcon.svg';
 import InputControlButton from './InputControlButton';
 import { minHeight } from '@mui/system';
+import Tooltip from './Tooltip';
 
 interface TextSize {
   fontSize: number;
@@ -447,7 +448,6 @@ function InputEl() {
           />
         )}
       </div>
-
       <div
         style={{
           position: 'absolute',
@@ -456,11 +456,13 @@ function InputEl() {
           display: 'flex',
         }}
       >
-        <InputControlButton
-          onClick={copyValue}
-          icon={<CopyIcon />}
-          variant='permanent'
-        />
+        <Tooltip content='Copy to Clipboard' direction='top'>
+          <InputControlButton
+            onClick={copyValue}
+            icon={<CopyIcon />}
+            variant='permanent'
+          />
+        </Tooltip>
       </div>
     </div>
   );
