@@ -8,12 +8,12 @@ const Switch = styled('div')(
   position: relative;
   height: 32px;
   background-color: #fafafa;
-  border-radius: 6px;
-  box-shadow: inset rgba(228, 228, 228, 1) 0px 0px 0px 1px, inset rgba(99, 99, 99, 0.2) 0px 0px 3px 0px;
+  border-radius: 5px;
+  box-shadow: inset rgba(230, 230, 230, 1) 0px 0px 0px 1px, inset rgba(99, 99, 99, 0.2) 0px 0px 3px 0px;
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
-
+ 
 `
 );
 
@@ -36,8 +36,8 @@ const SwitchSelection = styled('span')(
     margin-top: 1px;
     margin-left: 1px; 
     margin-right: 1px;  
-    box-shadow: rgba(228, 228, 228, 1) 0px 0px 0px 1px;
-    border-radius: 5px;
+    box-shadow: rgba(230, 230, 230, 1) 0px 0px 0px 1px;
+    border-radius: 4px;
     transition: left 0.25s ease-out;
   `
 );
