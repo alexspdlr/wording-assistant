@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import useBreakpoint from '../../utils/hooks/useBreakpoint';
 import useScrollPosition from '../../utils/hooks/useScrollPosition';
@@ -9,6 +9,7 @@ import { ReactComponent as LogoText } from '../../assets/LogoText.svg';
 import NavItem from './NavItem';
 import Chip from '../Chip';
 import compareBreakpoint from '../../utils/breakpointIsInRange';
+import Dialog from '../Dialog';
 
 interface AppBarStyledProps {
   horizontalPadding: number;
@@ -116,6 +117,7 @@ const RepositoryNavItem = () => (
 const AppBar = () => {
   const activeBreakpoint = useBreakpoint();
   const scrollPosition = useScrollPosition();
+  const [menuDialogOpen, setMenuDialogOpen] = useState(false);
   return (
     <AppBarStyled
       horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
@@ -145,6 +147,17 @@ const AppBar = () => {
           {compareBreakpoint(activeBreakpoint, '>', '2XS') && (
             <Button>Need help ?</Button>
           )}
+          <button onClick={() => setMenuDialogOpen(true)}>...</button>
+          <Dialog
+            open={menuDialogOpen}
+            onClose={() => setMenuDialogOpen(false)}
+            transitionDuration={150}
+          >
+            <p>
+              hi there{' '}
+              <button onClick={() => setMenuDialogOpen(false)}>close</button>
+            </p>
+          </Dialog>
         </Right>
       </AppbarContainer>
     </AppBarStyled>
