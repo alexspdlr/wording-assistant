@@ -24,23 +24,28 @@ const positionVertically = (verticalPosition: Position) => {
 
 const transformOrigin = (
   horizontalPosition: Position,
-  verticalPosition: Position
+  verticalPosition: Position,
+  animationOffset: number,
+  margin: number
 ) => {
   const translateX = () => {
-    if (horizontalPosition === 'center') return '-50%';
-    return '0%';
+    if (horizontalPosition === 'center') {
+      return `calc(-${margin}px + -50%)`;
+    }
+    return '0px';
   };
 
   const translateY = () => {
-    if (verticalPosition === 'center') return '-50%';
-    return '0';
+    if (verticalPosition === 'center') {
+      return `calc(-${margin}px + -1 * 50% + -1 * ${animationOffset}px )`;
+    }
+    return `${-animationOffset}px`;
   };
   return `transform: translate(${translateX()},${translateY()});`;
 };
 
 interface BoxProps {
-  in: boolean;
-  visible: boolean;
+  show: boolean;
   transitionDuration: number;
   horizontalPosition: Position;
   verticalPosition: Position;
@@ -52,17 +57,33 @@ const Box = styled('div')(
   (props: BoxProps) => `
 position: absolute; 
   display: inline-block;
-  ${positionHorizontally(props.horizontalPosition)}
+  ${positionHorizontally(props.horizontalPosition)} 
   ${positionVertically(props.verticalPosition)}  
-${transformOrigin(props.horizontalPosition, props.verticalPosition)}  
+${transformOrigin(props.horizontalPosition, props.verticalPosition, 10, 10)}   
   background-color: #fff;
   border-radius: 5px;
-  padding: 50px; 
-margin: ${props.limitBoxToContainer ? '10px 0px 10px 0px' : '10px'};
+  z-index: 999; 
+  margin: ${props.limitBoxToContainer ? '10px 0px 10px 0px' : '10px'};  
   opacity: 0; 
-    transition: opacity ${props.transitionDuration}ms ease;
-    ${props.in && props.visible && 'opacity: 1;'} 
-    ${props.showShadow && 'box-shadow: 0px 4px 20px 0px rgba(0,0,0,.1);'}
+    transition: opacity ${props.transitionDuration}ms ease, transform ${
+    props.transitionDuration * 2
+  }ms ease; 
+    ${
+      props.show
+        ? `opacity: 1; ${transformOrigin(
+            props.horizontalPosition,
+            props.verticalPosition,
+            0,
+            10
+          )}`
+        : undefined
+    }   
+    ${
+      props.showShadow
+        ? 'box-shadow: 0px 4px 20px 0px rgba(0,0,0,.1);'
+        : undefined
+    }
+
 `
 );
 
@@ -72,7 +93,7 @@ interface BoxContainerProps {
 }
 const BoxContainer = styled('div')(
   (props: BoxContainerProps) => `
-  ${props.limitBoxToContainer && 'position: absolute;'}  
+  ${props.limitBoxToContainer ? 'position: absolute;' : undefined}  
   z-index: -1;   
   height: 100vh;
     max-width: 1420px;
@@ -93,8 +114,7 @@ const BoxWrapper = styled('div')(
 );
 
 interface BackgroundProps {
-  in: boolean;
-  visible: boolean;
+  show: boolean;
   transitionDuration: number;
   darkenBackground: boolean;
 }
@@ -109,7 +129,7 @@ const Background = styled('div')(
     z-index: 999; 
     opacity: 0; 
     transition: opacity ${props.transitionDuration}ms ease;
-    ${props.in && props.visible && 'opacity: 1;'} 
+    ${props.show ? 'opacity: 1;' : undefined} 
   `
 );
 
@@ -148,8 +168,7 @@ const Dialog = (props: DialogProps) => {
       {(hasTransitionedIn || open) && (
         <>
           <Background
-            in={hasTransitionedIn}
-            visible={open}
+            show={hasTransitionedIn && open}
             transitionDuration={transitionDuration}
             darkenBackground={
               darkenBackground === undefined ? true : darkenBackground
@@ -162,8 +181,7 @@ const Dialog = (props: DialogProps) => {
             >
               <Box
                 ref={boxRef}
-                in={hasTransitionedIn}
-                visible={open}
+                show={hasTransitionedIn && open}
                 transitionDuration={transitionDuration}
                 horizontalPosition={horizontalPosition || 'center'}
                 verticalPosition={verticalPosition || 'center'}

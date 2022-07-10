@@ -159,7 +159,7 @@ const AppBar = () => {
           verticalPosition='start'
           darkenBackground={compareBreakpoint(activeBreakpoint, '<', '3XL')}
         >
-          <p>
+          <p style={{ height: 700, width: 340 }}>
             hi there{' '}
             <button onClick={() => setMenuDialogOpen(false)}>close</button>
           </p>
