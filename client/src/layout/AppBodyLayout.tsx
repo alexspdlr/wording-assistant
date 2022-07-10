@@ -30,11 +30,11 @@ const Container = styled('div')(
   `
 );
 
-interface AppBodyProps {
+interface AppBodyLayoutProps {
   children: ReactNode;
 }
 
-const AppBody = (props: AppBodyProps) => {
+const AppBodyLayout = (props: AppBodyLayoutProps) => {
   const { children } = props;
   const activeBreakpoint = useBreakpoint();
   return (
@@ -46,4 +46,4 @@ const AppBody = (props: AppBodyProps) => {
   );
 };
 
-export default AppBody;
+export default AppBodyLayout;

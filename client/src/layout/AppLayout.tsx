@@ -1,15 +1,17 @@
-import RephrasePage from '../pages/RephrasePage';
-import AppBar from './AppBar';
-import AppBody from './AppBody';
+import { ReactNode } from 'react';
+import AppBarLayout from './AppBarLayout';
+import AppBodyLayout from './AppBodyLayout';
 
-const AppLayout = () => {
+interface AppLayoutProps {
+  appBarContent: ReactNode;
+  appBodyContent: ReactNode;
+}
+const AppLayout = (props: AppLayoutProps) => {
+  const { appBarContent, appBodyContent } = props;
   return (
     <>
-      <AppBar />
-      <AppBody>
-        {/* TODO: Dynamically render page content based on route */}
-        <RephrasePage />
-      </AppBody>
+      <AppBarLayout>{appBarContent}</AppBarLayout>
+      <AppBodyLayout>{appBodyContent}</AppBodyLayout>
     </>
   );
 };

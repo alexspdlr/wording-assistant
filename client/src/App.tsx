@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import './App.css';
-import AppBar from './layout/AppBar';
-import AppBody from './layout/AppBody';
+import AppBarContent from './components/AppBarContent';
+import AppBar from './layout/AppBarLayout';
+import AppBody from './layout/AppBodyLayout';
 import AppLayout from './layout/AppLayout';
+import RephrasePage from './pages/RephrasePage';
 
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');
@@ -181,7 +183,10 @@ function App() {
 
   return (
     <div className='App'>
-      <AppLayout />
+      <AppLayout
+        appBarContent={<AppBarContent />}
+        appBodyContent={<RephrasePage />}
+      />
 
       {/* <header className='App-header'>
         <TextArea
