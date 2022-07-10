@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
-import AppBar from './components/appbar/AppBar';
-import AppBody from './components/AppBody';
+import AppBar from './layout/AppBar';
+import AppBody from './layout/AppBody';
+import AppLayout from './layout/AppLayout';
 
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');
@@ -180,9 +181,7 @@ function App() {
 
   return (
     <div className='App'>
-      <AppBar />
-
-      <AppBody />
+      <AppLayout />
 
       {/* <header className='App-header'>
         <TextArea
@@ -202,7 +201,6 @@ function App() {
             Rephrase
           </Button>
         )}
-
         <p
           style={{
             textAlign: 'left',
