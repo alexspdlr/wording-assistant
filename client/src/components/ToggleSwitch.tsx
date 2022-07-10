@@ -6,14 +6,14 @@ import Tooltip from './Tooltip';
 const Switch = styled('div')(
   () => `
   position: relative;
-  height: 32px;
-  background-color: #fafafa;
+  height: 34px;
+  background-color: #fafafa; 
   border-radius: 5px;
-  box-shadow: inset rgba(230, 230, 230, 1) 0px 0px 0px 1px, inset rgba(99, 99, 99, 0.2) 0px 0px 3px 0px;
+  box-shadow: inset #e9e9e9 0px 0px 0px 1px;
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
- 
+  overflow: hidden; 
 `
 );
 
@@ -23,22 +23,22 @@ const SwitchRadio = styled('input')(
   `
 );
 
+interface SwitchSelectionProps {
+  isLeftItem: boolean;
+}
 const SwitchSelection = styled('span')(
-  () => `
+  (props: SwitchSelectionProps) => `
     display: block;
     position: absolute;
     z-index: 1;
     top: 0px;
     left: 0px;
-    width: 78px;
-    height: 30px;
+    width: 80px;
+    height: 34px;
     background-color: #fff; 
-    margin-top: 1px;
-    margin-left: 1px; 
-    margin-right: 1px;  
-    box-shadow: rgba(230, 230, 230, 1) 0px 0px 0px 1px;
-    border-radius: 4px;
-    transition: left 0.25s ease-out;
+    box-shadow: inset #e9e9e9 0px 0px 0px 1px;
+    border-radius: 5px;
+    transition: left 200ms ease-out, border-radius 200ms ease;
   `
 );
 
@@ -52,11 +52,11 @@ const SwitchLabel = styled('label')(
     float: left;
     width: 80px;
     line-height: 32px;
-    border-radius: 6px;
-    font-size: 12px;
+    border-radius: 6px; 
+    font-size: 13px;
     text-align: center;
     cursor: pointer; 
-    color: ${props.active ? '#0F2B46;' : '#7a7a7a;'}
+    color: ${props.active ? '#0F2B46;' : '#b1b1b1;'}  
     transition: color 0.25s ease-out; 
     font-weight: 500; 
     font-family: 'Inter', sans-serif;
@@ -107,7 +107,7 @@ const ToggleSwitch = () => {
 
   return (
     <Switch>
-      {values.map((val) => {
+      {values.map((val, i) => {
         return (
           <span>
             <ConcealedRadio value={val} selected={selected} />
@@ -119,7 +119,10 @@ const ToggleSwitch = () => {
           </span>
         );
       })}
-      <SwitchSelection style={selectionStyle()} />
+      <SwitchSelection
+        style={selectionStyle()}
+        isLeftItem={selected === values[0]}
+      />
     </Switch>
   );
 };
