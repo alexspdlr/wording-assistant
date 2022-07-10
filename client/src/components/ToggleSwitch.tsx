@@ -9,7 +9,7 @@ const Switch = styled('div')(
   height: 34px;
   background-color: #fafafa; 
   border-radius: 5px;
-  box-shadow: inset #e9e9e9 0px 0px 0px 1px;
+  box-shadow: inset #e7e7e7 0px 0px 0px 1px;
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
@@ -36,7 +36,7 @@ const SwitchSelection = styled('span')(
     width: 80px;
     height: 34px;
     background-color: #fff; 
-    box-shadow: inset #e9e9e9 0px 0px 0px 1px;
+    box-shadow: inset #e7e7e7 0px 0px 0px 1px;
     border-radius: 5px;
     transition: left 200ms ease-out, border-radius 200ms ease;
   `
