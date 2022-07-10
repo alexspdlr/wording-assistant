@@ -121,7 +121,7 @@ const AppBody = () => {
               Input text{' '}
               <Tooltip
                 content='Switch between Edit & Rephrase Mode'
-                delay={1000}
+                delay={1500}
               >
                 <ToggleSwitch />
               </Tooltip>

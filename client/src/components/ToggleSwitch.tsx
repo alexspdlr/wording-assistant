@@ -7,9 +7,9 @@ const Switch = styled('div')(
   () => `
   position: relative;
   height: 34px;
-  background-color: #fafafa; 
+  background-color: #F9F9F9; 
   border-radius: 5px;
-  box-shadow: inset #e7e7e7 0px 0px 0px 1px;
+  border: 1px solid #E8E7E7;
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
@@ -36,8 +36,16 @@ const SwitchSelection = styled('span')(
     width: 80px;
     height: 34px;
     background-color: #fff; 
-    box-shadow: inset #e7e7e7 0px 0px 0px 1px;
-    border-radius: 5px;
+    ${
+      props.isLeftItem
+        ? 'border-right: 1px solid #E8E7E7;'
+        : 'border-left: 1px solid #E8E7E7;'
+    } 
+    ${
+      props.isLeftItem
+        ? 'border-radius: 5px 0px 0px 5px;'
+        : 'border-radius: 0px 5px 5px 0px;'
+    } 
     transition: left 200ms ease-out, border-radius 200ms ease;
   `
 );
@@ -52,14 +60,17 @@ const SwitchLabel = styled('label')(
     float: left;
     width: 80px;
     line-height: 32px;
-    border-radius: 6px; 
+    border-radius: 5px;
     font-size: 13px;
     text-align: center;
     cursor: pointer; 
-    color: ${props.active ? '#0F2B46;' : '#b1b1b1;'}  
-    transition: color 0.25s ease-out; 
+    color: ${props.active ? '#0F2B46;' : '#949494;'}  
+    transition: color 0.15s ease-out; 
     font-weight: 500; 
     font-family: 'Inter', sans-serif;
+    &:hover {
+      color: ${props.active ? 'rgba(0, 99, 149, 1);' : '#818181;'}
+    }
   `
 );
 

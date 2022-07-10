@@ -12,6 +12,7 @@ const Wrapper = styled('div')(
   () => `
   display: inline-block;
   position: relative; 
+  z-index: 999; 
   `
 );
 
