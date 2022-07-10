@@ -21,7 +21,7 @@ const AppBodyStyled = styled('div')(
   display: flex; 
   justify-content: center; 
   width: 100%;  
-  padding-right: ${props.horizontalPadding}; 
+  padding-right: ${props.horizontalPadding};  
   padding-left: ${props.horizontalPadding};   
   `
 );
@@ -121,7 +121,7 @@ const AppBody = () => {
               Input text{' '}
               <Tooltip
                 content='Switch between Edit & Rephrase Mode'
-                delay={1500}
+                delay={1000}
               >
                 <ToggleSwitch />
               </Tooltip>

@@ -9,7 +9,7 @@ const Switch = styled('div')(
   height: 34px;
   background-color: #F9F9F9; 
   border-radius: 5px;
-  border: 1px solid #E8E7E7;
+  border: 1px solid #e9e9e9;
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
@@ -30,7 +30,7 @@ const SwitchSelection = styled('span')(
   (props: SwitchSelectionProps) => `
     display: block;
     position: absolute;
-    z-index: 1;
+    z-index: 1; 
     top: 0px;
     left: 0px;
     width: 80px;
@@ -38,8 +38,8 @@ const SwitchSelection = styled('span')(
     background-color: #fff; 
     ${
       props.isLeftItem
-        ? 'border-right: 1px solid #E8E7E7;'
-        : 'border-left: 1px solid #E8E7E7;'
+        ? 'border-right: 1px solid #e9e9e9;'
+        : 'border-left: 1px solid #e9e9e9;'
     } 
     ${
       props.isLeftItem

@@ -126,7 +126,7 @@ const Background = styled('div')(
     right: 0;
     bottom: 0;
     background-color: rgba(0,0,0, ${props.darkenBackground ? '0.3' : '0.0'});
-    z-index: 999; 
+    z-index: 1000;  
     opacity: 0; 
     transition: opacity ${props.transitionDuration}ms ease;
     ${props.show ? 'opacity: 1;' : undefined} 
