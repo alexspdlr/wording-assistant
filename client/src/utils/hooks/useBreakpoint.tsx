@@ -3,7 +3,10 @@ import { Breakpoint } from '../../types/breakpoint';
 
 const breakpointFromWidth = (width: number): Breakpoint => {
   switch (true) {
-    case width > 1600:
+    case width > 2000:
+      return '3XL';
+
+    case 2000 >= width && width > 1600:
       return '2XL';
 
     case 1600 >= width && width > 1400:

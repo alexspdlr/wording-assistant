@@ -6,6 +6,7 @@ const compareBreakpoint = (
   comparisonBreakpoint: Breakpoint
 ): boolean => {
   const breakpoints: Breakpoint[] = [
+    '3XL',
     '2XL',
     'XL',
     'L',

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React, { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { Breakpoint } from '../types/breakpoint';
-import compareBreakpoint from '../utils/breakpointIsInRange';
+import compareBreakpoint from '../utils/compareBreakpoint';
 import useBreakpoint from '../utils/hooks/useBreakpoint';
 import useWindowHeight from '../utils/hooks/useWindowSize';
 import { ReactComponent as ClearIcon } from '../assets/ClearIcon.svg';

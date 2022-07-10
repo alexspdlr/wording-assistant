@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
-import compareBreakpoint from '../utils/breakpointIsInRange';
+import compareBreakpoint from '../utils/compareBreakpoint';
 import useBreakpoint from '../utils/hooks/useBreakpoint';
 import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
 import ActiveToolButton from './ActiveToolButton';

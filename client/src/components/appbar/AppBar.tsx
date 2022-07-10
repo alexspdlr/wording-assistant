@@ -8,8 +8,9 @@ import { ReactComponent as Logo } from '../../assets/Logo.svg';
 import { ReactComponent as LogoText } from '../../assets/LogoText.svg';
 import NavItem from './NavItem';
 import Chip from '../Chip';
-import compareBreakpoint from '../../utils/breakpointIsInRange';
+import compareBreakpoint from '../../utils/compareBreakpoint';
 import Dialog from '../Dialog';
+import MenuIconButton from '../MenuIconButton';
 
 interface AppBarStyledProps {
   horizontalPadding: number;
@@ -87,6 +88,7 @@ flex-direction: row;
 align-items: center; 
 height: auto; 
 font-weight: 500; 
+gap: 22px; 
 `
 );
 
@@ -147,18 +149,21 @@ const AppBar = () => {
           {compareBreakpoint(activeBreakpoint, '>', '2XS') && (
             <Button>Need help ?</Button>
           )}
-          <button onClick={() => setMenuDialogOpen(true)}>...</button>
-          <Dialog
-            open={menuDialogOpen}
-            onClose={() => setMenuDialogOpen(false)}
-            transitionDuration={150}
-          >
-            <p>
-              hi there{' '}
-              <button onClick={() => setMenuDialogOpen(false)}>close</button>
-            </p>
-          </Dialog>
+          <MenuIconButton onClick={() => setMenuDialogOpen(true)} />
         </Right>
+        <Dialog
+          open={menuDialogOpen}
+          onClose={() => setMenuDialogOpen(false)}
+          transitionDuration={200}
+          horizontalPosition='end'
+          verticalPosition='start'
+          darkenBackground={compareBreakpoint(activeBreakpoint, '<', '3XL')}
+        >
+          <p>
+            hi there{' '}
+            <button onClick={() => setMenuDialogOpen(false)}>close</button>
+          </p>
+        </Dialog>
       </AppbarContainer>
     </AppBarStyled>
   );

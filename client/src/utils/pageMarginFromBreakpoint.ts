@@ -2,6 +2,9 @@ import { Breakpoint } from '../types/breakpoint';
 
 const pageMarginFromBreakpoint = (breakpoint: Breakpoint): number => {
   switch (breakpoint) {
+    case '3XL':
+      return 100;
+
     case '2XL':
       return 100;
 
