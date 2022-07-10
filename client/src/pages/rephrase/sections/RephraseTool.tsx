@@ -1,12 +1,13 @@
+import { ReactNode } from 'react';
 import styled from '@emotion/styled';
-import compareBreakpoint from '../utils/compareBreakpoint';
-import useBreakpoint from '../utils/hooks/useBreakpoint';
-import ActiveToolButton from '../components/ActiveToolButton';
-import { InputEl } from '../components/InputEl';
-import ToggleSwitch from '../components/ToggleSwitch';
-import { ReactComponent as RephraseTextIcon } from '../assets/RephraseTextIcon.svg';
-import { ReactComponent as RephraseFilesIcon } from '../assets/RephraseFilesIcon.svg';
-import Tooltip from '../components/Tooltip';
+import compareBreakpoint from '../../../utils/compareBreakpoint';
+import useBreakpoint from '../../../utils/hooks/useBreakpoint';
+import ActiveToolButton from '../../../components/ActiveToolButton';
+import { InputEl } from '../../../components/InputEl';
+import ToggleSwitch from '../../../components/ToggleSwitch';
+import { ReactComponent as RephraseTextIcon } from '../../../assets/RephraseTextIcon.svg';
+import { ReactComponent as RephraseFilesIcon } from '../../../assets/RephraseFilesIcon.svg';
+import Tooltip from '../../../components/Tooltip';
 
 interface RephrasePageContainerProps {
   isMobileLayout: boolean;
@@ -45,7 +46,9 @@ const Paper = styled('div')(
   `
 );
 
-const RephrasePage = () => {
+interface RephraseToolProps {}
+
+const RephraseTool = (props: RephraseToolProps) => {
   const activeBreakpoint = useBreakpoint();
   const isMobileLayout = compareBreakpoint(activeBreakpoint, '<', 'S');
   return (
@@ -144,4 +147,4 @@ const RephrasePage = () => {
   );
 };
 
-export default RephrasePage;
+export default RephraseTool;

@@ -104,10 +104,10 @@ const ConcealedRadio = (props: ConcealedRadioProps) => {
 const ToggleSwitch = () => {
   const [selected, setSelected] = useState('Edit');
 
-  const values = ['Edit', 'Reword'];
+  const values = ['Edit', 'Rephrase'];
 
   const handleChange = (val: string) => {
-    setSelected(selected === 'Edit' ? 'Reword' : 'Edit');
+    setSelected(selected === 'Edit' ? 'Rephrase' : 'Edit');
   };
 
   const selectionStyle = () => {

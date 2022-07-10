@@ -4,7 +4,7 @@ import AppBarContent from './components/AppBarContent';
 import AppBar from './layout/AppBarLayout';
 import AppBody from './layout/AppBodyLayout';
 import AppLayout from './layout/AppLayout';
-import RephrasePage from './pages/RephrasePage';
+import RephrasePage from './pages/rephrase/RephrasePage';
 
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');
