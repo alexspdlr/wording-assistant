@@ -468,4 +468,4 @@ function InputEl() {
   );
 }
 
-export { InputEl };
+export default InputEl;

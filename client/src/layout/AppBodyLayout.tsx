@@ -6,7 +6,6 @@ import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
 interface WrapperProps {
   horizontalPadding: number;
 }
-
 const Wrapper = styled('div')(
   (props: WrapperProps) => `
   background-color: #f7f7f7;   
@@ -22,7 +21,6 @@ const Wrapper = styled('div')(
 interface ContainerProps {
   horizontalPadding: number;
 }
-
 const Container = styled('div')(
   (props: ContainerProps) => ` 
   max-width: 1400px; 
@@ -33,7 +31,6 @@ const Container = styled('div')(
 interface AppBodyLayoutProps {
   children: ReactNode;
 }
-
 const AppBodyLayout = (props: AppBodyLayoutProps) => {
   const { children } = props;
   const activeBreakpoint = useBreakpoint();

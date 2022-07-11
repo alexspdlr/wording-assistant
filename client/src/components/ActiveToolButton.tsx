@@ -1,16 +1,14 @@
 import styled from '@emotion/styled';
 import { cloneElement, JSXElementConstructor, ReactElement } from 'react';
+import Card from './Card';
 
-interface ActiveToolButtonWrapperProps {
+interface ButtonProps {
   active: boolean;
 }
 
-const ActiveToolButtonWrapper = styled('button')(
-  (props: ActiveToolButtonWrapperProps) => ` 
+const Button = styled(Card)(
+  (props: ButtonProps) => `  
     height: 65px; 
-    background-color: #ffffff;
-    border: 1px solid rgb(218, 225, 232);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
     overflow: hidden;
     padding: 0px; 
     display: flex;
@@ -36,7 +34,7 @@ const ActiveToolButton = (props: ActiveToolButtonProps) => {
   const { active, icon, text } = props;
 
   return (
-    <ActiveToolButtonWrapper active={active}>
+    <Button active={active} as='button'>
       <div
         style={{
           height: '100%',
@@ -74,7 +72,7 @@ const ActiveToolButton = (props: ActiveToolButtonProps) => {
           backgroundColor: active ? 'rgba(0, 99, 149, 1)' : 'transparent',
         }}
       />
-    </ActiveToolButtonWrapper>
+    </Button>
   );
 };
 

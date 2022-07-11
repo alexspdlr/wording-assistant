@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
 import AppBarContent from './components/AppBarContent';
-import AppBar from './layout/AppBarLayout';
-import AppBody from './layout/AppBodyLayout';
 import AppLayout from './layout/AppLayout';
 import RephrasePage from './pages/rephrase/RephrasePage';
 
