@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
-import useBreakpoint from '../utils/hooks/useBreakpoint';
-import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
+import useBreakpoint from '../../utils/hooks/useBreakpoint';
+import pageMarginFromBreakpoint from '../../utils/pageMarginFromBreakpoint';
 
 interface WrapperProps {
   horizontalPadding: number;
@@ -28,10 +28,10 @@ const Container = styled('div')(
   `
 );
 
-interface AppBodyLayoutProps {
+interface AppBodyProps {
   children: ReactNode;
 }
-const AppBodyLayout = (props: AppBodyLayoutProps) => {
+const AppBody = (props: AppBodyProps) => {
   const { children } = props;
   const activeBreakpoint = useBreakpoint();
   return (
@@ -43,4 +43,4 @@ const AppBodyLayout = (props: AppBodyLayoutProps) => {
   );
 };
 
-export default AppBodyLayout;
+export default AppBody;

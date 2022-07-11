@@ -1,16 +1,18 @@
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
-import useBreakpoint from '../utils/hooks/useBreakpoint';
-import useScrollPosition from '../utils/hooks/useScrollPosition';
-import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
+import useBreakpoint from 'src/utils/hooks/useBreakpoint';
+import useScrollPosition from 'src/utils/hooks/useScrollPosition';
+import pageMarginFromBreakpoint from 'src/utils/pageMarginFromBreakpoint';
 
-interface WrapperProps {
+/* -------------------------------- Container ------------------------------- */
+
+interface ContainerProps {
   horizontalPadding: number;
   isScrolledToTop: boolean;
 }
 
-const Wrapper = styled('div')(
-  (props: WrapperProps) => `
+const Container = styled('div')(
+  (props: ContainerProps) => ` 
   background-color : rgba(255, 255, 255, 1);
   top: 0; 
   height: 60px; 
@@ -27,12 +29,14 @@ const Wrapper = styled('div')(
   `
 );
 
-interface ContainerProps {
+/* -------------------------------- Layout ------------------------------- */
+
+interface LayoutProps {
   horizontalPadding: number;
 }
 
-const Container = styled('div')(
-  (props: ContainerProps) => ` 
+const Layout = styled('div')(
+  (props: LayoutProps) => ` 
   max-width: 1400px; 
   height: 100%;  
   display: flex; 
@@ -43,23 +47,27 @@ const Container = styled('div')(
   `
 );
 
-interface AppBarLayoutProps {
+/* -------------------------------------------------------------------------- */
+/*                               AppBarContainer                              */
+/* -------------------------------------------------------------------------- */
+
+interface AppBarContainerProps {
   children: ReactNode;
 }
-const AppBarLayout = (props: AppBarLayoutProps) => {
+const AppBarContainer = (props: AppBarContainerProps) => {
   const { children } = props;
   const activeBreakpoint = useBreakpoint();
   const scrollPosition = useScrollPosition();
   return (
-    <Wrapper
+    <Container
       horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
       isScrolledToTop={scrollPosition === 0}
     >
-      <Container horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}>
+      <Layout horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}>
         {children}
-      </Container>
-    </Wrapper>
+      </Layout>
+    </Container>
   );
 };
 
-export default AppBarLayout;
+export default AppBarContainer;
