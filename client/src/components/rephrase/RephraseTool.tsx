@@ -2,12 +2,12 @@ import styled from '@emotion/styled';
 import { ReactComponent as RephraseTextIcon } from 'src/assets/RephraseTextIcon.svg';
 import { ReactComponent as RephraseFilesIcon } from 'src/assets/RephraseFilesIcon.svg';
 import ActiveToolButton from 'src/components/ActiveToolButton';
-import RephraseSource from 'src/components/rephrase/subcomponents/source/Source';
 import ToggleSwitch from 'src/components/ToggleSwitch';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import Card from 'src/components/Card';
 import ToolCard from 'src/components/ToolCard';
+import RephraseSource from './subcomponents/source';
 
 /* ------------------------------- GridLayout ------------------------------- */
 interface GridLayoutProps {

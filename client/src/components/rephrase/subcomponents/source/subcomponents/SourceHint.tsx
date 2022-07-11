@@ -9,11 +9,12 @@ const HintContainer = styled('div')(
     position: absolute; 
     z-index: 1; 
     display: flex;
-    margin-left: 24px;
-    margin-top: 24px;
-    margin-right: 64px;
-    margin-bottom: 80px;
+    margin: 24px 64px 80px 24px; 
     flex-grow: 1;
+    justify-content: center;
+    align-items: strech;
+    flex-direction: column;
+    text-align: left;
     `
 );
 
@@ -43,47 +44,29 @@ const HintBody = styled('p')(
       `
 );
 
-interface HintProps {
+interface SourceHintProps {
   hideHint: boolean;
   activeBreakpoint: Breakpoint;
 }
 
-const SourceHint = (props: HintProps) => {
+const SourceHint = (props: SourceHintProps) => {
   const HintHeadingTextSize = calculateRephraseHintHeadingSize(
     props.activeBreakpoint
   );
 
   return (
     <HintContainer>
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'strech',
-        }}
+      <HintHeading
+        fontSize={HintHeadingTextSize.fontSize}
+        lineHeight={HintHeadingTextSize.lineHeight}
       >
-        <div
-          style={{
-            flexGrow: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            textAlign: 'left',
-          }}
-        >
-          <HintHeading
-            fontSize={HintHeadingTextSize.fontSize}
-            lineHeight={HintHeadingTextSize.lineHeight}
-          >
-            {!props.hideHint && 'Paste or write your text'}
-          </HintHeading>
-          <HintBody>
-            {!props.hideHint &&
-              compareBreakpoint(props.activeBreakpoint, '>', '2XS') &&
-              'Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'}
-          </HintBody>
-        </div>
-      </div>
+        {!props.hideHint && 'Paste or write your text'}
+      </HintHeading>
+      <HintBody>
+        {!props.hideHint &&
+          compareBreakpoint(props.activeBreakpoint, '>', '2XS') &&
+          'Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'}
+      </HintBody>
     </HintContainer>
   );
 };

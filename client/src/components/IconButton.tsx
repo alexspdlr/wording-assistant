@@ -6,12 +6,12 @@ import {
   ReactNode,
 } from 'react';
 
-interface InputControlButtonStyled {
+interface IconButtonStyled {
   variant: 'permanent' | 'dynamic';
 }
 
-const InputControlButtonStyled = styled('button')(
-  (props: InputControlButtonStyled) => `
+const IconButtonStyled = styled('button')(
+  (props: IconButtonStyled) => `
     
     border: 0; 
     width: 40px; 
@@ -29,24 +29,24 @@ const InputControlButtonStyled = styled('button')(
     `
 );
 
-interface InputControlButtonProps {
+interface IconButtonProps {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   icon: ReactElement<any, string | JSXElementConstructor<any>>;
   variant: 'permanent' | 'dynamic';
 }
 
-function InputControlButton(props: InputControlButtonProps) {
+function IconButton(props: IconButtonProps) {
   const { onClick, icon, variant } = props;
   return (
-    <InputControlButtonStyled onClick={onClick} variant={variant}>
+    <IconButtonStyled onClick={onClick} variant={variant}>
       {cloneElement(icon, {
         style: {
           width: 24,
           fill: 'inherit',
         },
       })}
-    </InputControlButtonStyled>
+    </IconButtonStyled>
   );
 }
 
-export default InputControlButton;
+export default IconButton;

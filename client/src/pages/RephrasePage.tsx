@@ -1,4 +1,4 @@
-import RephraseTool from '../components/rephrase/RephraseTool';
+import RephraseTool from 'src/components/rephrase';
 
 const RephrasePage = () => {
   return <RephraseTool />;

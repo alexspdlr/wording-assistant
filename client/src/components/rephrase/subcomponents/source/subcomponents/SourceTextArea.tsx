@@ -4,6 +4,8 @@ import calculateRephraseToolTextSize from 'src/utils/calculateRephraseToolTextSi
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import useWindowHeight from 'src/utils/hooks/useWindowSize';
+import SourceClearButton from './SourceClearButton';
+import SourceCopyButton from './SourceCopyButton';
 
 interface TextAreaProps {
   minHeight: string;
@@ -12,10 +14,7 @@ interface TextAreaProps {
 const TextArea = styled('textarea')(
   (props: TextAreaProps) => `
     min-height: ${props.minHeight};
-    margin-left: 24px;
-    margin-top: 24px;
-    margin-right: 64px;
-    margin-bottom: 80px;
+    margin: 24px 64px 80px 24px;
     padding: 0;
     flex-grow: 1;
     outline: none;
@@ -53,6 +52,25 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     return '45vh';
   };
 
+  const resetInput = () => {
+    setValue('');
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.value = '';
+    }
+    textareaRef.current?.focus();
+  };
+
+  const copyValue = () => {
+    navigator.clipboard
+      .writeText(value || '')
+      .then(() => {
+        alert(`"${value}" was copied to clipboard.`);
+      })
+      .catch((err) => {
+        alert(`Error copying text to clipboard: ${err}`);
+      });
+  };
+
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -65,15 +83,25 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     }
   }, [value, activeBreakpoint, windowHeight]);
 
+  useEffect(() => {
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.setSelectionRange(value.length, value.length);
+    }
+  }, [value]);
+
   return (
-    <TextArea
-      ref={textareaRef}
-      onChange={textAreaChange}
-      autoFocus
-      minHeight={textAreaMinHeight()}
-    >
-      {value}
-    </TextArea>
+    <>
+      <TextArea
+        ref={textareaRef}
+        onChange={textAreaChange}
+        autoFocus
+        minHeight={textAreaMinHeight()}
+      >
+        {value}
+      </TextArea>
+      {value && value.length > 0 && <SourceClearButton onClick={resetInput} />}
+      <SourceCopyButton onClick={copyValue} />
+    </>
   );
 };
 
