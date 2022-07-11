@@ -1,7 +1,7 @@
 import './App.css';
 import AppBar from './components/appbar';
 import AppBody from './components/appbody';
-import RephrasePage from './pages/rephrase/RephrasePage';
+import RephrasePage from './pages/RephrasePage';
 
 const App = () => {
   const activePage = <RephrasePage />;
