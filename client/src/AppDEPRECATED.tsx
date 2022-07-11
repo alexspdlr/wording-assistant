@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import AppBarContent from './components/appbar/subcomponents/AppBarContent';
-import RephrasePage from './pages/rephrase/RephrasePage';
+import RephrasePage from './pages/RephrasePage';
 
 const outputToRows = (output: string, maxCharactersPerRow: number) => {
   const text = output?.replace('\r\n', '');

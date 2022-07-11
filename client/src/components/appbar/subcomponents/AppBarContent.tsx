@@ -10,7 +10,6 @@ import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import { Breakpoint } from 'src/types/breakpoint';
 import AppBarMenuDialog from './AppBarMenuDialog';
-import { red } from '@mui/material/colors';
 
 /* ---------------------------- Styled components --------------------------- */
 

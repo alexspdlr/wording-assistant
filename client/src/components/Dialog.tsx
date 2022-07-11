@@ -59,7 +59,7 @@ position: absolute;
   display: inline-block;
   ${positionHorizontally(props.horizontalPosition)} 
   ${positionVertically(props.verticalPosition)}  
-${transformOrigin(props.horizontalPosition, props.verticalPosition, 10, 10)}   
+${transformOrigin(props.horizontalPosition, props.verticalPosition, 15, 10)}   
   background-color: #fff;
   border-radius: 5px;
   z-index: 999; 

@@ -68,6 +68,12 @@ const SwitchLabel = styled('label')(
     transition: color 0.15s ease-out; 
     font-weight: 500; 
     font-family: 'Inter', sans-serif;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     &:hover {
       color: ${props.active ? 'rgba(0, 99, 149, 1);' : '#818181;'}
     }
