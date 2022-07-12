@@ -64,7 +64,7 @@ interface RephraseToolCardProps {
 const RephraseToolCard = (props: RephraseToolCardProps) => {
   const { gridArea, children, headerTitle, headerEndItem } = props;
   return (
-    <ToolCardContainer gridArea={gridArea}>
+    <ToolCardContainer gridArea={gridArea} tabIndex={0}>
       <Header title={headerTitle} endItem={headerEndItem} />
       {children}
     </ToolCardContainer>

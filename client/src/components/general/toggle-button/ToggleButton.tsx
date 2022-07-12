@@ -16,17 +16,17 @@ const Container = styled('div')(
 `
 );
 
-/* ----------------------------- SwitchSelection ---------------------------- */
+/* ----------------------------- Selection ---------------------------- */
 
 type ItemPosition = 'start' | 'middle' | 'end';
 
-interface SwitchSelectionProps {
+interface SelectionProps {
   itemPosition: ItemPosition;
   leftOffsetPercentage: number;
 }
 
-const SwitchSelection = styled('span')(
-  (props: SwitchSelectionProps) => `
+const Selection = styled('span')(
+  (props: SelectionProps) => `
     display: block;
     position: absolute;
     z-index: 1; 
@@ -101,9 +101,7 @@ interface RadioProps {
 
 const Radio = (props: RadioProps) => {
   const { value, selected } = props;
-  return (
-    <HiddenRadio type='radio' name='switch' checked={selected === value} />
-  );
+  return <HiddenRadio type='radio' checked={selected === value} />;
 };
 
 /* ------------------------------ util ----------------------------- */
@@ -128,17 +126,19 @@ const determineItemPosition = (
 
 interface ToggleButtonProps {
   values: string[];
+  onSelectionChange: Function;
   initiallySelectedIndex?: number;
 }
 
 const ToggleButton = (props: ToggleButtonProps) => {
-  const { values, initiallySelectedIndex } = props;
+  const { values, initiallySelectedIndex, onSelectionChange } = props;
   const [selected, setSelected] = useState(
     (initiallySelectedIndex && values[initiallySelectedIndex]) || values[0]
   );
 
   const handleChange = (val: string) => {
     setSelected(val);
+    onSelectionChange(val);
   };
 
   return (
@@ -155,7 +155,7 @@ const ToggleButton = (props: ToggleButtonProps) => {
           </>
         );
       })}
-      <SwitchSelection
+      <Selection
         leftOffsetPercentage={(values.indexOf(selected) / values.length) * 100}
         itemPosition={determineItemPosition(selected, values)}
       />

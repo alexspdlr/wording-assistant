@@ -8,6 +8,8 @@ import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import Card from 'src/components/general/card';
 import RephraseToolCard from 'src/components/rephrase/subcomponents/RephraseToolCard';
 import RephraseSource from './subcomponents/source';
+import { useState } from 'react';
+import { RephraseInteractionMode } from 'src/types/rephrase';
 
 /* ------------------------------- GridLayout ------------------------------- */
 interface GridLayoutProps {
@@ -67,6 +69,9 @@ const CommentCard = styled(Card)(
 const RephraseTool = () => {
   const activeBreakpoint = useBreakpoint();
   const isMobileLayout = compareBreakpoint(activeBreakpoint, '<', 'S');
+  const [interactionMode, setInteractionMode] =
+    useState<RephraseInteractionMode>(RephraseInteractionMode.Edit);
+
   return (
     <GridLayout isMobileLayout={isMobileLayout}>
       {!isMobileLayout && (
@@ -86,9 +91,16 @@ const RephraseTool = () => {
       <RephraseToolCard
         gridArea={isMobileLayout ? '1 / 1 / 2 / 2' : '2 / 1 / 3 / 2'}
         headerTitle='Input text'
-        headerEndItem={<ToggleButton values={['Edit', 'Rephrase']} />}
+        headerEndItem={
+          <ToggleButton
+            values={Object.keys(RephraseInteractionMode)}
+            onSelectionChange={(selectedMode: RephraseInteractionMode) =>
+              setInteractionMode(selectedMode)
+            }
+          />
+        }
       >
-        <RephraseSource />
+        <RephraseSource activeMode={interactionMode} />
       </RephraseToolCard>
       <RephraseToolCard
         gridArea={isMobileLayout ? '2 / 1 / 3 / 2' : '2 / 2 / 3 / 3'}
