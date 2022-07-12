@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { ReactComponent as RephraseTextIcon } from 'src/assets/RephraseTextIcon.svg';
 import { ReactComponent as RephraseFilesIcon } from 'src/assets/RephraseFilesIcon.svg';
 import ActiveToolButton from 'src/components/rephrase/subcomponents/RephraseActiveToolButton';
-import ToggleSwitch from 'src/components/ToggleSwitch';
+import ToggleButton from 'src/components/general/toggle-button';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import Card from 'src/components/general/card';
@@ -86,7 +86,7 @@ const RephraseTool = () => {
       <RephraseToolCard
         gridArea={isMobileLayout ? '1 / 1 / 2 / 2' : '2 / 1 / 3 / 2'}
         headerTitle='Input text'
-        headerEndItem={<ToggleSwitch />}
+        headerEndItem={<ToggleButton values={['Edit', 'Rephrase']} />}
       >
         <RephraseSource />
       </RephraseToolCard>

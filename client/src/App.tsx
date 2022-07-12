@@ -1,4 +1,3 @@
-import './App.css';
 import AppBar from './components/appbar';
 import AppBody from './components/appbody';
 import RephrasePage from './pages/RephrasePage';
