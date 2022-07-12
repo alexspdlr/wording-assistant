@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
-import Card from './Card';
+import Card from 'src/components/general/card';
 
 /* --------------------------------- Header --------------------------------- */
 
@@ -54,14 +54,14 @@ const ToolCardContainer = styled(Card)(
 /*                                  ToolCard                                  */
 /* -------------------------------------------------------------------------- */
 
-interface ToolCardProps {
+interface RephraseToolCardProps {
   children: ReactNode;
   gridArea: string;
   headerTitle: string;
   headerEndItem?: ReactNode;
 }
 
-const ToolCard = (props: ToolCardProps) => {
+const RephraseToolCard = (props: RephraseToolCardProps) => {
   const { gridArea, children, headerTitle, headerEndItem } = props;
   return (
     <ToolCardContainer gridArea={gridArea}>
@@ -71,4 +71,4 @@ const ToolCard = (props: ToolCardProps) => {
   );
 };
 
-export default ToolCard;
+export default RephraseToolCard;

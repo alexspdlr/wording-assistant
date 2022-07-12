@@ -3,9 +3,9 @@ import React, { ReactNode, useState } from 'react';
 import { ReactComponent as Logo } from 'src/assets/Logo.svg';
 import { ReactComponent as LogoText } from 'src/assets/LogoText.svg';
 import AppBarItem from './AppBarItem';
-import Button from 'src/components/Button';
-import Chip from 'src/components/Chip';
-import MenuIconButton from 'src/components/MenuIconButton';
+import Button from 'src/components/general/button';
+import Chip from 'src/components/general/chip';
+import AppBarMenuButton from 'src/components/appbar/subcomponents/AppBarMenuButton';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import { Breakpoint } from 'src/types/breakpoint';
@@ -124,7 +124,7 @@ const AppBarContent = () => {
         {compareBreakpoint(activeBreakpoint, '>', '2XS') && (
           <Button>Need help ?</Button>
         )}
-        <MenuIconButton onClick={() => setMenuDialogOpen(true)} />
+        <AppBarMenuButton onClick={() => setMenuDialogOpen(true)} />
       </Right>
       <AppBarMenuDialog open={menuDialogOpen} setOpen={setMenuDialogOpen} />
     </>

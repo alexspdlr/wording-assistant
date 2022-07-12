@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useEffect, useRef } from 'react';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import useLocalStorage from 'src/utils/hooks/useLocalStorage';
 import SourceHint from './subcomponents/SourceHint';

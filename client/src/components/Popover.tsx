@@ -1,9 +1,6 @@
-import React, { MouseEventHandler, ReactNode } from 'react';
 import styled from '@emotion/styled';
-import { Popover, Fade, Divider, Collapse } from '@mui/material';
-import Loader from './Loader';
+import { Popover } from '@mui/material';
 import AnimateHeight from './AnimateHeight';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const PopoverContainer = styled('div')(
   (props) => `  
@@ -11,17 +8,8 @@ const PopoverContainer = styled('div')(
   -moz-transition: all 0.25s ease-out;
   -o-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out; 
-    font-size: 22px; 
+  font-size: 22px; 
   font-weight: 400;   
-    `
-);
-
-const StyledCSSTransition = styled(CSSTransition)(
-  () => `
-  -webkit-transition: all 0.5s ;
-  -moz-transition: all 0.5s ;
-  -o-transition: all 0.5s ;
-  transition: all 0.5s ; 
   `
 );
 
@@ -30,21 +18,19 @@ interface AlternativeProp {
 }
 const Alternative = styled('div')(
   (props: AlternativeProp) => ` 
-    -webkit-transition: all 0.25s ease-out; 
+  -webkit-transition: all 0.25s ease-out; 
   -moz-transition: all 0.25s ease-out;
   -o-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;  
   padding: 6px 11px 6px 11px; 
   font-weight: 300; 
   border-bottom: 1px solid rgba(0, 0, 0, 0.05); 
-  ${!props.disabled && `cursor: pointer;`} 
   ${
     !props.disabled &&
-    `&:hover {
-    background-color: rgba(0, 99, 149, 0.2); 
-  }`
-  } 
-    `
+    `cursor: pointer;
+    &:hover { background-color: rgba(0, 99, 149, 0.2); };`
+  }
+  `
 );
 
 interface CustomPopoverProps {

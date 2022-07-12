@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { MouseEventHandler } from 'react';
 import { ReactComponent as ClearIcon } from 'src/assets/ClearIcon.svg';
-import IconButton from 'src/components/IconButton';
+import IconButton from 'src/components/general/icon-button';
 
 const Layout = styled('div')(
   () => `

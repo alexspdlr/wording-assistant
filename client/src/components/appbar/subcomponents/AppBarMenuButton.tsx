@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const MenuIconButtonStyled = styled('button')(
+const AppBarMenuButtonStyled = styled('button')(
   (props) => `
   border: 0; 
   width: 26px; 
@@ -30,18 +30,18 @@ const Line = styled('div')(
   `
 );
 
-interface MenuIconButtonProps {
+interface AppBarMenuButtonProps {
   onClick: () => void;
 }
 
-const MenuIconButton = (props: MenuIconButtonProps) => {
+const AppBarMenuButton = (props: AppBarMenuButtonProps) => {
   const { onClick } = props;
   return (
-    <MenuIconButtonStyled onClick={onClick}>
+    <AppBarMenuButtonStyled onClick={onClick}>
       <Line />
       <Line />
       <Line />
-    </MenuIconButtonStyled>
+    </AppBarMenuButtonStyled>
   );
 };
-export default MenuIconButton;
+export default AppBarMenuButton;

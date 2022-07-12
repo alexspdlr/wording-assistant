@@ -1,18 +1,12 @@
 import styled from '@emotion/styled';
-import {
-  cloneElement,
-  JSXElementConstructor,
-  ReactElement,
-  ReactNode,
-} from 'react';
+import { cloneElement, JSXElementConstructor, ReactElement } from 'react';
 
-interface IconButtonStyled {
+interface IconButtonStyledProps {
   variant: 'permanent' | 'dynamic';
 }
 
 const IconButtonStyled = styled('button')(
-  (props: IconButtonStyled) => `
-    
+  (props: IconButtonStyledProps) => `
     border: 0; 
     width: 40px; 
     height: 40px; 

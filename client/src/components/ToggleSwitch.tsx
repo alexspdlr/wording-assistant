@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
-import React, { Component, useState } from 'react';
-import { render } from 'react-dom';
-import Tooltip from './Tooltip';
+import { useState } from 'react';
 
 const Switch = styled('div')(
   () => `
@@ -50,11 +48,12 @@ const SwitchSelection = styled('span')(
   `
 );
 
-interface SwitchLabel {
+interface SwitchLabelProps {
   active: boolean;
 }
+
 const SwitchLabel = styled('label')(
-  (props: SwitchLabel) => `
+  (props: SwitchLabelProps) => `
     position: relative;
     z-index: 2; 
     float: left;

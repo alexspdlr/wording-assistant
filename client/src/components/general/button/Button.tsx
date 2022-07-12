@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from '@emotion/styled';
 
 const Button = styled('button')(
-  (props) => `
+  () => `
   background-color : rgba(0, 99, 149, 1);  
   padding: 7px;   
   padding-left: 16px; 

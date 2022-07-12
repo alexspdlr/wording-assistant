@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
 import { ReactComponent as RephraseTextIcon } from 'src/assets/RephraseTextIcon.svg';
 import { ReactComponent as RephraseFilesIcon } from 'src/assets/RephraseFilesIcon.svg';
-import ActiveToolButton from 'src/components/ActiveToolButton';
+import ActiveToolButton from 'src/components/rephrase/subcomponents/RephraseActiveToolButton';
 import ToggleSwitch from 'src/components/ToggleSwitch';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import Card from 'src/components/Card';
-import ToolCard from 'src/components/ToolCard';
+import Card from 'src/components/general/card';
+import RephraseToolCard from 'src/components/rephrase/subcomponents/RephraseToolCard';
 import RephraseSource from './subcomponents/source';
 
 /* ------------------------------- GridLayout ------------------------------- */
@@ -83,19 +83,19 @@ const RephraseTool = () => {
           />
         </ActiveToolsContainer>
       )}
-      <ToolCard
+      <RephraseToolCard
         gridArea={isMobileLayout ? '1 / 1 / 2 / 2' : '2 / 1 / 3 / 2'}
         headerTitle='Input text'
         headerEndItem={<ToggleSwitch />}
       >
         <RephraseSource />
-      </ToolCard>
-      <ToolCard
+      </RephraseToolCard>
+      <RephraseToolCard
         gridArea={isMobileLayout ? '2 / 1 / 3 / 2' : '2 / 2 / 3 / 3'}
         headerTitle='Rephrase'
       >
         {/* Rephrase target */}
-      </ToolCard>
+      </RephraseToolCard>
       <CommentCard
         gridArea={isMobileLayout ? '3 / 1 / 4 / 2' : '3 / 1 / 4 / 3'}
       >

@@ -1,4 +1,4 @@
-import Dialog from 'src/components/Dialog';
+import Dialog from 'src/components/general/dialog';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 

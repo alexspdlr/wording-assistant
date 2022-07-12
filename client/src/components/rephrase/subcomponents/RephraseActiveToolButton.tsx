@@ -1,26 +1,25 @@
 import styled from '@emotion/styled';
 import { cloneElement, JSXElementConstructor, ReactElement } from 'react';
-import Card from './Card';
+import Card from 'src/components/general/card';
 
-interface ButtonProps {
+interface WrapperProps {
   active: boolean;
 }
 
-const Button = styled(Card)(
-  (props: ButtonProps) => `  
+const Wrapper = styled(Card)(
+  (props: WrapperProps) => `  
     height: 65px; 
     overflow: hidden;
     padding: 0px; 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    cursor: pointer;
-   ${
-     props.active
-       ? 'border-bottom: 0px; border-radius: 8px 8px 4px 4px;'
-       : 'border-radius: 8px;'
-   }
-    ${!props.active && '&:hover {background-color: rgb(244, 249, 253)}'} 
+    cursor: pointer; 
+    ${
+      props.active
+        ? 'border-bottom: 0px; border-radius: 8px 8px 4px 4px;'
+        : 'border-radius: 8px; &:hover {background-color: rgb(244, 249, 253)}'
+    } 
     `
 );
 
@@ -30,11 +29,11 @@ interface ActiveToolButtonProps {
   active: boolean;
 }
 
-const ActiveToolButton = (props: ActiveToolButtonProps) => {
+const RephraseActiveToolButton = (props: ActiveToolButtonProps) => {
   const { active, icon, text } = props;
 
   return (
-    <Button active={active} as='button'>
+    <Wrapper active={active} as='button'>
       <div
         style={{
           height: '100%',
@@ -72,8 +71,8 @@ const ActiveToolButton = (props: ActiveToolButtonProps) => {
           backgroundColor: active ? 'rgba(0, 99, 149, 1)' : 'transparent',
         }}
       />
-    </Button>
+    </Wrapper>
   );
 };
 
-export default ActiveToolButton;
+export default RephraseActiveToolButton;

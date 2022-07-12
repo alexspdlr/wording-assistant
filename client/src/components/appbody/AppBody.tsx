@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
-import useBreakpoint from '../../utils/hooks/useBreakpoint';
-import pageMarginFromBreakpoint from '../../utils/pageMarginFromBreakpoint';
+import useBreakpoint from 'src/utils/hooks/useBreakpoint';
+import pageMarginFromBreakpoint from 'src/utils/pageMarginFromBreakpoint';
 
 interface WrapperProps {
   horizontalPadding: number;

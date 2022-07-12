@@ -1,12 +1,11 @@
 import styled from '@emotion/styled';
-import { duration } from '@mui/material';
-import { memo, ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import compareBreakpoint from '../utils/compareBreakpoint';
-import useBreakpoint from '../utils/hooks/useBreakpoint';
-import useClickAway from '../utils/hooks/useClickAway';
-import useMountTransition from '../utils/hooks/useMountTransition';
-import pageMarginFromBreakpoint from '../utils/pageMarginFromBreakpoint';
+import compareBreakpoint from 'src/utils/compareBreakpoint';
+import useBreakpoint from 'src/utils/hooks/useBreakpoint';
+import useClickAway from 'src/utils/hooks/useClickAway';
+import useMountTransition from 'src/utils/hooks/useMountTransition';
+import pageMarginFromBreakpoint from 'src/utils/pageMarginFromBreakpoint';
 
 type Position = 'start' | 'center' | 'end';
 

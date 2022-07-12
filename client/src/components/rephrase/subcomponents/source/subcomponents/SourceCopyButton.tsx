@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { MouseEventHandler } from 'react';
 import { ReactComponent as CopyIcon } from 'src/assets/CopyIcon.svg';
-import IconButton from 'src/components/IconButton';
-import Tooltip from 'src/components/Tooltip';
+import IconButton from 'src/components/general/icon-button';
+import Tooltip from 'src/components/general/tooltip';
 
 const Layout = styled('div')(
   () => `

@@ -23,7 +23,7 @@ interface TipProps {
   isRevealed: boolean;
 }
 
-const directionalClass = (props: TipProps) => {
+const direction = (props: TipProps) => {
   const { direction, margin, arrowSize } = props;
   switch (direction) {
     case 'left':
@@ -108,7 +108,7 @@ const Tip = styled('div')(
     margin-left: calc(${props.arrowSize}px * -1);
   }
 
-${directionalClass(props)}
+${direction(props)}
 
     `
 );

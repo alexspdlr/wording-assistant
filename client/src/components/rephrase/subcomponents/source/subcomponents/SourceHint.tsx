@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import React from 'react';
 import { Breakpoint } from 'src/types/breakpoint';
 import calculateRephraseHintHeadingSize from 'src/utils/calculateRephraseHintHeadingSize';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
