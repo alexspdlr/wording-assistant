@@ -1,12 +1,17 @@
 import winkNLP from 'wink-nlp';
 import model from 'wink-eng-lite-web-model';
+import determineWhitespace from './determineWhitespace';
 
 const nlp = winkNLP(model);
 
 const splitIntoSentences = (value: string) => {
+  console.log('text: ', value);
+
   const sentences = nlp.readDoc(value).sentences().out();
 
-  return sentences;
+  const result = determineWhitespace(value, sentences);
+
+  return result;
 };
 
 export default splitIntoSentences;

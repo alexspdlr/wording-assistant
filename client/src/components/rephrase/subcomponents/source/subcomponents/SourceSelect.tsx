@@ -31,8 +31,11 @@ const Container = styled('div')(
 
 const Sentence = styled('span')(
   () => `
+  padding-top: 3px; 
+  padding-bottom: 3px; 
+  white-space: pre-wrap;
   &:hover {
-    background-color: rgba(0, 99, 149, 0.2);
+    background-color: rgba(0, 99, 149, 0.125);
     cursor: pointer; 
     transition: background-color 0.15s ease-out; 
   }
@@ -55,12 +58,13 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
   return (
     <>
       <Container ref={containerRef} tabIndex={0} id='source-select-container'>
-        {splitIntoSentences(value).map((sentence, i) => (
-          <>
-            {i !== 0 && <span> </span>}
-            <Sentence>{sentence}</Sentence>
-          </>
-        ))}
+        {splitIntoSentences(value).map((token, i) =>
+          token.kind === 'sentence' ? (
+            <Sentence>{token.value}</Sentence>
+          ) : (
+            <span style={{ whiteSpace: 'pre' }}>{token.value}</span>
+          )
+        )}
       </Container>
       <SourceCopyButton onClick={() => copyToClipboard(value)} />
     </>

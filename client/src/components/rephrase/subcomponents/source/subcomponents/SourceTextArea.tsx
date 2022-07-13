@@ -49,13 +49,16 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     if (textareaRef && textareaRef.current) {
       textareaRef.current.setSelectionRange(value.length, value.length);
     }
-  }, [value]);
+  }, []);
 
   return (
     <>
-      <TextArea ref={textareaRef} onChange={textAreaChange} autoFocus>
-        {value}
-      </TextArea>
+      <TextArea
+        ref={textareaRef}
+        onChange={textAreaChange}
+        autoFocus
+        value={value}
+      />
       {value && value.length > 0 && <SourceClearButton onClick={resetInput} />}
       <SourceCopyButton onClick={() => copyToClipboard(value)} />
     </>
