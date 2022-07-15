@@ -6,14 +6,14 @@ import compareBreakpoint from 'src/utils/compareBreakpoint';
 const HintContainer = styled('div')(
   () => `
     position: absolute; 
-    z-index: 1; 
-    display: flex;
-    margin: 24px 64px 80px 24px; 
+    z-index: 0;  
+    display: flex; 
     flex-grow: 1;
     justify-content: center;
     align-items: strech;
     flex-direction: column;
     text-align: left;
+    margin: 16px 56px 72px 16px;
     `
 );
 

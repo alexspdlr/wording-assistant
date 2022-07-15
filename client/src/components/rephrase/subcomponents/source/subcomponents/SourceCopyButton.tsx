@@ -9,7 +9,7 @@ const Layout = styled('div')(
     position: absolute;
     bottom: 8px;
     right: 16px;
-    display: flex;
+    display: flex;  
         `
 );
 

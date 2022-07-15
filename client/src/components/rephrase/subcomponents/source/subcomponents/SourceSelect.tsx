@@ -1,21 +1,16 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
-import copyToClipboard from 'src/utils/copyToClipboard';
 import useRephraseToolTextboxHeight from 'src/utils/hooks/useRephraseToolTextboxHeight';
 import splitIntoSentences from 'src/utils/splitIntoSentences';
-import SourceCopyButton from './SourceCopyButton';
 
 const Container = styled('div')(
   () => `
-  margin: 24px 64px 80px 24px;
+  margin: 16px 56px 72px 16px;
   padding: 0;
-  flex-grow: 1;
+  flex-grow: 0;
   outline: none;
-  border: none;
   display: block;
-  resize: none;
   z-index: 2;
-  background-color: transparent;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
   font-weight: 400;
   color: rgb(51, 51, 51);  
@@ -26,27 +21,30 @@ const Container = styled('div')(
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  min-height:100%; 
       `
 );
 
 const Sentence = styled('span')(
   () => `
-  padding-top: 3px; 
-  padding-bottom: 3px; 
+  padding-top: 2px; 
+  padding-bottom: 2px; 
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
   white-space: pre-wrap;
   &:hover {
-    background-color: rgba(0, 99, 149, 0.125);
+    background-color: rgba(0, 99, 149, 0.15);
     cursor: pointer; 
     transition: background-color 0.15s ease-out; 
   }
   `
 );
 
-interface SourceTextAreaProps {
+interface SourceSelectProps {
   value: string;
 }
 
-const SourceTextArea = (props: SourceTextAreaProps) => {
+const SourceSelect = (props: SourceSelectProps) => {
   const { value } = props;
   const containerRef = useRef(null);
   useRephraseToolTextboxHeight(value, containerRef);
@@ -66,9 +64,8 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
           )
         )}
       </Container>
-      <SourceCopyButton onClick={() => copyToClipboard(value)} />
     </>
   );
 };
 
-export default SourceTextArea;
+export default SourceSelect;
