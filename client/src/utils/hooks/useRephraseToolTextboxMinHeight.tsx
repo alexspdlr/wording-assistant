@@ -11,8 +11,8 @@ const useRephraseToolTextboxMinHeight = () => {
 
   useEffect(() => {
     if (isMobileLayout) setMinHeight('17vh');
-    if (windowHeight > 960) setMinHeight('440px');
-    setMinHeight('45vh');
+    else if (windowHeight > 960) setMinHeight('528px');
+    else setMinHeight('55vh');
   }, [windowHeight, isMobileLayout]);
 
   return minHeight;

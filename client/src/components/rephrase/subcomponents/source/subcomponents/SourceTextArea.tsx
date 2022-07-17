@@ -3,17 +3,12 @@ import React, { useEffect, useRef } from 'react';
 import useRephraseToolTextboxHeight from 'src/utils/hooks/useRephraseToolTextboxHeight';
 import SourceClearButton from './SourceClearButton';
 
-const SourceClearButtonPositioned = styled(SourceClearButton)(
-  () => `
-   
-  `
-);
 const TextArea = styled('textarea')(
   () => `
     padding: 0;
     flex-grow: 1;
+    border: none; 
     outline: none;
-    border: none;
     display: block;
     resize: none;
     z-index: 2; 
@@ -22,7 +17,6 @@ const TextArea = styled('textarea')(
     font-weight: 400;
     color: rgb(51, 51, 51);  
     overflow: visible;
-    min-height: 100%;
     margin: 16px 56px 72px 16px;
     `
 );
@@ -53,6 +47,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     if (textareaRef && textareaRef.current) {
       textareaRef.current.setSelectionRange(value.length, value.length);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

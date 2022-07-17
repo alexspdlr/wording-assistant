@@ -6,10 +6,9 @@ import splitIntoSentences from 'src/utils/splitIntoSentences';
 const Container = styled('div')(
   () => `
   margin: 16px 56px 72px 16px;
-  padding: 0;
-  flex-grow: 0;
+  flex-grow: 1;
   outline: none;
-  display: block;
+  display: block; 
   z-index: 2;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
   font-weight: 400;
@@ -21,7 +20,6 @@ const Container = styled('div')(
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  min-height:100%; 
       `
 );
 

@@ -11,7 +11,8 @@ interface Accumulator {
 const reformat = (
   accumulator: Accumulator,
   currentValue: string,
-  index: number
+  index: number,
+  array: Array<any>
 ) => {
   const after = accumulator.reducedText.slice(
     accumulator.reducedText.indexOf(currentValue) + currentValue.length
@@ -22,20 +23,24 @@ const reformat = (
     accumulator.reducedText.indexOf(currentValue)
   );
 
-  if (index === 0) {
-    console.log(currentValue);
-    console.log(after);
-  }
+  const newOutput =
+    index === array.length - 1
+      ? [
+          { value: before, kind: 'whitespace' },
+          { value: currentValue, kind: 'sentence' },
+          {
+            value: after.endsWith('\n') ? after.concat('\n') : after,
+            kind: 'whitespace',
+          },
+        ]
+      : [
+          { value: before, kind: 'whitespace' },
+          { value: currentValue, kind: 'sentence' },
+        ];
 
   const result: Accumulator = {
     reducedText: after,
-    output: [
-      ...accumulator.output,
-      ...[
-        { value: before, kind: 'whitespace' },
-        { value: currentValue, kind: 'sentence' },
-      ],
-    ],
+    output: [...accumulator.output, ...newOutput],
   };
 
   return result;

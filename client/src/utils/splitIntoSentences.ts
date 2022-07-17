@@ -5,8 +5,6 @@ import determineWhitespace from './determineWhitespace';
 const nlp = winkNLP(model);
 
 const splitIntoSentences = (value: string) => {
-  console.log('text: ', value);
-
   const sentences = nlp.readDoc(value).sentences().out();
 
   const result = determineWhitespace(value, sentences);
