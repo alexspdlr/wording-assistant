@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import calculateRephraseToolTextSize from '../calculateRephraseToolTextSize';
 import useBreakpoint from './useBreakpoint';
 import useWindowHeight from './useWindowSize';
@@ -12,14 +12,22 @@ const useRephraseToolTextboxHeight = (
 
   useEffect(() => {
     if (targetRef && targetRef.current) {
-      targetRef.current.style.height = 'auto';
-      targetRef.current.style.height = `${targetRef.current.scrollHeight}px`;
       const textSize = calculateRephraseToolTextSize(
         activeBreakpoint,
         text ? text.length : 0
       );
+      targetRef.current.style.height = `auto`;
       targetRef.current.style.fontSize = `${textSize.fontSize}px`;
       targetRef.current.style.lineHeight = `${textSize.lineHeight}px`;
+
+      if (targetRef.current.value) {
+        targetRef.current.style.height = `${targetRef.current.scrollHeight}px`;
+      }
+
+      console.log(
+        'targetRef.current.style.height: ',
+        targetRef.current.style.height
+      );
     }
   }, [text, activeBreakpoint, windowHeight, targetRef]);
 };

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useEffect } from 'react';
 import { RephraseInteractionMode } from 'src/types/rephrase';
 import copyToClipboard from 'src/utils/copyToClipboard';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
@@ -43,6 +44,10 @@ const RephraseSource = (props: RephraseSourceProps) => {
   const activeBreakpoint = useBreakpoint();
   const [value, setValue] = useLocalStorage('source-value', '');
   const minHeight = useRephraseToolTextboxMinHeight();
+
+  useEffect(() => {
+    console.log('new min height: ', minHeight);
+  }, [minHeight]);
 
   return (
     <Wrapper>

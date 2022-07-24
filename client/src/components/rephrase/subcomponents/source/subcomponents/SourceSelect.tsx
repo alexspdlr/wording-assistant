@@ -52,17 +52,17 @@ const SourceSelect = (props: SourceSelectProps) => {
   }, [containerRef]);
 
   return (
-    <>
-      <Container ref={containerRef} tabIndex={0} id='source-select-container'>
-        {splitIntoSentences(value).map((token, i) =>
-          token.kind === 'sentence' ? (
-            <Sentence>{token.value}</Sentence>
-          ) : (
-            <span style={{ whiteSpace: 'pre' }}>{token.value}</span>
-          )
-        )}
-      </Container>
-    </>
+    <Container ref={containerRef} tabIndex={0} id='source-select-container'>
+      {splitIntoSentences(value).map((token, i) =>
+        token.kind === 'sentence' ? (
+          <Sentence key={`token_${i}`}>{token.value}</Sentence>
+        ) : (
+          <span key={`token_${i}`} style={{ whiteSpace: 'pre' }}>
+            {token.value}
+          </span>
+        )
+      )}
+    </Container>
   );
 };
 
