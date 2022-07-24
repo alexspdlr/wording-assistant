@@ -12,6 +12,12 @@ const useRephraseToolTextboxHeight = (
 
   useEffect(() => {
     if (targetRef && targetRef.current) {
+      console.log('scrollheight: ', targetRef.current?.scrollHeight);
+    }
+  }, [targetRef, targetRef.current?.scrollHeight]);
+
+  useEffect(() => {
+    if (targetRef && targetRef.current) {
       const textSize = calculateRephraseToolTextSize(
         activeBreakpoint,
         text ? text.length : 0
@@ -19,10 +25,7 @@ const useRephraseToolTextboxHeight = (
       targetRef.current.style.height = `auto`;
       targetRef.current.style.fontSize = `${textSize.fontSize}px`;
       targetRef.current.style.lineHeight = `${textSize.lineHeight}px`;
-
-      if (targetRef.current.value) {
-        targetRef.current.style.height = `${targetRef.current.scrollHeight}px`;
-      }
+      targetRef.current.style.height = `${targetRef.current.scrollHeight}px`;
 
       console.log(
         'targetRef.current.style.height: ',
