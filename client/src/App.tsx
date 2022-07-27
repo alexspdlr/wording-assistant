@@ -1,5 +1,4 @@
 import AppBar from './components/appbar';
-import AppBody from './components/appbody';
 import RephrasePage from './pages/RephrasePage';
 
 const App = () => {
@@ -7,7 +6,7 @@ const App = () => {
   return (
     <div className='App'>
       <AppBar />
-      <AppBody>{activePage}</AppBody>
+      {activePage}
     </div>
   );
 };

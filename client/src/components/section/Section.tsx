@@ -4,17 +4,19 @@ import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import pageMarginFromBreakpoint from 'src/utils/pageMarginFromBreakpoint';
 
 interface WrapperProps {
+  isFirstSection: boolean;
+  backgroundColor: string;
   horizontalPadding: number;
 }
 const Wrapper = styled('div')(
-  (props: WrapperProps) => `
-  background-color: #f7f7f7;   
-  margin-top: 60px;
+  (props: WrapperProps) => ` 
   display: flex; 
   justify-content: center; 
   width: 100%;  
+  background-color: ${props.backgroundColor};
   padding-right: ${props.horizontalPadding};  
   padding-left: ${props.horizontalPadding};   
+  margin-top: ${props.isFirstSection ? '60px' : '0px'};
   `
 );
 
@@ -28,14 +30,20 @@ const Container = styled('div')(
   `
 );
 
-interface AppBodyProps {
+interface SectionProps {
+  backgroundColor: string;
   children: ReactNode;
+  isFirstSection?: boolean;
 }
-const AppBody = (props: AppBodyProps) => {
-  const { children } = props;
+const Section = (props: SectionProps) => {
+  const { children, backgroundColor, isFirstSection } = props;
   const activeBreakpoint = useBreakpoint();
   return (
-    <Wrapper horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}>
+    <Wrapper
+      isFirstSection={isFirstSection || false}
+      backgroundColor={backgroundColor}
+      horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
+    >
       <Container horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}>
         {children}
       </Container>
@@ -43,4 +51,4 @@ const AppBody = (props: AppBodyProps) => {
   );
 };
 
-export default AppBody;
+export default Section;
