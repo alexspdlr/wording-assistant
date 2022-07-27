@@ -11,7 +11,6 @@ const Container = styled('div')(
 display: flex;
 align-items: flex-start; 
 flex-direction: column; 
-
 `
 );
 
@@ -30,10 +29,10 @@ const Heading = styled('span')(
 );
 
 /* -------------------------------------------------------------------------- */
-/*                                 InfoGuide                                */
+/*                                 InfoUpperGuide                             */
 /* -------------------------------------------------------------------------- */
 
-const InfoGuide = () => {
+const InfoUpperGuide = () => {
   return (
     <Container>
       <Heading>
@@ -44,4 +43,4 @@ const InfoGuide = () => {
   );
 };
 
-export default InfoGuide;
+export default InfoUpperGuide;

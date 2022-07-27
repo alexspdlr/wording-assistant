@@ -14,7 +14,8 @@ const Container = styled('div')(
   (props: ContainerProps) => ` 
 display: flex;
 align-items: flex-start; 
-gap: 24px;
+column-gap: 24px;
+row-gap: 36px;
 ${props.smallLayout ? 'flex-direction: column;' : 'flex-direction: row;'}
 `
 );
@@ -85,10 +86,10 @@ const MoreFeaturesLink = styled('div')(
 );
 
 /* -------------------------------------------------------------------------- */
-/*                                 InfoFeatures                                */
+/*                                 InfoUpperFeatures                                */
 /* -------------------------------------------------------------------------- */
 
-const InfoFeatures = () => {
+const InfoUpperFeatures = () => {
   const activeBreakpoint = useBreakpoint();
   const isSmallLayout = compareBreakpoint(activeBreakpoint, '<', 'L');
 
@@ -132,4 +133,4 @@ const InfoFeatures = () => {
   );
 };
 
-export default InfoFeatures;
+export default InfoUpperFeatures;
