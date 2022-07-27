@@ -29,7 +29,7 @@ const Button = styled('button')(
   border : ${props.variant === 'outlined' && '1px solid rgba(0, 99, 149, 1)'}; 
   ${
     props.size === 'large'
-      ? `padding: 16px 24px; font-weight: 500; `
+      ? `padding: 14px 24px; font-weight: 500; `
       : `padding: 7px 16px; font-weight: 400; `
   }
   `

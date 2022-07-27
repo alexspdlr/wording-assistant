@@ -12,7 +12,7 @@ interface WrapperProps {}
 const Wrapper = styled('div')(
   (props: WrapperProps) => ` 
     width: 100%;
-    padding: 50px 0; 
+    padding: 50px 20px; 
   `
 );
 
@@ -25,7 +25,6 @@ const Container = styled('div')(
   grid-template-rows: repeat(2, auto);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-
   `
 );
 
