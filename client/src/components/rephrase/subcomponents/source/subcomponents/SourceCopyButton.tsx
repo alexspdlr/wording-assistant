@@ -7,6 +7,7 @@ import Tooltip from 'src/components/general/tooltip';
 const Layout = styled('div')(
   () => `
     position: absolute;
+    z-index: 3; 
     bottom: 8px;
     right: 16px;
     display: flex;  

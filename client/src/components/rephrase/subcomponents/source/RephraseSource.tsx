@@ -45,10 +45,6 @@ const RephraseSource = (props: RephraseSourceProps) => {
   const [value, setValue] = useLocalStorage('source-value', '');
   const minHeight = useRephraseToolTextboxMinHeight();
 
-  useEffect(() => {
-    console.log('new min height: ', minHeight);
-  }, [minHeight]);
-
   return (
     <Wrapper>
       <Container minHeight={minHeight}>

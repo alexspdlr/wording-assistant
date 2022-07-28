@@ -5,7 +5,13 @@ import RephrasePage from './pages/RephrasePage';
 const App = () => {
   const activePage = <RephrasePage />;
   return (
-    <div className='App'>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        overflowX: 'hidden',
+      }}
+    >
       <AppBar />
       {activePage}
       <Footer />
