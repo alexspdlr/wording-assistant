@@ -61,7 +61,7 @@ interface ContainerProps {
 const Container = styled('div')(
   (props: ContainerProps) => ` 
     ${props.gridLayout}
-    margin: 0 24px; 
+    margin: 0 36px; 
   `
 );
 

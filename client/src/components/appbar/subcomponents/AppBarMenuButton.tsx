@@ -5,7 +5,6 @@ const AppBarMenuButtonStyled = styled('button')(
   border: 0; 
   width: 26px; 
   height: 24px; 
-  border-radius: 4px;  
   padding: 0px; 
   margin: 4px; 
   border-color:  #000; 

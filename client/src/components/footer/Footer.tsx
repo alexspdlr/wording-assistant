@@ -28,20 +28,27 @@ interface UpperContainerProps {
 const UpperContainer = styled('div')(
   (props: UpperContainerProps) => ` 
   display: flex;
-  width: 100%;
   margin-top: 60px; 
-  ${props.smallLayout && 'flex-direction: column; padding: 0 30px;'}
+  ${
+    props.smallLayout
+      ? 'flex-direction: column; width: auto; padding-left: 20px;'
+      : 'width: 100%;'
+  }
   `
 );
 
+interface UpperContainerProps {
+  smallLayout: boolean;
+}
+
 const LowerContainer = styled('div')(
-  () => ` 
+  (props: UpperContainerProps) => ` 
   display: flex;
-  width: 100%;
   margin-bottom: 40px; 
   padding-top: 16px; 
   justify-content: flex-end;
   gap: 13px; 
+  ${props.smallLayout && 'padding-right: 20px;'}
   `
 );
 
@@ -84,6 +91,7 @@ const LinkContainer = styled('div')(
   margin-top: 13px; 
   cursor: pointer; 
   display: flex; 
+  
   `
 );
 
@@ -91,8 +99,10 @@ const LinkTitle = styled('span')(
   () => `
   font-size: 16px; 
   line-height: 24px; 
+  
   &:hover {
     text-decoration: underline;
+    
   }
   `
 );
@@ -178,7 +188,9 @@ const Footer = () => {
           </LinkSection>
         </Right>
       </UpperContainer>
-      <LowerContainer>
+      <LowerContainer
+        smallLayout={compareBreakpoint(activeBreakpoint, '<', 'XS')}
+      >
         <TwitterIcon style={{ cursor: 'pointer' }} />
         <FacebookIcon style={{ cursor: 'pointer' }} />
         <LinkedinIcon style={{ cursor: 'pointer' }} />

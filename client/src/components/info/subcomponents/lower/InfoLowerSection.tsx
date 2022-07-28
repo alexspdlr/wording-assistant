@@ -11,20 +11,33 @@ interface WrapperProps {}
 
 const Wrapper = styled('div')(
   (props: WrapperProps) => ` 
-    width: 100%;
+    width: calc(100% - 40px);
     padding: 50px 20px; 
   `
 );
 
 /* -------------------------------- Container ------------------------------- */
 
+interface ContainerProps {
+  smallLayout: boolean;
+}
+
 const Container = styled('div')(
-  () => ` 
+  (props: ContainerProps) => ` 
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, auto);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
+  ${
+    props.smallLayout
+      ? `
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(3, auto);
+  `
+      : `
+grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
+`
+  }
   `
 );
 
@@ -34,7 +47,6 @@ interface HeadingProps {}
 
 const Heading = styled('span')(
   (props: HeadingProps) => ` 
-    font-size: 32px; 
     @keyframes fadeInAnimation {
       0% {
           opacity: 0;
@@ -93,12 +105,15 @@ const PageLink = (props: PageLinkProps) => {
 
 const InfoLowerSection = () => {
   const activeBreakpoint = useBreakpoint();
+
   return (
     <Wrapper>
-      <Container>
+      <Container smallLayout={compareBreakpoint(activeBreakpoint, '<', 'S')}>
         <div
           style={{
-            gridArea: '1 / 1 / 2 / 3',
+            gridArea: compareBreakpoint(activeBreakpoint, '<', 'S')
+              ? '1 / 1 / 2 / 2'
+              : '1 / 1 / 2 / 3',
             display: 'flex',
             justifyContent: compareBreakpoint(activeBreakpoint, '>', 'S')
               ? 'center'
@@ -113,7 +128,16 @@ const InfoLowerSection = () => {
               : '0',
           }}
         >
-          <Heading>How the wording Assistant was created</Heading>
+          <Heading
+            style={{
+              width: 'auto',
+              fontSize: compareBreakpoint(activeBreakpoint, '<', 'S')
+                ? '28px'
+                : '32px',
+            }}
+          >
+            How the wording assistant was created
+          </Heading>
         </div>
         <div
           style={{
@@ -139,20 +163,28 @@ const InfoLowerSection = () => {
         </div>
         <div
           style={{
-            gridArea: '2 / 2 / 3 / 3',
+            gridArea: compareBreakpoint(activeBreakpoint, '<', 'S')
+              ? '3 / 1 / 4 / 2'
+              : '2 / 2 / 3 / 3',
             display: 'flex',
             alignItems: 'flex-end',
           }}
         >
           <div
             style={{
-              width: '1px',
+              width: compareBreakpoint(activeBreakpoint, '<', 'S') ? 0 : '1px',
               marginTop: '48px',
               backgroundColor: 'rgb(198, 205, 213)',
               height: 'calc(100% - 48px)',
             }}
           />
-          <div style={{ padding: '32px 54px' }}>
+          <div
+            style={{
+              padding: compareBreakpoint(activeBreakpoint, '<', 'S')
+                ? '32px 20px'
+                : '32px 54px',
+            }}
+          >
             <PageLink
               title='Look at the development process'
               buttonVariant='outlined'
