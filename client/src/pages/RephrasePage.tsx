@@ -17,10 +17,6 @@ const RephrasePage = () => {
       <Section backgroundColor='#f7f7f7'>
         <QuoteSection />
       </Section>
-
-      <Section backgroundColor='#ffffff'>
-        <div style={{ height: 300 }} />
-      </Section>
     </>
   );
 };

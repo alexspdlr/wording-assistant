@@ -1,4 +1,5 @@
 import AppBar from './components/appbar';
+import Footer from './components/footer';
 import RephrasePage from './pages/RephrasePage';
 
 const App = () => {
@@ -7,6 +8,7 @@ const App = () => {
     <div className='App'>
       <AppBar />
       {activePage}
+      <Footer />
     </div>
   );
 };

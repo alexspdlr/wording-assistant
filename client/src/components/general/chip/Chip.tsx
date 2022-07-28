@@ -11,8 +11,7 @@ const Chip = styled('div')(
   padding-top: 6px;
   padding-bottom: 6px;
   padding-left: 8px; 
-  padding-right:8px;  
-
+  padding-right:8px; 
 `
 );
 
