@@ -12,11 +12,13 @@ const addLoadingTime = (page: string, time: number) =>
 /* @ts-expect-error */
 const RephrasePage = lazy(() => addLoadingTime('RephrasePage', 400));
 /* @ts-expect-error */
-const ProcessPage = lazy(() => addLoadingTime('ProcessPage', 400));
+const ProcessPage = lazy(() => addLoadingTime('ProcessPage', 200));
 /* @ts-expect-error */
-const DocumentationPage = lazy(() => addLoadingTime('DocumentationPage', 400));
+const DocumentationPage = lazy(() => addLoadingTime('DocumentationPage', 200));
 /* @ts-expect-error */
-const TechStackPage = lazy(() => addLoadingTime('TechStackPage', 400));
+const TechStackPage = lazy(() => addLoadingTime('TechStackPage', 200));
+/* @ts-expect-error */
+const Page404 = lazy(() => addLoadingTime('404', 0));
 
 const LoadingScreen = () => (
   <Section backgroundColor='#f7f7f7'>
@@ -46,7 +48,8 @@ const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<AppLayout />}>
+        <Route path='' element={<AppLayout />}>
+          <Route path='*' element={<Page404 />} />
           <Route index element={<AppRoute target={<RephrasePage />} />} />
           <Route
             path='documentation'
