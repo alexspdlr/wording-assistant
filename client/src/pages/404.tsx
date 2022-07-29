@@ -99,7 +99,7 @@ const Page404 = () => {
           </Heading>
           <ErrorCode>Error code: 404</ErrorCode>
           <Text>Here are some helpful links:</Text>
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', marginBottom: '36px' }}>
             {links.map((link, index) => (
               <>
                 <PageLink to={link.link}>{link.title}</PageLink>

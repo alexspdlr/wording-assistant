@@ -10,13 +10,14 @@ import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import { Breakpoint } from 'src/types/breakpoint';
 import AppBarMenuDialog from './AppBarMenuDialog';
+import { Link } from 'react-router-dom';
 
 /* ---------------------------- Styled components --------------------------- */
 
 const PositionedLogo = styled(Logo)(
   () => `
-  margin-bottom: -11px; 
-  width: 50px;
+  margin-bottom: -14px; 
+  width: 52px;
   margin-right: 10px;
   cursor: pointer;
 `
@@ -26,7 +27,7 @@ const PositionedLogoText = styled(LogoText)(
   () => `
   width: 66px;
   height: auto;
-  margin-bottom: -6px;
+  margin-bottom: -4px;
   margin-right: 5px; 
 `
 );
@@ -113,7 +114,9 @@ const AppBarContent = () => {
   return (
     <>
       <Left>
-        <PositionedLogo />
+        <Link to='/'>
+          <PositionedLogo />
+        </Link>
         {navItems.map(
           (navItem, i) =>
             (navItem.hideFromSize

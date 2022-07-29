@@ -30,8 +30,8 @@ const Spinner = styled('div')(
   position: absolute;
   width: 32px;
   height: 32px;
-  margin: 5px;
-  border: 5px solid #0F2B46;
+  margin: 4px;
+  border: 4px solid #0F2B46;
   border-radius: 50%;
   animation: spin 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: #0F2B46 transparent transparent transparent;
