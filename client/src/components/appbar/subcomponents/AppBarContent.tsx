@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 const PositionedLogo = styled(Logo)(
   () => `
   margin-bottom: -14px; 
-  width: 52px;
+  width: 50px;
   margin-right: 10px;
   cursor: pointer;
 `
@@ -27,7 +27,7 @@ const PositionedLogoText = styled(LogoText)(
   () => `
   width: 66px;
   height: auto;
-  margin-bottom: -4px;
+  margin-bottom: -6px;
   margin-right: 5px; 
 `
 );
