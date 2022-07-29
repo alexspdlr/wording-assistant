@@ -6,7 +6,7 @@ import InfoSection from 'src/components/info/InfoSection';
 const RephrasePage = () => {
   return (
     <>
-      <Section backgroundColor='#f7f7f7' isFirstSection>
+      <Section backgroundColor='#f7f7f7'>
         <RephraseTool />
       </Section>
 

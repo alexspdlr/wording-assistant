@@ -73,6 +73,7 @@ const RepositoryAppBarItemContent = styled('div')(
 
 interface AppBarItemProps {
   content: string | ReactNode;
+  link: string;
   hideFromSize?: Breakpoint;
 }
 
@@ -84,10 +85,11 @@ const navItems: AppBarItemProps[] = [
         Wording Assistant
       </>
     ),
+    link: '/',
   },
-  { content: 'Documentation', hideFromSize: '2XS' },
-  { content: 'Process', hideFromSize: 'XS' },
-  { content: 'Tech Stack', hideFromSize: 'S' },
+  { content: 'Documentation', hideFromSize: '2XS', link: '/documentation' },
+  { content: 'Process', hideFromSize: 'XS', link: '/process' },
+  { content: 'Tech Stack', hideFromSize: 'S', link: '/tech-stack' },
   {
     content: (
       <RepositoryAppBarItemContent>
@@ -96,6 +98,7 @@ const navItems: AppBarItemProps[] = [
       </RepositoryAppBarItemContent>
     ),
     hideFromSize: 'M',
+    link: 'https://github.com/',
   },
 ];
 
@@ -116,7 +119,9 @@ const AppBarContent = () => {
             (navItem.hideFromSize
               ? compareBreakpoint(activeBreakpoint, '>', navItem.hideFromSize)
               : true) && (
-              <AppBarItem isFirstItem={i === 0}>{navItem.content}</AppBarItem>
+              <AppBarItem to={navItem.link} isFirstItem={i === 0}>
+                {navItem.content}
+              </AppBarItem>
             )
         )}
       </Left>

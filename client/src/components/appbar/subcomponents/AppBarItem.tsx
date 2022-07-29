@@ -1,12 +1,15 @@
 import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 
 interface AppBarItemProps {
   isFirstItem?: boolean;
 }
 
-const AppBarItem = styled('div')(
+const AppBarItem = styled(Link)(
   (props: AppBarItemProps) => `
   padding-bottom: 15px; 
+  text-decoration: none; 
+  color: #0F2B46;
   cursor: pointer;  
   border-bottom: 3px solid #ffffff;  
   &:hover {
