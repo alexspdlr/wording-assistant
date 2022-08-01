@@ -28,7 +28,7 @@ const PositionedLogoText = styled(LogoText)(
   width: 66px;
   height: auto;
   margin-bottom: -6px;
-  margin-right: 5px; 
+  margin-right: 3px; 
 `
 );
 
@@ -122,7 +122,11 @@ const AppBarContent = () => {
             (navItem.hideFromSize
               ? compareBreakpoint(activeBreakpoint, '>', navItem.hideFromSize)
               : true) && (
-              <AppBarItem to={navItem.link} isFirstItem={i === 0}>
+              <AppBarItem
+                key={`nav-item_${i}`}
+                to={navItem.link}
+                isFirstItem={i === 0}
+              >
                 {navItem.content}
               </AppBarItem>
             )

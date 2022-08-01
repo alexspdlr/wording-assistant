@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import calculateRephraseToolTextSize from '../calculateRephraseToolTextSize';
 import useBreakpoint from './useBreakpoint';
-import useWindowHeight from './useWindowSize';
+import useWindowHeight from './useWindowHeight';
 
 const useRephraseToolTextboxHeight = (
   text: string,

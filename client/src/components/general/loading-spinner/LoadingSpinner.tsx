@@ -31,10 +31,10 @@ const Spinner = styled('div')(
   width: 32px;
   height: 32px;
   margin: 4px;
-  border: 4px solid #0F2B46;
+  border: 4px solid #006395;
   border-radius: 50%;
   animation: spin 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #0F2B46 transparent transparent transparent;
+  border-color: #006395 transparent transparent transparent;
   animation-delay: -${0.1 * props.index + 1}s; 
     `
 );

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import compareBreakpoint from '../compareBreakpoint';
 import useBreakpoint from './useBreakpoint';
-import useWindowHeight from './useWindowSize';
+import useWindowHeight from './useWindowHeight';
 
 const useRephraseToolTextboxMinHeight = () => {
   const [minHeight, setMinHeight] = useState('auto');

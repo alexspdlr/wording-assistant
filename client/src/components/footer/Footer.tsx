@@ -166,24 +166,28 @@ const Footer = () => {
         <Right smallLayout={compareBreakpoint(activeBreakpoint, '<', 'XS')}>
           <LinkSection>
             <strong>Information</strong>
-            {InformationLinks.map((link) =>
+            {InformationLinks.map((link, index) =>
               link.chipTitle ? (
-                <Link title={link.title} chipTitle={link.chipTitle} />
+                <Link
+                  key={`information-link_${index}`}
+                  title={link.title}
+                  chipTitle={link.chipTitle}
+                />
               ) : (
-                <Link title={link.title} />
+                <Link key={`information-link_${index}`} title={link.title} />
               )
             )}
           </LinkSection>
           <LinkSection>
             <strong>Products</strong>
-            {ProductsLinks.map((link) => (
-              <Link title={link.title} />
+            {ProductsLinks.map((link, index) => (
+              <Link key={`product-link_${index}`} title={link.title} />
             ))}
           </LinkSection>
           <LinkSection>
             <strong>Company</strong>
-            {CompanyLinks.map((link) => (
-              <Link title={link.title} />
+            {CompanyLinks.map((link, index) => (
+              <Link key={`company-link_${index}`} title={link.title} />
             ))}
           </LinkSection>
         </Right>
