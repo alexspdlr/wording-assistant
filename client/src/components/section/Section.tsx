@@ -20,27 +20,32 @@ const Wrapper = styled('div')(
 
 interface ContainerProps {
   horizontalPadding: number;
+  maxWidth: number | undefined;
 }
 const Container = styled('div')(
   (props: ContainerProps) => ` 
-  max-width: 1400px; 
   width: calc(100% - ${2 * props.horizontalPadding}px); 
+  max-width: ${props.maxWidth ? props.maxWidth : 1400}px; 
   `
 );
 
 interface SectionProps {
   backgroundColor: string;
   children: ReactNode;
+  maxWidth?: number;
 }
 const Section = (props: SectionProps) => {
-  const { children, backgroundColor } = props;
+  const { children, backgroundColor, maxWidth } = props;
   const activeBreakpoint = useBreakpoint();
   return (
     <Wrapper
       backgroundColor={backgroundColor}
       horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
     >
-      <Container horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}>
+      <Container
+        horizontalPadding={pageMarginFromBreakpoint(activeBreakpoint)}
+        maxWidth={maxWidth}
+      >
         {children}
       </Container>
     </Wrapper>
