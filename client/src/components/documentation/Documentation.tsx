@@ -6,7 +6,7 @@ import { testSection } from 'src/content/documentation/Test';
 import { ContentSection, ContentSubSection } from 'src/types/content';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import DocumentationBody from './subcomponents/body';
+import DocumentationBody from './subcomponents/DocumentationBody';
 
 export interface ActiveSectionState {
   activeSection: ContentSection | null;
