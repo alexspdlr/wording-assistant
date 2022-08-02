@@ -10,7 +10,8 @@ import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import { Breakpoint } from 'src/types/breakpoint';
 import AppBarMenuDialog from './AppBarMenuDialog';
-import { Link } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
+import AppBarExternalLink from './AppBarExternalLink';
 
 /* ---------------------------- Styled components --------------------------- */
 
@@ -99,7 +100,7 @@ const navItems: AppBarItemProps[] = [
       </RepositoryAppBarItemContent>
     ),
     hideFromSize: 'M',
-    link: 'https://github.com/',
+    link: 'https://github.com',
   },
 ];
 
@@ -122,13 +123,27 @@ const AppBarContent = () => {
             (navItem.hideFromSize
               ? compareBreakpoint(activeBreakpoint, '>', navItem.hideFromSize)
               : true) && (
-              <AppBarItem
-                key={`nav-item_${i}`}
-                to={navItem.link}
-                isFirstItem={i === 0}
-              >
-                {navItem.content}
-              </AppBarItem>
+              <>
+                {navItem.link.includes('https') ? (
+                  <AppBarExternalLink
+                    key={`nav-item_${i}`}
+                    href={navItem.link}
+                    target='_blank'
+                    isFirstItem={i === 0}
+                    rel='noopener'
+                  >
+                    {navItem.content}
+                  </AppBarExternalLink>
+                ) : (
+                  <AppBarItem
+                    key={`nav-item_${i}`}
+                    to={navItem.link}
+                    isFirstItem={i === 0}
+                  >
+                    {navItem.content}
+                  </AppBarItem>
+                )}
+              </>
             )
         )}
       </Left>
