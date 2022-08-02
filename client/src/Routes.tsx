@@ -10,13 +10,13 @@ const addLoadingTime = (page: string, time: number) =>
   });
 
 /* @ts-expect-error */
-const RephrasePage = lazy(() => addLoadingTime('RephrasePage', 400));
+const RephrasePage = lazy(() => addLoadingTime('RephrasePage', 300));
 /* @ts-expect-error */
-const ProcessPage = lazy(() => addLoadingTime('ProcessPage', 200));
+const ProcessPage = lazy(() => addLoadingTime('ProcessPage', 150));
 /* @ts-expect-error */
-const DocumentationPage = lazy(() => addLoadingTime('DocumentationPage', 200));
+const DocumentationPage = lazy(() => addLoadingTime('DocumentationPage', 150));
 /* @ts-expect-error */
-const TechStackPage = lazy(() => addLoadingTime('TechStackPage', 200));
+const TechStackPage = lazy(() => addLoadingTime('TechStackPage', 150));
 /* @ts-expect-error */
 const Page404 = lazy(() => addLoadingTime('404', 0));
 

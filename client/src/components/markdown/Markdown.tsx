@@ -1,0 +1,62 @@
+import styled from '@emotion/styled';
+import Markdown from 'markdown-to-jsx';
+
+const CustomP = styled('p')(
+  () => ` 
+      line-height: 1.5;
+      margin-bottom: 20px;  
+      `
+);
+
+const CustomUl = styled('ul')(
+  () => ` 
+    list-style-type: none;
+    margin-left:0px;
+    padding-left:20px;
+        `
+);
+
+const CustomLi = styled('li')(
+  () => ` 
+  line-height: 1.5;
+          `
+);
+
+const CustomA = styled('a')(
+  () => ` 
+    color: #006494;
+    text-decoration: none;
+    &:hover{
+        color: #0f2b46;
+    }
+    transition: color 0.2s; 
+            `
+);
+
+/* -------------------------------------------------------------------------- */
+/*                                 Markdown                                   */
+/* -------------------------------------------------------------------------- */
+
+interface MarkdownProps {
+  md: string;
+}
+
+const MarkdownComponent = (props: MarkdownProps) => {
+  const { md } = props;
+  return (
+    <Markdown
+      options={{
+        overrides: {
+          p: { component: CustomP },
+          ul: { component: CustomUl },
+          li: { component: CustomLi },
+          a: { component: CustomA },
+        },
+      }}
+    >
+      {md}
+    </Markdown>
+  );
+};
+
+export default MarkdownComponent;
