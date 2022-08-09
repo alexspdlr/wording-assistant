@@ -25,7 +25,6 @@ const SubSectionHeading = styled('h2')(
             line-height: 1.3; 
             font-size: 32px; 
             color: #1b1e25;
-            letter-spacing: -1px;
           `
 );
 

@@ -10,7 +10,7 @@ import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import { Breakpoint } from 'src/types/breakpoint';
 import AppBarMenuDialog from './AppBarMenuDialog';
-import { Link, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AppBarExternalLink from './AppBarExternalLink';
 
 /* ---------------------------- Styled components --------------------------- */
@@ -91,7 +91,7 @@ const navItems: AppBarItemProps[] = [
   },
   { content: 'Documentation', hideFromSize: '2XS', link: '/documentation' },
   { content: 'Process', hideFromSize: 'XS', link: '/process' },
-  { content: 'Tech Stack', hideFromSize: 'S', link: '/tech-stack' },
+  { content: 'About Me', hideFromSize: 'S', link: '/about-me' },
   {
     content: (
       <RepositoryAppBarItemContent>

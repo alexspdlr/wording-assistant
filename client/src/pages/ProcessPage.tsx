@@ -1,15 +1,34 @@
+import { useState } from 'react';
 import ProcessHeader from 'src/assets/ProcessHeader.png';
 import Content from 'src/components/general/content';
 import Section from 'src/components/section';
 
 const ProcessPage = () => {
+  const [headerImageLoading, setHeaderImageLoading] = useState(true);
+
   return (
     <div style={{ minHeight: 'calc(100vh - 360px)' }}>
       <img
         src={ProcessHeader}
-        style={{ width: '100%', marginBottom: '-3px' }}
+        onLoad={() => setHeaderImageLoading(false)}
+        style={{
+          width: '100%',
+          marginBottom: '-3px',
+          display: headerImageLoading ? 'none' : 'block',
+        }}
         alt='ProcessHeader'
       />
+      {headerImageLoading && (
+        <div
+          style={{
+            width: '100%',
+            paddingTop: '20%',
+            backgroundColor: '#f7f7f7',
+          }}
+        >
+          Loading...
+        </div>
+      )}
 
       <Section backgroundColor='#f7f7f7' maxWidth={920}>
         <div style={{ marginBottom: 80 }}>

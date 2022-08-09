@@ -16,7 +16,7 @@ const ProcessPage = lazy(() => addLoadingTime('ProcessPage', 150));
 /* @ts-expect-error */
 const DocumentationPage = lazy(() => addLoadingTime('DocumentationPage', 150));
 /* @ts-expect-error */
-const TechStackPage = lazy(() => addLoadingTime('TechStackPage', 150));
+const AboutMePage = lazy(() => addLoadingTime('AboutMePage', 150));
 /* @ts-expect-error */
 const Page404 = lazy(() => addLoadingTime('404', 0));
 
@@ -60,8 +60,8 @@ const AppRoutes = () => {
             element={<AppRoute target={<ProcessPage />} />}
           />
           <Route
-            path='tech-stack'
-            element={<AppRoute target={<TechStackPage />} />}
+            path='about-me'
+            element={<AppRoute target={<AboutMePage />} />}
           />
         </Route>
       </Routes>
