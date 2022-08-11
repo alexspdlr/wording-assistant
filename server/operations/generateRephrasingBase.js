@@ -1,32 +1,13 @@
 const generateRephrasingBase = async (req, res, page) => {
   const clienSourceInput = req.body.input;
 
-  /* Generate clean setup by reloading page & deleting cache */
-  await page.setCacheEnabled(false);
+  // Generate clean setup by reloading page & deleting cache
+  await page.goto('https://www.deepl.com/translator');
 
-  /* Wait until page is loaded */
+  // Wait until page is loaded
   await page.waitForSelector('#source-dummydiv');
 
-  await page.evaluate(() => {
-    const clearInputButton = document.querySelector(
-      '#translator-source-clear-button'
-    );
-
-    if (clearInputButton) {
-      clearInputButton.click();
-    }
-  });
-
-  try {
-    await page.$('#translator-source-clear-button');
-    await page.$eval('button.lmt__language_container_switch', (button) =>
-      button.click()
-    );
-  } catch {
-    // Does not
-  }
-
-  /* Paste client input into translator input */
+  // Paste client input into translator input
   await page.evaluate((clienSourceInput) => {
     const translatorSourceInput = document.querySelector(
       '[dl-test=translator-source-input]'
@@ -34,29 +15,29 @@ const generateRephrasingBase = async (req, res, page) => {
     translatorSourceInput.value = clienSourceInput;
   }, clienSourceInput);
 
-  /* Tab out and back into translator input field to trigger translation */
+  // Tab out and back into translator input field to trigger translation
   await page.keyboard.press('Tab');
   await page.keyboard.down('ShiftLeft');
   await page.keyboard.press('Tab');
   await page.keyboard.up('ShiftLeft');
 
-  /* Wait until translation is finished */
+  // Wait until translation is finished
   await page.waitForFunction(
     () => document.querySelector('#target-dummydiv').innerHTML !== '\r\n'
   );
 
-  /* Store translation result */
+  // Store translation result
   const translationResult = await page.$eval(
     '#target-dummydiv',
     (div) => div.innerHTML
   );
 
-  /* Click swap languages button*/
+  // Click swap languages button
   await page.$eval('button.lmt__language_container_switch', (button) =>
     button.click()
   );
 
-  /* Wait until languages are swapped */
+  // Wait until languages are swapped
   await page.waitForFunction(
     (translationResult) => {
       const translatorSourceInputValue =
@@ -70,10 +51,10 @@ const generateRephrasingBase = async (req, res, page) => {
     translationResult
   );
 
-  /* Store translation result */
+  // Store translation result
   const result = await page.$eval('#target-dummydiv', (div) => div.innerHTML);
 
-  /* Tab into text area of rephrasing base*/
+  // Tab into text area of rephrasing base
   const textResultsDisplayed =
     (await page.$('[dl-test=translator-target-result-as-text-container]')) !==
     null;
