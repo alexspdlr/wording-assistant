@@ -10,6 +10,8 @@ import RephraseToolCard from 'src/components/rephrase/subcomponents/RephraseTool
 import RephraseSource from './subcomponents/source';
 import { useState } from 'react';
 import { RephraseInteractionMode } from 'src/types/rephrase';
+import useBoundStore from 'src/store';
+import LoadingSpinner from '../general/loading-spinner';
 
 /* ------------------------------- GridLayout ------------------------------- */
 interface GridLayoutProps {
@@ -72,6 +74,9 @@ const RephraseTool = () => {
   const [interactionMode, setInteractionMode] =
     useState<RephraseInteractionMode>(RephraseInteractionMode.Edit);
 
+  const rephrasedSentence = useBoundStore((state) => state.rephrasedSentence);
+  const waitingForServer = useBoundStore((state) => state.waitingForServer);
+
   return (
     <GridLayout isMobileLayout={isMobileLayout}>
       {!isMobileLayout && (
@@ -107,6 +112,10 @@ const RephraseTool = () => {
         headerTitle='Rephrase'
       >
         {/* Rephrase target */}
+        {waitingForServer && <LoadingSpinner />}
+        {!waitingForServer &&
+          (rephrasedSentence ||
+            'SWITCH TO REPHRASE MODE & SELECT A SENTENCE !')}
       </RephraseToolCard>
       <CommentCard
         gridArea={isMobileLayout ? '3 / 1 / 4 / 2' : '3 / 1 / 4 / 3'}

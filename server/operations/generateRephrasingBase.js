@@ -3,10 +3,28 @@ const generateRephrasingBase = async (req, res, page) => {
 
   /* Generate clean setup by reloading page & deleting cache */
   await page.setCacheEnabled(false);
-  await page.reload();
 
   /* Wait until page is loaded */
   await page.waitForSelector('#source-dummydiv');
+
+  await page.evaluate(() => {
+    const clearInputButton = document.querySelector(
+      '#translator-source-clear-button'
+    );
+
+    if (clearInputButton) {
+      clearInputButton.click();
+    }
+  });
+
+  try {
+    await page.$('#translator-source-clear-button');
+    await page.$eval('button.lmt__language_container_switch', (button) =>
+      button.click()
+    );
+  } catch {
+    // Does not
+  }
 
   /* Paste client input into translator input */
   await page.evaluate((clienSourceInput) => {

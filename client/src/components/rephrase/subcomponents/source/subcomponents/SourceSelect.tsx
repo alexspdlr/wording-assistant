@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
+import useBoundStore from 'src/store';
 import useRephraseToolTextboxHeight from 'src/utils/hooks/useRephraseToolTextboxHeight';
 import splitIntoSentences from 'src/utils/splitIntoSentences';
 
@@ -70,11 +71,16 @@ const SourceSelect = (props: SourceSelectProps) => {
     document.getElementById('source-select-container')?.focus();
   }, [containerRef]);
 
+  const generateRephrasingBase = useBoundStore(
+    (state) => state.generateRephrasingBase
+  );
+
   return (
     <Container ref={containerRef} tabIndex={0} id='source-select-container'>
       {splitIntoSentences(value).map((token, i) =>
         token.kind === 'sentence' ? (
           <Sentence
+            onClick={() => generateRephrasingBase(token.value)}
             onMouseEnter={() => setHoveredSentence(`token_${i}`)}
             onMouseLeave={() => setHoveredSentence(null)}
             hovered={hoveredSentence === `token_${i}`}

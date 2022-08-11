@@ -1,4 +1,4 @@
-import styled from '@mui/styled-engine';
+import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
 import AppBar from 'src/components/appbar';
 import Footer from 'src/components/footer';

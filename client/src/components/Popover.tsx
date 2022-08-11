@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
-import { Popover } from '@mui/material';
 import AnimateHeight from './AnimateHeight';
 
+const Popover = () => <div>popover</div>;
+export default Popover;
+/* 
 const PopoverContainer = styled('div')(
   (props) => `  
   -webkit-transition: all 0.25s ease-out;
@@ -107,3 +109,5 @@ const CustomPopover = ({
 };
 
 export default CustomPopover;
+
+*/
