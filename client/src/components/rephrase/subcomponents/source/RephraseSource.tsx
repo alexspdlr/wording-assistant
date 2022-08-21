@@ -6,7 +6,7 @@ import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import useLocalStorage from 'src/utils/hooks/useLocalStorage';
 import useRephraseToolTextboxMinHeight from 'src/utils/hooks/useRephraseToolTextboxMinHeight';
 import SourceCopyButton from './subcomponents/SourceCopyButton';
-import SourceHint from './subcomponents/SourceHint';
+import RephraseHint from '../RephraseHint';
 import SourceSelect from './subcomponents/SourceSelect';
 import SourceTextArea from './subcomponents/SourceTextArea';
 
@@ -50,9 +50,10 @@ const RephraseSource = (props: RephraseSourceProps) => {
       <Container minHeight={minHeight}>
         {activeMode === RephraseInteractionMode.Edit ? (
           <>
-            <SourceHint
+            <RephraseHint
               hideHint={value ? value.length > 0 : false}
-              activeBreakpoint={activeBreakpoint}
+              title='Paste or write your text'
+              subtitle='Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'
             />
             <SourceTextArea value={value} setValue={setValue} />
           </>

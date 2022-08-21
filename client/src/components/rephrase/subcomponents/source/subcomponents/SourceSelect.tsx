@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
 import useBoundStore from 'src/store';
-import useRephraseToolTextboxHeight from 'src/utils/hooks/useRephraseToolTextboxHeight';
+import useClickAway from 'src/utils/hooks/useClickAway';
+import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import splitIntoSentences from 'src/utils/splitIntoSentences';
 
 const Container = styled('div')(
   () => `
-  margin: 16px 56px 72px 16px;
+  margin: 16px 56px 72px 28px;
   flex-grow: 1;
   outline: none;
   display: block; 
@@ -25,34 +26,39 @@ const Container = styled('div')(
 );
 
 interface SentenceProps {
-  hovered: boolean;
-  otherTokenHovered: boolean;
+  active: boolean;
+  otherTokenActive: boolean;
 }
 
 const Sentence = styled('span')(
   (props: SentenceProps) => `
-  padding-top: 2px; 
-  padding-bottom: 2px; 
-  border-top: 1px solid #fff;
-  border-bottom: 1px solid #fff;
+  padding-top: 4px; 
+  padding-bottom: 3px; 
   white-space: pre-wrap;
 
   ${
-    props.hovered
+    props.active
       ? `
-    background-color: #EDF1F3; 
     color: #0F2B46;
     cursor: pointer; 
     transition: 0.2s background-color, 0.2s color;
+    
     `
-      : props.otherTokenHovered
+      : props.otherTokenActive
       ? `
-    color: #bbbdc0;
+    color: #999; 
     transition: 0.2s color;
     `
       : `
       color: #333333;
       transition: 0.2s color;`
+  }
+
+  &:hover {
+    background-color: rgba(0, 99, 149, 0.2); 
+    color: #0F2B46;
+    cursor: pointer; 
+    transition: 0.2s background-color, 0.2s color; 
   }
   `
 );
@@ -64,8 +70,20 @@ interface SourceSelectProps {
 const SourceSelect = (props: SourceSelectProps) => {
   const { value } = props;
   const containerRef = useRef(null);
-  useRephraseToolTextboxHeight(value, containerRef);
+  useRephraseToolTextboxSize(value, containerRef);
   const [hoveredSentence, setHoveredSentence] = useState<string | null>(null);
+  const [selectedSentence, setSelectedSentence] = useState<string | null>(null);
+
+  const sentenceRef = useRef<HTMLDivElement>(null);
+
+  const reset = useBoundStore((state) => state.reset);
+
+  const onClose = () => {
+    setSelectedSentence(null);
+    reset();
+  };
+
+  useClickAway(sentenceRef, onClose);
 
   useEffect(() => {
     document.getElementById('source-select-container')?.focus();
@@ -75,17 +93,24 @@ const SourceSelect = (props: SourceSelectProps) => {
     (state) => state.generateRephrasingBase
   );
 
+  const selectSentence = (value: string, index: number) => {
+    setSelectedSentence(`token_${index}`);
+    generateRephrasingBase(value);
+  };
+
   return (
     <Container ref={containerRef} tabIndex={0} id='source-select-container'>
       {splitIntoSentences(value).map((token, i) =>
         token.kind === 'sentence' ? (
           <Sentence
-            onClick={() => generateRephrasingBase(token.value)}
+            ref={sentenceRef}
+            onClick={() => selectSentence(token.value, i)}
             onMouseEnter={() => setHoveredSentence(`token_${i}`)}
             onMouseLeave={() => setHoveredSentence(null)}
-            hovered={hoveredSentence === `token_${i}`}
-            otherTokenHovered={
-              hoveredSentence !== null && hoveredSentence !== `token_${i}`
+            active={selectedSentence === `token_${i}`}
+            otherTokenActive={
+              (hoveredSentence !== null && hoveredSentence !== `token_${i}`) ||
+              (selectedSentence !== null && selectedSentence !== `token_${i}`)
             }
             key={`token_${i}`}
           >

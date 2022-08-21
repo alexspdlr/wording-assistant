@@ -12,6 +12,9 @@ import { useState } from 'react';
 import { RephraseInteractionMode } from 'src/types/rephrase';
 import useBoundStore from 'src/store';
 import LoadingSpinner from '../general/loading-spinner';
+import TargetSelect from './subcomponents/target/subcomponents/TargetSelect';
+import RephraseTarget from './subcomponents/target/RephraseTarget';
+import Snackbar from '../general/snackbar';
 
 /* ------------------------------- GridLayout ------------------------------- */
 interface GridLayoutProps {
@@ -46,6 +49,14 @@ const ActiveToolsContainer = styled('div')(
     `
 );
 
+/* ---------------------------- SnackbarContainer --------------------------- */
+
+const SnackbarContainer = styled('div')(
+  () => `  
+    padding-top: 18px; 
+    `
+);
+
 /* ------------------------------- CommentCard ------------------------------ */
 interface CommentCardProps {
   gridArea: string;
@@ -74,55 +85,60 @@ const RephraseTool = () => {
   const [interactionMode, setInteractionMode] =
     useState<RephraseInteractionMode>(RephraseInteractionMode.Edit);
 
-  const rephrasedSentence = useBoundStore((state) => state.rephrasedSentence);
-  const waitingForServer = useBoundStore((state) => state.waitingForServer);
+  const isErrorActive = useBoundStore((state) => state.isErrorActive);
 
   return (
-    <GridLayout isMobileLayout={isMobileLayout}>
-      {!isMobileLayout && (
-        <ActiveToolsContainer gridArea='1 / 1 / 2 / 3'>
-          <ActiveToolButton
-            icon={<RephraseTextIcon />}
-            text='Rephrase text'
-            active
+    <>
+      {isErrorActive && (
+        <SnackbarContainer>
+          <Snackbar
+            variant='error'
+            message=' Sorry, something went wrong. Please reload the page or try again later.'
           />
-          <ActiveToolButton
-            icon={<RephraseFilesIcon />}
-            text='Rephrase files'
-            active={false}
-          />
-        </ActiveToolsContainer>
+        </SnackbarContainer>
       )}
-      <RephraseToolCard
-        gridArea={isMobileLayout ? '1 / 1 / 2 / 2' : '2 / 1 / 3 / 2'}
-        headerTitle='Input text'
-        headerEndItem={
-          <ToggleButton
-            values={Object.keys(RephraseInteractionMode)}
-            onSelectionChange={(selectedMode: RephraseInteractionMode) =>
-              setInteractionMode(selectedMode)
-            }
-          />
-        }
-      >
-        <RephraseSource activeMode={interactionMode} />
-      </RephraseToolCard>
-      <RephraseToolCard
-        gridArea={isMobileLayout ? '2 / 1 / 3 / 2' : '2 / 2 / 3 / 3'}
-        headerTitle='Rephrase'
-      >
-        {/* Rephrase target */}
-        {waitingForServer && <LoadingSpinner />}
-        {!waitingForServer &&
-          (rephrasedSentence ||
-            'SWITCH TO REPHRASE MODE & SELECT A SENTENCE !')}
-      </RephraseToolCard>
-      <CommentCard
-        gridArea={isMobileLayout ? '3 / 1 / 4 / 2' : '3 / 1 / 4 / 3'}
-      >
-        Switch between Edit &amp; Rephrase mode to craft beautiful text.
-      </CommentCard>
-    </GridLayout>
+      <GridLayout isMobileLayout={isMobileLayout}>
+        {!isMobileLayout && (
+          <ActiveToolsContainer gridArea='1 / 1 / 2 / 3'>
+            <ActiveToolButton
+              icon={<RephraseTextIcon />}
+              text='Rephrase text'
+              active
+            />
+            <ActiveToolButton
+              icon={<RephraseFilesIcon />}
+              text='Rephrase files'
+              active={false}
+            />
+          </ActiveToolsContainer>
+        )}
+        <RephraseToolCard
+          gridArea={isMobileLayout ? '1 / 1 / 2 / 2' : '2 / 1 / 3 / 2'}
+          headerTitle='Input text'
+          headerEndItem={
+            <ToggleButton
+              values={Object.keys(RephraseInteractionMode)}
+              onSelectionChange={(selectedMode: RephraseInteractionMode) =>
+                setInteractionMode(selectedMode)
+              }
+            />
+          }
+        >
+          <RephraseSource activeMode={interactionMode} />
+        </RephraseToolCard>
+        <RephraseToolCard
+          gridArea={isMobileLayout ? '2 / 1 / 3 / 2' : '2 / 2 / 3 / 3'}
+          headerTitle='Rephrase'
+        >
+          <RephraseTarget activeMode={interactionMode} />
+        </RephraseToolCard>
+        <CommentCard
+          gridArea={isMobileLayout ? '3 / 1 / 4 / 2' : '3 / 1 / 4 / 3'}
+        >
+          Switch between Edit &amp; Rephrase mode to craft beautiful text.
+        </CommentCard>
+      </GridLayout>
+    </>
   );
 };
 

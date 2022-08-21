@@ -4,10 +4,7 @@
         "node": true
     },
     "extends": [
-        "airbnb-base",
-        "plugin:functional/external-recommended",
-    "plugin:functional/recommended",
-    "plugin:functional/stylistic" 
+        "airbnb-base", 
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -15,12 +12,9 @@
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint",
-        "functional",
-        "only-warn" 
+        "@typescript-eslint", 
     ],
-    "rules": {
-        "functional/rule-name": "error",
+    "rules": { 
         "import/extensions": "off" 
     },
     "settings": {

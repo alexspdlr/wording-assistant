@@ -4,8 +4,8 @@ const Container = styled('div')(
   (props) => `
   display: inline-block;
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 22px;
+  height: 22px;
   `
 );
 
@@ -28,10 +28,10 @@ const Spinner = styled('div')(
     box-sizing: border-box;
   display: block;
   position: absolute;
-  width: 32px;
-  height: 32px;
-  margin: 4px;
-  border: 4px solid #006395;
+  width: 22px;
+  height: 22px;
+  margin: 3px;
+  border: 3px solid #006395;
   border-radius: 50%;
   animation: spin 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: #006395 transparent transparent transparent;

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
-import useRephraseToolTextboxHeight from 'src/utils/hooks/useRephraseToolTextboxHeight';
+import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import SourceClearButton from './SourceClearButton';
 
 const TextArea = styled('textarea')(
@@ -10,14 +10,14 @@ const TextArea = styled('textarea')(
     border: none; 
     outline: none;
     display: block;
-    resize: none;
+    resize: none; 
     z-index: 2; 
     background-color: transparent;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
-    font-weight: 400;
+    font-weight: 400; 
     color: rgb(51, 51, 51);  
     overflow: visible;
-    margin: 16px 56px 72px 16px;
+    margin: 16px 56px 72px 28px;
     `
 );
 
@@ -29,7 +29,7 @@ interface SourceTextAreaProps {
 const SourceTextArea = (props: SourceTextAreaProps) => {
   const { value, setValue } = props;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  useRephraseToolTextboxHeight(value, textareaRef);
+  useRephraseToolTextboxSize(value, textareaRef);
 
   const textAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(event.target.value);

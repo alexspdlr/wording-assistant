@@ -3,7 +3,7 @@ import calculateRephraseToolTextSize from '../calculateRephraseToolTextSize';
 import useBreakpoint from './useBreakpoint';
 import useWindowHeight from './useWindowHeight';
 
-const useRephraseToolTextboxHeight = (
+const useRephraseToolTextboxSize = (
   text: string,
   targetRef: React.MutableRefObject<HTMLTextAreaElement | null>
 ) => {
@@ -24,4 +24,4 @@ const useRephraseToolTextboxHeight = (
   }, [text, activeBreakpoint, windowHeight, targetRef]);
 };
 
-export default useRephraseToolTextboxHeight;
+export default useRephraseToolTextboxSize;

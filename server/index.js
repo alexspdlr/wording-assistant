@@ -9,6 +9,7 @@ import selectRephrasingOption from './operations/selectRephrasingOption.js';
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 const page = await setup();
 
 app.get('/', (req, res) => {
@@ -17,6 +18,9 @@ app.get('/', (req, res) => {
 
 app.post('/generate-rephrasing-base', async (req, res) => {
   console.log('/generate-rephrasing-base');
+
+  //TODO: implement abort Controller : https://leanylabs.com/blog/cancel-promise-abortcontroller/
+
   await generateRephrasingBase(req, res, page);
 });
 

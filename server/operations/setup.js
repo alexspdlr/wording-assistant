@@ -4,7 +4,7 @@ const setup = async () => {
   /* Load broser & DeepL Page */
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
-  await page.setDefaultTimeout(0);
+  await page.setDefaultTimeout(8000);
   await page.goto('https://www.deepl.com/translator');
 
   /* Accept necessary cookies */

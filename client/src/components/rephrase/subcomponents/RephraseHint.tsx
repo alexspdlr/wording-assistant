@@ -2,8 +2,9 @@ import styled from '@emotion/styled';
 import { Breakpoint } from 'src/types/breakpoint';
 import calculateRephraseHintHeadingSize from 'src/utils/calculateRephraseHintHeadingSize';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
+import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 
-const HintContainer = styled('div')(
+const Container = styled('div')(
   () => `
     position: absolute; 
     z-index: 0;  
@@ -13,7 +14,7 @@ const HintContainer = styled('div')(
     align-items: strech;
     flex-direction: column;
     text-align: left;
-    margin: 16px 56px 72px 16px;
+    margin: 16px 56px 72px 28px;
     `
 );
 
@@ -43,31 +44,33 @@ const HintBody = styled('p')(
       `
 );
 
-interface SourceHintProps {
+interface RephraseHintProps {
   hideHint: boolean;
-  activeBreakpoint: Breakpoint;
+  title: string;
+  subtitle: string;
 }
 
-const SourceHint = (props: SourceHintProps) => {
-  const HintHeadingTextSize = calculateRephraseHintHeadingSize(
-    props.activeBreakpoint
-  );
+const RephraseHint = (props: RephraseHintProps) => {
+  const { hideHint, title, subtitle } = props;
+  const activeBreakpoint = useBreakpoint();
+  const HintHeadingTextSize =
+    calculateRephraseHintHeadingSize(activeBreakpoint);
 
   return (
-    <HintContainer>
+    <Container>
       <HintHeading
         fontSize={HintHeadingTextSize.fontSize}
         lineHeight={HintHeadingTextSize.lineHeight}
       >
-        {!props.hideHint && 'Paste or write your text'}
+        {!hideHint && title}
       </HintHeading>
       <HintBody>
-        {!props.hideHint &&
-          compareBreakpoint(props.activeBreakpoint, '>', '2XS') &&
-          'Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'}
+        {!hideHint &&
+          compareBreakpoint(activeBreakpoint, '>', '2XS') &&
+          subtitle}
       </HintBody>
-    </HintContainer>
+    </Container>
   );
 };
 
-export default SourceHint;
+export default RephraseHint;
