@@ -1,24 +1,33 @@
 import styled from '@emotion/styled';
 import { cloneElement, JSXElementConstructor, ReactElement } from 'react';
+import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 
 interface IconButtonStyledProps {
   variant: 'permanent' | 'dynamic';
 }
 
 const IconButtonStyled = styled('button')(
-  (props: IconButtonStyledProps) => `
+  (props: IconButtonStyledProps) => (defaultProps) =>
+    `
     border: 0; 
     width: 40px; 
     height: 40px; 
     border-radius: 4px; 
     padding: 8px; 
-    color: ${props.variant === 'permanent' ? '#0f2b46' : 'rgb(155, 163, 172)'};
+    color: ${
+      props.variant === 'permanent'
+        ? defaultProps.theme.palette.primary.main
+        : defaultProps.theme.palette.text.disabled
+    };
     background-color: transparent; 
     cursor: pointer; 
     fill: transparent; 
     &:hover{
-      color: #0f2b46; 
-      background-color: #f2f4f7; 
+      color: ${defaultProps.theme.palette.primary.main}; 
+      background-color: ${addAlphaToHexColor(
+        defaultProps.theme.palette.text.main,
+        0.07
+      )}; 
     }
     `
 );

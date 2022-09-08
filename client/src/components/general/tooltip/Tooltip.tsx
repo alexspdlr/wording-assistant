@@ -1,3 +1,4 @@
+import { Theme } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { ReactNode, useState } from 'react';
 
@@ -23,7 +24,7 @@ interface TipProps {
   isRevealed: boolean;
 }
 
-const direction = (props: TipProps) => {
+const direction = (props: TipProps, theme: Theme) => {
   const { direction, margin, arrowSize } = props;
   switch (direction) {
     case 'left':
@@ -38,7 +39,7 @@ const direction = (props: TipProps) => {
         right: calc(${arrowSize}px * -2);
         top: 50%;
         transform: translateX(0) translateY(-50%);
-        border-left-color: #1c1e25; 
+        border-left-color: ${theme.palette.text.light}; 
       }
             `;
     case 'right':
@@ -51,7 +52,7 @@ const direction = (props: TipProps) => {
         left: calc(${arrowSize}px * -1);
         top: 50%;
         transform: translateX(0) translateY(-50%);
-        border-right-color: #1c1e25;
+        border-right-color: ${theme.palette.text.light};
       }
             `;
     case 'bottom':
@@ -60,7 +61,7 @@ const direction = (props: TipProps) => {
 
       &:before {
         bottom: 100%;
-        border-bottom-color: #1c1e25;
+        border-bottom-color: ${theme.palette.text.light};
       }
             `;
 
@@ -70,21 +71,22 @@ const direction = (props: TipProps) => {
 
       &:before {
         top: 100%;
-        border-top-color: #1c1e25;
+        border-top-color: ${theme.palette.text.light};
       }
             `;
   }
 };
 
 const Tip = styled('div')(
-  (props: TipProps) => `
+  (props: TipProps) => (defaultProps) =>
+    `
   position: absolute;
   border-radius: 3px;
   left: 50%;
   transform: translateX(-50%);
   padding: 10px 13px 10px 13px;
-  color: #fff;
-  background: #1c1e25;
+  color: ${defaultProps.theme.palette.background.dark};
+  background: ${defaultProps.theme.palette.text.light};
   font-size: 13px;
   font-family: sans-serif;
   line-height: 1;
@@ -108,7 +110,7 @@ const Tip = styled('div')(
     margin-left: calc(${props.arrowSize}px * -1);
   }
 
-${direction(props)}
+${direction(props, defaultProps.theme)}
 
     `
 );

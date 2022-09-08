@@ -1,3 +1,4 @@
+import { Theme, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 
 interface ContainerProps {
@@ -5,14 +6,15 @@ interface ContainerProps {
 }
 
 const Container = styled('div')(
-  (props: ContainerProps) => `
+  (props: ContainerProps) => (defaultProps) =>
+    `
 
 padding: 12px; 
 font-size: 12px; 
 display: flex; 
 align-itmes: center; 
-justify-content: center; 
-color: #ffffff;
+justify-content: center;  
+color: ${defaultProps.theme.palette.secondary.contrastText};
 background-color: ${props.color};
   `
 );
@@ -24,25 +26,30 @@ interface SnackbarProps {
   message: string;
 }
 
-const colorByVariant = (variant: SnackbarVariant) => {
+const colorByVariant = (variant: SnackbarVariant, theme: Theme) => {
   if (variant === 'error') {
-    return '#a03e3d';
+    return theme.palette.error.main;
   }
 
   if (variant === 'warning') {
-    return '#bd8f2d';
+    return theme.palette.warning.main;
   }
 
   if (variant === 'info') {
-    return '#3d86ba';
+    return theme.palette.info.main;
   }
 
-  return '#3da060';
+  return theme.palette.success.main;
 };
 
 const Snackbar = (props: SnackbarProps) => {
   const { variant, message } = props;
-  return <Container color={colorByVariant(variant)}>{message}</Container>;
+
+  const theme = useTheme();
+
+  return (
+    <Container color={colorByVariant(variant, theme)}>{message}</Container>
+  );
 };
 
 export default Snackbar;

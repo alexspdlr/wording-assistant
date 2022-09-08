@@ -2,7 +2,7 @@
 	<title>deepl-desktop-svg-svg</title>
 	<style>
 		.s0 {
-			opacity: .6;
+			opacity: .1;
 			fill: #dde3e9
 		}
 
@@ -14,17 +14,17 @@
 
 		.s2 {
 			fill: none;
-			stroke: #0f2b46;
+			stroke: #205282;
 			stroke-width: 2
 		}
 
 		.s3 {
-			fill: #0f2b46
+			fill: #205282
 		}
 
 		.s4 {
 			fill: none;
-			stroke: #0f2b46;
+			stroke: #205282;
 			stroke-width: 3
 		}
 	</style>

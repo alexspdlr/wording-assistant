@@ -5,12 +5,12 @@ import Card from 'src/components/general/card';
 /* --------------------------------- Header --------------------------------- */
 
 const HeaderStyled = styled('div')(
-  () => `  
+  (props) => `  
     height: 56px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #F1F1F1;
+    border-bottom: 1px solid ${props.theme.palette.divider};
     padding-left: 24px;
     padding-right: 24px;
     font-weight: 600;
@@ -38,13 +38,14 @@ interface ToolCardContainerProps {
 }
 
 const ToolCardContainer = styled(Card)(
-  (props: ToolCardContainerProps) => `  
+  (props: ToolCardContainerProps) => (defaultProps) =>
+    `  
       display: flex; 
       width: 100%;
       height: auto;
       flex-direction: column;
       &:focus-within {
-        border: 1px solid rgb(0, 99, 149);
+        border: 1px solid ${defaultProps.theme.palette.primary.main};
       }
       ${props.gridArea && `grid-area: ${props.gridArea};`} 
       `

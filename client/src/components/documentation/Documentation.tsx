@@ -20,10 +20,12 @@ interface ContainerProps {
 }
 
 const Container = styled('div')(
-  (props: ContainerProps) => `  
+  (props: ContainerProps) => (defaultProps) =>
+    `  
+    background-color:${defaultProps.theme.palette.background.main}; 
     width: 100%;
-    border-top: 1px solid #F1F1F1;
-    border-bottom: 1px solid #F1F1F1;
+    border-top: 1px solid ${defaultProps.theme.palette.divider};
+    border-bottom: 1px solid ${defaultProps.theme.palette.divider}; 
     display: flex;
     min-height: calc(100vh - 250px);
     flex-direction: ${props.isSmallLayout ? 'column' : 'row'};

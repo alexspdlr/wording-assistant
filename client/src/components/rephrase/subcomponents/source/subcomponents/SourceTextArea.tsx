@@ -4,7 +4,7 @@ import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSi
 import SourceClearButton from './SourceClearButton';
 
 const TextArea = styled('textarea')(
-  () => `
+  (props) => `
     padding: 0;
     flex-grow: 1;
     border: none; 
@@ -15,7 +15,7 @@ const TextArea = styled('textarea')(
     background-color: transparent;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
     font-weight: 400; 
-    color: rgb(51, 51, 51);  
+    color: ${props.theme.palette.text.main};  
     overflow: visible;
     margin: 16px 56px 72px 28px;
     `

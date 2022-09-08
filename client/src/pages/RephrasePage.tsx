@@ -2,19 +2,22 @@ import Section from 'src/components/section';
 import RephraseTool from 'src/components/rephrase';
 import QuoteSection from 'src/components/quote';
 import InfoSection from 'src/components/info/InfoSection';
+import { useTheme } from '@emotion/react';
 
 const RephrasePage = () => {
+  const theme = useTheme();
+
   return (
     <>
-      <Section backgroundColor='#f7f7f7'>
+      <Section backgroundColor={theme.palette.background.dark}>
         <RephraseTool />
       </Section>
 
-      <Section backgroundColor='#ffffff'>
+      <Section backgroundColor={theme.palette.background.main}>
         <InfoSection />
       </Section>
 
-      <Section backgroundColor='#f7f7f7'>
+      <Section backgroundColor={theme.palette.background.dark}>
         <QuoteSection />
       </Section>
     </>

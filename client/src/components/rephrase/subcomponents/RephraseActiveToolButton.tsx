@@ -1,13 +1,42 @@
+import { Theme, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { cloneElement, JSXElementConstructor, ReactElement } from 'react';
 import Card from 'src/components/general/card';
+import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 
+const determineColor = (active: boolean, theme: Theme) => {
+  if (active) {
+    if (theme.activeMode === 'dark') {
+      return {
+        iconColor: theme.palette.text.main,
+        textColor: theme.palette.text.main,
+      };
+    }
+    return {
+      iconColor: theme.palette.text.main,
+      textColor: theme.palette.text.main,
+    };
+  }
+
+  if (theme.activeMode === 'dark') {
+    return {
+      iconColor: theme.palette.primary.light,
+      textColor: theme.palette.primary.light,
+    };
+  }
+
+  return {
+    iconColor: theme.palette.primary.light,
+    textColor: theme.palette.primary.light,
+  };
+};
 interface WrapperProps {
   active: boolean;
 }
 
 const Wrapper = styled(Card)(
-  (props: WrapperProps) => `  
+  (props: WrapperProps) => (defaultProps) =>
+    `  
     height: 65px; 
     overflow: hidden;
     padding: 0px; 
@@ -18,7 +47,9 @@ const Wrapper = styled(Card)(
     ${
       props.active
         ? 'border-bottom: 0px; border-radius: 8px 8px 4px 4px;'
-        : 'border-radius: 8px; &:hover {background-color: rgb(244, 249, 253)}'
+        : `border-radius: 8px; &:hover {background-color: ${
+            defaultProps.theme.activeMode === 'light' ? '#F4F9FD' : '#1e1f21'
+          }}`
     } 
     `
 );
@@ -31,7 +62,8 @@ interface ActiveToolButtonProps {
 
 const RephraseActiveToolButton = (props: ActiveToolButtonProps) => {
   const { active, icon, text } = props;
-
+  const theme = useTheme();
+  const colors = determineColor(active, theme);
   return (
     <Wrapper active={active} as='button'>
       <div
@@ -46,7 +78,7 @@ const RephraseActiveToolButton = (props: ActiveToolButtonProps) => {
       >
         {cloneElement(icon, {
           style: {
-            color: active ? 'rgb(27, 30, 37)' : 'rgba(0, 99, 149, 1)',
+            color: colors.iconColor,
             height: 24,
           },
         })}
@@ -55,7 +87,7 @@ const RephraseActiveToolButton = (props: ActiveToolButtonProps) => {
             paddingLeft: 14,
             fontWeight: 600,
             fontSize: 16,
-            color: active ? 'rgb(27, 30, 37)' : 'rgba(0, 99, 149, 1)',
+            color: colors.textColor,
             marginBottom: 0,
             fontFamily:
               "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
@@ -68,7 +100,7 @@ const RephraseActiveToolButton = (props: ActiveToolButtonProps) => {
         style={{
           height: 3,
           width: '100%',
-          backgroundColor: active ? 'rgba(0, 99, 149, 1)' : 'transparent',
+          backgroundColor: active ? theme.palette.primary.light : 'transparent',
         }}
       />
     </Wrapper>

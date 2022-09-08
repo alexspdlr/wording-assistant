@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
 import useBoundStore from 'src/store';
+import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import useClickAway from 'src/utils/hooks/useClickAway';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import splitIntoSentences from 'src/utils/splitIntoSentences';
 
 const Container = styled('div')(
-  () => `
+  (props) => `
   margin: 16px 56px 72px 28px;
   flex-grow: 1;
   outline: none;
@@ -14,7 +15,6 @@ const Container = styled('div')(
   z-index: 2;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
   font-weight: 400;
-  color: rgb(51, 51, 51);  
   overflow: visible;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -31,7 +31,8 @@ interface SentenceProps {
 }
 
 const Sentence = styled('span')(
-  (props: SentenceProps) => `
+  (props: SentenceProps) => (defaultProps) =>
+    `
   padding-top: 4px; 
   padding-bottom: 3px; 
   white-space: pre-wrap;
@@ -39,24 +40,27 @@ const Sentence = styled('span')(
   ${
     props.active
       ? `
-    color: #0F2B46;
+    color: ${defaultProps.theme.palette.primary.main};
     cursor: pointer; 
     transition: 0.2s background-color, 0.2s color;
     
     `
       : props.otherTokenActive
       ? `
-    color: #999; 
+    color: ${addAlphaToHexColor(defaultProps.theme.palette.text.main, 0.5)};  
     transition: 0.2s color;
     `
       : `
-      color: #333333;
+      color: ${defaultProps.theme.palette.text.main}; 
       transition: 0.2s color;`
   }
 
   &:hover {
-    background-color: rgba(0, 99, 149, 0.2); 
-    color: #0F2B46;
+    background-color: ${addAlphaToHexColor(
+      defaultProps.theme.palette.primary.light,
+      0.1
+    )}; 
+    color: ${defaultProps.theme.palette.primary.light};
     cursor: pointer; 
     transition: 0.2s background-color, 0.2s color; 
   }

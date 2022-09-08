@@ -1,6 +1,7 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import SignatureImage from 'src/assets/SignatureImage.png';
+import SignatureImage from 'src/assets/SignatureDark.png';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import AboutMeSwitchBodyButtonGroup from './AboutMeSwitchBodyButtonGroup';
@@ -12,6 +13,7 @@ interface CVSection {
 }
 
 const CV = () => {
+  const theme = useTheme();
   const cvSections: CVSection[] = [
     {
       title: 'Building Critbase',
@@ -85,10 +87,10 @@ const CV = () => {
                   paddingBottom: 16,
                   lineHeight: '20px',
                   fontSize: 11,
-                  color: '#000000',
+                  color: theme.palette.text.dark,
                 }}
               >
-                <span style={{ fontSize: 14, color: '#000' }}>
+                <span style={{ fontSize: 14, color: theme.palette.text.dark }}>
                   {bulletPoint}
                 </span>
               </li>
@@ -112,7 +114,7 @@ const Container = styled('div')(
 const AboutMeBody = () => {
   const [motivationalLetterActive, setMotivationalLetterActive] =
     useState(true);
-
+  const theme = useTheme();
   const activeBreakpoint = useBreakpoint();
 
   return (
@@ -124,7 +126,7 @@ const AboutMeBody = () => {
 
       <div
         style={{
-          backgroundColor: '#ffffff',
+          backgroundColor: theme.palette.background.light,
           borderRadius: motivationalLetterActive ? '0px 5px 5px 5px' : '5px',
           padding: compareBreakpoint(activeBreakpoint, '<', 'M')
             ? '35px 45px'

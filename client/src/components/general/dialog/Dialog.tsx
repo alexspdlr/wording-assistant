@@ -53,20 +53,21 @@ interface BoxProps {
 }
 
 const Box = styled('div')(
-  (props: BoxProps) => `
+  (props: BoxProps) => (defaultProps) =>
+    `
 position: absolute; 
   display: inline-block;
   ${positionHorizontally(props.horizontalPosition)} 
   ${positionVertically(props.verticalPosition)}  
 ${transformOrigin(props.horizontalPosition, props.verticalPosition, 15, 10)}   
-  background-color: #fff;
+  background-color: ${defaultProps.theme.palette.background.main};
   border-radius: 5px;
   z-index: 999; 
   margin: ${props.limitBoxToContainer ? '10px 0px 10px 0px' : '10px'};  
   opacity: 0; 
     transition: opacity ${props.transitionDuration}ms ease, transform ${
-    props.transitionDuration * 2
-  }ms ease; 
+      props.transitionDuration * 2
+    }ms ease; 
     ${
       props.show
         ? `opacity: 1; ${transformOrigin(

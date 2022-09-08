@@ -3,5 +3,5 @@
     height="100%" viewBox="0 0 29 22" version="1.1" xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlnsSerif="http://www.serif.com/"
     style="fill-rule:evenodd;clip-rule:evenodd;">
-    <path d="M4.123,9.623l7.5,7.5l13,-13" style="fill:none;stroke:#037171;stroke-width:2px;" />
+    <path d="M4.123,9.623l7.5,7.5l13,-13" style="fill:none;stroke:currentcolor;stroke-width:2px;" />
 </svg>

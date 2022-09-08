@@ -6,16 +6,21 @@ interface AppBarItemProps {
 }
 
 const AppBarItem = styled(Link)(
-  (props: AppBarItemProps) => `
+  (props: AppBarItemProps) => (defaultProps) =>
+    `
   padding-bottom: 15px; 
   text-decoration: none; 
-  color: #0F2B46;
+  color: ${defaultProps.theme.palette.primary.main};
   cursor: pointer;  
-  border-bottom: 3px solid #ffffff;  
+  border-bottom: 3px solid ${defaultProps.theme.palette.background.light};  
   transition: border-color 0.2s; 
   &:hover {
-    border-bottom: 3px solid rgba(0, 99, 149, 1);    
-    ${!props.isFirstItem && 'color: rgba(0, 99, 149, 1);'} 
+    border-bottom: 3px solid ${defaultProps.theme.palette.primary.light};    
+    ${
+      !props.isFirstItem &&
+      defaultProps.theme.activeMode === 'light' &&
+      `color: ${defaultProps.theme.palette.primary.light};`
+    } 
   } 
   ${!props.isFirstItem && 'margin-left: 30px;'}
 `

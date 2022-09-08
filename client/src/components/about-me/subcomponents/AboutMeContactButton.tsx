@@ -6,18 +6,22 @@ import Button from 'src/components/general/button';
 /* -------------------------------------------------------------------------- */
 
 const AboutMeContactButton = styled(Button)(
-  () => `  
-        background-color:  #0F2B46; 
+  (props) => `  
+        background-color: ${
+          props.theme.activeMode === 'light'
+            ? props.theme.palette.primary.main
+            : props.theme.palette.primary.dark
+        }; 
         border-radius: 3px 3px 0px 0px;
         transform: rotate(90deg);
-        position: fixed; 
+        position: fixed;  
         z-index: 10;
         left: 0;
         top: 220px; 
         margin-left: -31px; 
       
         &:hover {
-          background-color:  #006494;  
+          background-color:  ${props.theme.palette.primary.light};   
         }
         `
 );

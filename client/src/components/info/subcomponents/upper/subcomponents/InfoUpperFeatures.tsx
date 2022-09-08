@@ -3,6 +3,7 @@ import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import { ReactComponent as CheckIcon } from 'src/assets/CheckIcon.svg';
 import { ReactComponent as LockIcon } from 'src/assets/LockIcon.svg';
+import { useTheme } from '@emotion/react';
 
 /* -------------------------------- Container ------------------------------- */
 
@@ -57,12 +58,20 @@ interface FeatureProps {
 
 const Feature = (props: FeatureProps) => {
   const { title, version } = props;
+  const theme = useTheme();
   return (
     <FeatureContainer>
       {version === 'current' ? (
-        <CheckIcon width='25px' />
+        <CheckIcon
+          width='25px'
+          style={{ color: theme.palette.secondary.main }}
+        />
       ) : (
-        <LockIcon height='19px' width='26px' />
+        <LockIcon
+          height='19px'
+          width='26px'
+          style={{ color: theme.palette.text.disabled }}
+        />
       )}
       <FeatureText>{title}</FeatureText>
     </FeatureContainer>
@@ -72,15 +81,15 @@ const Feature = (props: FeatureProps) => {
 /* ---------------------------- MoreFeaturesLink ---------------------------- */
 
 const MoreFeaturesLink = styled('div')(
-  () => ` 
-         color: rgb(0, 94, 139);
+  (props) => ` 
+         color: ${props.theme.palette.primary.light};
          font-size: 16px; 
          font-weight: 600; 
          cursor: pointer; 
          padding-top: 15px;
          margin-left: 3px;
          &:hover {
-            text-decoration: underline rgb(0, 94, 139); 
+            text-decoration: underline ${props.theme.palette.primary.light}; 
           }
     `
 );

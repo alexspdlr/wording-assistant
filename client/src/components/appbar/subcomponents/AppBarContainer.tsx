@@ -12,8 +12,9 @@ interface ContainerProps {
 }
 
 const Container = styled('div')(
-  (props: ContainerProps) => ` 
-  background-color : rgba(255, 255, 255, 1);
+  (props: ContainerProps) => (defaultProps) =>
+    ` 
+  background-color : ${defaultProps.theme.palette.background.light};
   top: 0; 
   height: 60px; 
   display: flex; 

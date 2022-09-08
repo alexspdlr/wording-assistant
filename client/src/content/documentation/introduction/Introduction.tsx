@@ -21,11 +21,7 @@ Einige Beispiele:
     {
       type: 'ReactNode',
 
-      value: (
-        <div style={{ backgroundColor: '#eaedff' }}>
-          design patterns & principles
-        </div>
-      ),
+      value: <div>design patterns & principles</div>,
     },
   ],
 };

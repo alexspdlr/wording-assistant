@@ -63,12 +63,13 @@ interface CommentCardProps {
 }
 
 const CommentCard = styled(Card)(
-  (props: CommentCardProps) => `  
+  (props: CommentCardProps) => (defaultProps) =>
+    `  
   display: flex; 
   width: calc(100% - 48px); 
   align-items: center;
   font-weight: 400;
-  color: rgb(110, 110, 110);
+  color: ${defaultProps.theme.palette.text.disabled};
   padding-left: 24px; 
   padding-right: 24px; 
   ${props.gridArea && `grid-area: ${props.gridArea};`} 

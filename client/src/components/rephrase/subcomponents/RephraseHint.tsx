@@ -24,9 +24,10 @@ interface HintHeadingProps {
 }
 
 const HintHeading = styled('p')(
-  (props: HintHeadingProps) => `
+  (props: HintHeadingProps) => (defaultProps) =>
+    `
       font-weight: 300;
-      color: rgb(110, 110, 110); 
+      color: ${defaultProps.theme.palette.text.disabled};  
       margin: 0px; 
       line-height: ${props.lineHeight}px;
       font-size: ${props.fontSize}px;
@@ -34,10 +35,10 @@ const HintHeading = styled('p')(
 );
 
 const HintBody = styled('p')(
-  () => `
+  (props) => `
       font-size: 16px;
       font-weight: 300;
-      color: rgb(110, 110, 110); 
+      color: ${props.theme.palette.text.disabled};  
       line-height: 20px;
       margin: 0px; 
       padding-top: 7px;

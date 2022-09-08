@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import SignatureImage from 'src/assets/SignatureImage.png';
 import Button from 'src/components/general/button';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
@@ -11,11 +10,16 @@ interface SwitchBodyButtonProps {
 }
 
 const SwitchBodyButton = styled(Button)(
-  (props: SwitchBodyButtonProps) => `  
+  (props: SwitchBodyButtonProps) => (defaultProps) =>
+    `  
       position: relative;
       z-index: ${props.active ? '10' : '1'};
-      background-color:  #ffffff; 
-      color: ${props.active ? '#0F2B46' : '#006494'}; 
+      background-color:  ${defaultProps.theme.palette.background.light}; 
+      color: ${
+        props.active
+          ? defaultProps.theme.palette.text.main
+          : defaultProps.theme.palette.primary.light
+      }; 
       padding: ${props.active ? '20px 28px 26px 28px' : '20px 28px'}; 
       margin-bottom: ${props.active ? '0px' : '6px'};
       height: ${props.active ? '64px' : '58px'};
@@ -23,9 +27,9 @@ const SwitchBodyButton = styled(Button)(
       box-shadow: 0px 22px 32px rgb(0 0 0 / 10%);
       font-weight: 600;
       &:hover {
-        background-color:  #f0f9ff;  
+        background-color:  ${defaultProps.theme.palette.background.light};
       }
-      transition: all 0.15s; 
+      transition: all 0.15s;  
       `
 );
 

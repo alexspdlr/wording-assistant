@@ -42,13 +42,11 @@ grid-row-gap: 38px;
 
 /* --------------------------------- Wrapper -------------------------------- */
 
-interface WrapperProps {}
-
 const Wrapper = styled('div')(
-  (props: WrapperProps) => ` 
-    width: 100%;
+  (props) => ` 
+    width: 100%; 
     padding: 50px 0; 
-    border-bottom: 1px solid rgb(198, 205, 213); 
+    border-bottom: 1px solid ${props.theme.palette.divider}; 
   `
 );
 

@@ -1,3 +1,4 @@
+import { useTheme } from '@emotion/react';
 import { useState } from 'react';
 import PersonCutout from 'src/assets/PersonCutout.png';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
@@ -9,10 +10,12 @@ const AboutMeInfoPanel = () => {
   const activeBreakpoint = useBreakpoint();
   const isSmallLayout = compareBreakpoint(activeBreakpoint, '<', 'XS');
 
+  const theme = useTheme();
+
   return (
     <div
       style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: theme.palette.background.light,
         flexGrow: 1,
         maxWidth: isSmallLayout ? 1000 : 210,
         borderRadius: 5,
@@ -31,7 +34,7 @@ const AboutMeInfoPanel = () => {
         style={{
           display: personCutoutLoading ? 'none' : 'block',
           width: 'calc(100% - 40px)',
-          backgroundColor: '#F7F7F8',
+          backgroundColor: theme.palette.background.main,
           padding: '20px 20px 0 20px',
           borderRadius: '5px 5px 0 0',
         }}
@@ -42,7 +45,7 @@ const AboutMeInfoPanel = () => {
           style={{
             padding: '20px 20px 0 20px',
             height: 289,
-            backgroundColor: '#F7F7F8',
+            backgroundColor: theme.palette.background.dark,
             width: 'calc(100% - 40px)',
           }}
         />
@@ -59,7 +62,7 @@ const AboutMeInfoPanel = () => {
       >
         <span
           style={{
-            color: '#0F2B46',
+            color: theme.palette.primary.main,
             fontWeight: 600,
             fontSize: 18,
             letterSpacing: 4,
@@ -86,7 +89,7 @@ const AboutMeInfoPanel = () => {
         <div
           style={{
             height: '1px',
-            backgroundColor: '#E9E9E9',
+            backgroundColor: theme.palette.divider,
             width: '80%',
           }}
         />

@@ -23,11 +23,11 @@ const CustomLi = styled('li')(
 );
 
 const CustomA = styled('a')(
-  () => ` 
-    color: #006494;
+  (props) => ` 
+    color: ${props.theme.palette.primary.light}; 
     text-decoration: none;
     &:hover{
-        color: #0f2b46;
+        color:  ${props.theme.palette.primary.main};
     }
     transition: color 0.2s; 
             `

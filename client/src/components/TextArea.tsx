@@ -2,10 +2,10 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 const TextArea = styled('textarea')(
-  () => `
+  (props) => `
   border-radius: 8px; 
   box-shadow: 0 1px 4px 0 rgb(0 0 0 / 10%);
-  border: 1px solid #dae1e8;
+  border: 1px solid #e8dada;
   width: 600px; 
   padding: 30px; 
   resize: none; 

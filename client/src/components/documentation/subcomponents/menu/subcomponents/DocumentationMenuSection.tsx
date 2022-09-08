@@ -9,12 +9,15 @@ interface MenuContainerProps {
   isSmallLayout: boolean;
 }
 const MenuContainer = styled('div')(
-  (props: MenuContainerProps) => ` 
+  (props: MenuContainerProps) => (defaultProps) =>
+    ` 
     margin: ${props.isSmallLayout ? '0' : '0 40px 0 20px'};
     margin-top: ${props.isSmallLayout && props.isFirstSection ? '5px' : '0'};
     padding: ${props.isSmallLayout ? '0px 20px' : '20px 0'};
     border-bottom: ${
-      props.isLastSection || props.isSmallLayout ? 'none' : '1px solid #f1f1f1'
+      props.isLastSection || props.isSmallLayout
+        ? 'none'
+        : `1px solid ${defaultProps.theme.palette.divider}`
     };
           `
 );
@@ -26,15 +29,24 @@ interface MenuTitleProps {
   isSmallLayout: boolean;
 }
 const MenuTitle = styled('div')(
-  (props: MenuTitleProps) => ` 
-        color: ${props.isActive ? '#f46f52' : '#006494'};
+  (props: MenuTitleProps) => (defaultProps) =>
+    ` 
+        color: ${
+          props.isActive
+            ? defaultProps.theme.palette.tertiary.main
+            : defaultProps.theme.palette.primary.light
+        };
         padding: ${props.isSmallLayout ? '11px 0 0 ' : '5px 0'};
         font-size: ${props.isSmallLayout ? '16' : '19'}px;
         line-height: ${props.isSmallLayout ? '25' : '28'}px; 
         font-weight: ${props.isSmallLayout ? '400' : '500'};
         cursor: pointer;
         &:hover {
-          color: ${props.isActive ? '#f46f52' : '#0F2B46'};
+          color: ${
+            props.isActive
+              ? defaultProps.theme.palette.tertiary.main
+              : defaultProps.theme.palette.primary.main
+          };
         }
         
         `
@@ -47,8 +59,13 @@ interface MenuSubtitleProps {
   isActive: boolean;
 }
 const MenuSubtitle = styled('div')(
-  (props: MenuSubtitleProps) => ` 
-      color: ${props.isActive ? '#f46f52' : '#006494'};
+  (props: MenuSubtitleProps) => (defaultProps) =>
+    ` 
+      color: ${
+        props.isActive
+          ? defaultProps.theme.palette.tertiary.main
+          : defaultProps.theme.palette.primary.light
+      };
         padding: ${props.isSmallLayout ? '0px 20px' : '5px 20px'}; 
         font-size: 16px;
         font-weight: 500;
@@ -57,8 +74,12 @@ const MenuSubtitle = styled('div')(
         line-height: ${props.isSmallLayout ? '22' : '24'}px; 
         font-weight: ${props.isSmallLayout ? '400' : '500'};
         cursor: pointer;
-        &:hover {
-          color: ${props.isActive ? '#f46f52' : '#0F2B46'};
+        &:hover { 
+          color: ${
+            props.isActive
+              ? defaultProps.theme.palette.tertiary.main
+              : defaultProps.theme.palette.primary.main
+          };
         } 
         `
 );

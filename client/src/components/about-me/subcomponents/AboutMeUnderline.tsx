@@ -9,11 +9,12 @@ interface AboutMeUnderlineProps {
 }
 
 const AboutMeUnderline = styled('div')(
-  (props: AboutMeUnderlineProps) => `  
+  (props: AboutMeUnderlineProps) => (defaultProps) =>
+    `  
     position: absolute;
     margin-top: 8px;
     height: 2px;
-    background-color: #006494;
+    background-color: ${defaultProps.theme.palette.primary.light};
     width: ${props.width}px; 
           `
 );

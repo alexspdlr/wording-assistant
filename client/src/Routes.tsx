@@ -1,3 +1,4 @@
+import { useTheme } from '@emotion/react';
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoadingSpinner from './components/general/loading-spinner';
@@ -20,20 +21,23 @@ const AboutMePage = lazy(() => addLoadingTime('AboutMePage', 150));
 /* @ts-expect-error */
 const Page404 = lazy(() => addLoadingTime('404', 0));
 
-const LoadingScreen = () => (
-  <Section backgroundColor='#f7f7f7'>
-    <div
-      style={{
-        height: 'calc(100vh - 437px)',
-        display: 'flex',
-        paddingTop: '40px',
-        paddingLeft: '5px',
-      }}
-    >
-      <LoadingSpinner />
-    </div>
-  </Section>
-);
+const LoadingScreen = () => {
+  const theme = useTheme();
+  return (
+    <Section backgroundColor={theme.palette.background.dark}>
+      <div
+        style={{
+          height: 'calc(100vh - 437px)',
+          display: 'flex',
+          paddingTop: '40px',
+          paddingLeft: '5px',
+        }}
+      >
+        <LoadingSpinner />
+      </div>
+    </Section>
+  );
+};
 
 interface AppRouteProps {
   target: JSX.Element;

@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
 import { ReactComponent as QuotesIcon } from 'src/assets/QuotesIcon.svg';
 import PersonImage from 'src/assets/PersonImage.png';
-import SignatureImage from 'src/assets/SignatureImage.png';
+import SignatureDark from 'src/assets/SignatureDark.png';
+import SignatureLight from 'src/assets/SignatureLight.png';
 import Button from '../general/button';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
+import { useTheme } from '@emotion/react';
 
 /* -------------------------------- Container ------------------------------- */
 
@@ -29,8 +31,9 @@ interface PaperProps {
 }
 
 const Paper = styled('div')(
-  (props: PaperProps) => ` 
-  background-color: #ffffff;
+  (props: PaperProps) => (defaultProps) =>
+    ` 
+  background-color: ${defaultProps.theme.palette.background.light};
   flex-grow: 1; 
   max-width: 650px; 
   border-radius: 5px; 
@@ -48,12 +51,20 @@ const Paper = styled('div')(
 
 const QuoteSection = () => {
   const activeBreakpoint = useBreakpoint();
-
+  const theme = useTheme();
   return (
     <Container smallLayout={compareBreakpoint(activeBreakpoint, '<', 'S')}>
       <Paper smallLayout={compareBreakpoint(activeBreakpoint, '<', 'S')}>
         <div style={{ position: 'absolute', top: -28, left: -28 }}>
-          <QuotesIcon width='94px' />
+          <QuotesIcon
+            width='94px'
+            style={{
+              color:
+                theme.activeMode === 'light'
+                  ? theme.palette.primary.main
+                  : theme.palette.primary.dark,
+            }}
+          />
         </div>
         <div
           style={{
@@ -104,8 +115,10 @@ const QuoteSection = () => {
                 Applicant
               </span>
               <img
-                src={SignatureImage}
-                style={{ width: 120, paddingRight: 16, paddingTop: 10 }}
+                src={
+                  theme.activeMode === 'dark' ? SignatureDark : SignatureLight
+                }
+                style={{ width: 160, paddingRight: 16, paddingTop: 10 }}
                 alt='SignatureImage'
               />
             </div>

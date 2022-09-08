@@ -1,3 +1,4 @@
+import { useTheme } from '@emotion/react';
 import { useState } from 'react';
 import ProcessHeader from 'src/assets/ProcessHeader.png';
 import Content from 'src/components/general/content';
@@ -5,7 +6,7 @@ import Section from 'src/components/section';
 
 const ProcessPage = () => {
   const [headerImageLoading, setHeaderImageLoading] = useState(true);
-
+  const theme = useTheme();
   return (
     <div style={{ minHeight: 'calc(100vh - 360px)' }}>
       <img
@@ -23,19 +24,19 @@ const ProcessPage = () => {
           style={{
             width: '100%',
             paddingTop: '20%',
-            backgroundColor: '#f7f7f7',
+            backgroundColor: theme.palette.background.dark,
           }}
         >
           Loading...
         </div>
       )}
 
-      <Section backgroundColor='#f7f7f7' maxWidth={920}>
+      <Section backgroundColor={theme.palette.background.dark} maxWidth={920}>
         <div style={{ marginBottom: 80 }}>
           <div
             style={{
               padding: '40px 0 20px 0',
-              borderBottom: '1px solid rgb(221, 221, 221)',
+              borderBottom: `1px solid ${theme.palette.divider}`,
             }}
           >
             <Content

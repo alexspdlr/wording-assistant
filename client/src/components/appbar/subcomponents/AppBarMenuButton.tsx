@@ -7,7 +7,7 @@ const AppBarMenuButtonStyled = styled('button')(
   height: 24px; 
   padding: 0px; 
   margin: 4px; 
-  border-color:  #000; 
+  border-color:  ${props.theme.palette.text.main}; 
   background-color: transparent; 
   cursor: pointer; 
   display: flex;
@@ -16,7 +16,7 @@ const AppBarMenuButtonStyled = styled('button')(
   /* flex-flow: column; */ 
   flex-direction: column;  
   &:hover{
-    border-color: rgba(0, 99, 149, 1); 
+    border-color: ${props.theme.palette.primary.light}; 
 `
 );
 

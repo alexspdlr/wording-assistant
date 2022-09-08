@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import React, { ReactNode, useState } from 'react';
-import { ReactComponent as Logo } from 'src/assets/Logo.svg';
+import { ReactComponent as LogoLight } from 'src/assets/LogoLight.svg';
+import { ReactComponent as LogoDark } from 'src/assets/LogoDark.svg';
 import { ReactComponent as LogoText } from 'src/assets/LogoText.svg';
 import AppBarItem from './AppBarItem';
 import Button from 'src/components/general/button';
@@ -12,10 +13,20 @@ import { Breakpoint } from 'src/types/breakpoint';
 import AppBarMenuDialog from './AppBarMenuDialog';
 import { Link } from 'react-router-dom';
 import AppBarExternalLink from './AppBarExternalLink';
+import { useTheme } from '@emotion/react';
+import useBoundStore from 'src/store';
 
 /* ---------------------------- Styled components --------------------------- */
 
-const PositionedLogo = styled(Logo)(
+const PositionedLogoLight = styled(LogoLight)(
+  () => `
+  margin-bottom: -14px; 
+  width: 50px;
+  margin-right: 10px;
+  cursor: pointer;
+`
+);
+const PositionedLogoDark = styled(LogoDark)(
   () => `
   margin-bottom: -14px; 
   width: 50px;
@@ -111,12 +122,21 @@ const navItems: AppBarItemProps[] = [
 const AppBarContent = () => {
   const activeBreakpoint = useBreakpoint();
   const [menuDialogOpen, setMenuDialogOpen] = useState(false);
+  const theme = useTheme();
+
+  const setLightMode = useBoundStore((state) => state.setLightMode);
+  const setDarkMode = useBoundStore((state) => state.setDarkMode);
+  const colorMode = useBoundStore((state) => state.colorMode);
 
   return (
     <>
       <Left>
         <Link to='/'>
-          <PositionedLogo />
+          {theme.activeMode === 'light' ? (
+            <PositionedLogoLight />
+          ) : (
+            <PositionedLogoDark fill={theme.palette.text.light} />
+          )}
         </Link>
         {navItems.map(
           (navItem, i) =>
@@ -149,7 +169,9 @@ const AppBarContent = () => {
       </Left>
       <Right>
         {compareBreakpoint(activeBreakpoint, '>', '2XS') && (
-          <Button>Need help ?</Button>
+          <Button onClick={colorMode === 'dark' ? setLightMode : setDarkMode}>
+            {theme.activeMode === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          </Button>
         )}
         <AppBarMenuButton onClick={() => setMenuDialogOpen(true)} />
       </Right>

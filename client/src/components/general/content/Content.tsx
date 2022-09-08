@@ -5,26 +5,26 @@ import { ContentBody } from 'src/types/content';
 /* ----------------------------- SectionHeading ----------------------------- */
 
 const SectionHeading = styled('h1')(
-  () => `  
+  (props) => `  
           margin-bottom: 40px; 
           margin-top: 0px; 
           font-weight: 300; 
           line-height: 1.3; 
           font-size: 40px; 
-          color: #1b1e25;
+          color: ${props.theme.palette.text.light};
         `
 );
 
 /* ----------------------------- SubSectionHeading ----------------------------- */
 
 const SubSectionHeading = styled('h2')(
-  () => `  
+  (props) => `  
             margin-bottom: 20px; 
             margin-top: 80px; 
             font-weight: 400; 
             line-height: 1.3; 
             font-size: 32px; 
-            color: #1b1e25;
+            color: ${props.theme.palette.text.light};
           `
 );
 

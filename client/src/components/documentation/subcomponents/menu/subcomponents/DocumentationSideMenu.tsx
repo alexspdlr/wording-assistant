@@ -5,9 +5,9 @@ import styled from '@emotion/styled';
 /* -------------------------------------------------------------------------- */
 
 const DocumentationSideMenu = styled('div')(
-  () => ` 
+  (props) => ` 
         width: 300px; 
-        border-right: 1px solid #F1F1F1;
+        border-right: 1px solid ${props.theme.palette.divider}; 
         `
 );
 

@@ -1,3 +1,4 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import Section from 'src/components/section';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
@@ -24,11 +25,11 @@ const Container = styled('div')(
 );
 
 const ColoredBackgroundSection = styled('div')(
-  () => `  
+  (props) => `  
     position: absolute;
     width: 100%;
     height: 528px;
-    background-color: #F7F7F8;
+    background-color: ${props.theme.palette.background.dark}; 
     top: 0;
             `
 );
@@ -39,14 +40,16 @@ const ColoredBackgroundSection = styled('div')(
 
 const InfoSection = () => {
   const activeBreakpoint = useBreakpoint();
-
+  const theme = useTheme();
   return (
     <>
       <AboutMeContactButton size='large'>Contact</AboutMeContactButton>
       <ColoredBackgroundSection />
       <Section
         backgroundColor={
-          compareBreakpoint(activeBreakpoint, '<', 'XS') ? '#F7F7F8' : '#ffffff'
+          compareBreakpoint(activeBreakpoint, '<', 'XS')
+            ? theme.palette.background.dark
+            : theme.palette.background.main
         }
       >
         <Container

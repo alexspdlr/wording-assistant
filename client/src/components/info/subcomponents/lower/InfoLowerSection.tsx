@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import { Breakpoint } from 'src/types/breakpoint';
-import { ReactComponent as DesktopCodebase } from 'src/assets/DesktopCodebase.svg';
+import { ReactComponent as DesktopCodebaseLight } from 'src/assets/DesktopCodebaseLight.svg';
+import { ReactComponent as DesktopCodebaseDark } from 'src/assets/DesktopCodebaseDark.svg';
 import Button from 'src/components/general/button';
+import { useTheme } from '@emotion/react';
 
 /* --------------------------------- Wrapper -------------------------------- */
 
@@ -105,6 +106,7 @@ const PageLink = (props: PageLinkProps) => {
 
 const InfoLowerSection = () => {
   const activeBreakpoint = useBreakpoint();
+  const theme = useTheme();
 
   return (
     <Wrapper>
@@ -146,7 +148,12 @@ const InfoLowerSection = () => {
             alignItems: 'flex-end',
           }}
         >
-          {compareBreakpoint(activeBreakpoint, '>', 'S') && <DesktopCodebase />}
+          {compareBreakpoint(activeBreakpoint, '>', 'S') &&
+            (theme.activeMode === 'light' ? (
+              <DesktopCodebaseLight />
+            ) : (
+              <DesktopCodebaseDark />
+            ))}
           <div
             style={{
               padding: compareBreakpoint(activeBreakpoint, '>', 'XL')
@@ -174,7 +181,7 @@ const InfoLowerSection = () => {
             style={{
               width: compareBreakpoint(activeBreakpoint, '<', 'S') ? 0 : '1px',
               marginTop: '48px',
-              backgroundColor: 'rgb(198, 205, 213)',
+              backgroundColor: theme.palette.divider,
               height: 'calc(100% - 48px)',
             }}
           />

@@ -1,17 +1,18 @@
 import styled from '@emotion/styled';
 import { ReactNode, useState } from 'react';
 import { ReactComponent as ArrowDownIcon } from 'src/assets/ArrowDownIcon.svg';
+import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 
 /* ---------------------------- Styled components --------------------------- */
 
 const TopMenuContainer = styled('div')(
-  () => ` 
+  (props) => ` 
         width: calc(100% - 39px); 
-        border-bottom: 1px solid #F1F1F1;
-        border-top: 1px solid #F1F1F1;
+        border-bottom: 1px solid ${props.theme.palette.divider};
+        border-top: 1px solid ${props.theme.palette.divider};
         padding: 10px 20px;
-        color: #0f2b46;
-        background-color: #ffffff;
+        color: ${props.theme.palette.primary.main};
+        background-color: ${props.theme.palette.background.main};
         font-weight: 700; 
         display: flex; 
         align-items: stretch; 
@@ -24,13 +25,16 @@ const TopMenuContainer = styled('div')(
 );
 
 const TopMenuOverlay = styled('div')(
-  () => ` 
+  (props) => ` 
       top: 106px; 
       left: 0; 
       height: 100%;
       width: 100%; 
       position: fixed; 
-        background-color: rgba(255,255,255,0.96);
+        background-color: ${addAlphaToHexColor(
+          props.theme.palette.background.main,
+          0.96
+        )};
         `
 );
 

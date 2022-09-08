@@ -1,14 +1,15 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 
 /* -------------------------------- Container ------------------------------- */
 const Container = styled('div')(
-  () => `
+  (props) => `
   position: relative;
   height: 32px;
-  background-color: #F9F9F9; 
+  background-color: ${props.theme.palette.background.dark}; 
   border-radius: 4px;
-  border: 1px solid #eaeaea;
+  border: 1px solid ${props.theme.palette.divider};
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
@@ -26,16 +27,17 @@ interface SelectionProps {
 }
 
 const Selection = styled('span')(
-  (props: SelectionProps) => `
+  (props: SelectionProps) => (defaultProps) =>
+    `
     display: block;
     position: absolute;
     z-index: 1; 
     width: 85px;
     height: 32px;
-    background-color: #fff; 
+    background-color: ${defaultProps.theme.palette.background.main}; 
     transition: left 200ms ease-out, border-radius 200ms ease;
-    box-shadow: #e9e9e9 0px 0px 0px 1px;
-    left: ${props.leftOffsetPercentage}%; 
+    box-shadow: ${defaultProps.theme.palette.divider} 0px 0px 0px 1px;
+    left: ${props.leftOffsetPercentage}%;  
   `
 );
 
@@ -46,7 +48,8 @@ interface LabelStyledProps {
 }
 
 const LabelStyled = styled('label')(
-  (props: LabelStyledProps) => `
+  (props: LabelStyledProps) => (defaultProps) =>
+    `
     z-index: 2; 
     float: left;
     width: 85px;
@@ -63,10 +66,24 @@ const LabelStyled = styled('label')(
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    color: ${props.active ? '#0F2B46;' : '#949494;'}  
+    color: ${
+      props.active
+        ? `${defaultProps.theme.palette.primary.main};`
+        : `${defaultProps.theme.palette.text.disabled};`
+    }  
     &:hover {
-      color: ${props.active ? 'rgba(0, 99, 149, 1);' : '#818181;'}
-     ${!props.active && ' background-color: rgba(0,0,0, 0.02);'}
+      color: ${
+        props.active
+          ? `${defaultProps.theme.palette.primary.light};`
+          : `${defaultProps.theme.palette.text.disabled};`
+      }
+     ${
+       !props.active &&
+       `background-color: ${addAlphaToHexColor(
+         defaultProps.theme.palette.text.light,
+         0.05
+       )};`
+     }
     }
   `
 );
