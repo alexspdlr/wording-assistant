@@ -47,6 +47,7 @@ declare module '@emotion/react' {
         contrastText: string;
       };
       divider: string;
+      border: string;
       background: {
         main: string;
         light: string;

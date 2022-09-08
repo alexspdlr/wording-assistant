@@ -9,7 +9,7 @@ const Container = styled('div')(
   height: 32px;
   background-color: ${props.theme.palette.background.dark}; 
   border-radius: 4px;
-  border: 1px solid ${props.theme.palette.divider};
+  border: 1px solid ${props.theme.palette.border};
   display: flex; 
   justify-content: space-between; 
   align-items: center; 

@@ -10,7 +10,7 @@ const HeaderStyled = styled('div')(
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid ${props.theme.palette.divider};
+    border-bottom: 1px solid ${props.theme.palette.border};
     padding-left: 24px;
     padding-right: 24px;
     font-weight: 600;
@@ -44,6 +44,7 @@ const ToolCardContainer = styled(Card)(
       width: 100%;
       height: auto;
       flex-direction: column;
+      border: 1px solid ${defaultProps.theme.palette.border};
       &:focus-within {
         border: 1px solid ${defaultProps.theme.palette.primary.main};
       }

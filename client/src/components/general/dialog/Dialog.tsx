@@ -59,9 +59,9 @@ position: absolute;
   display: inline-block;
   ${positionHorizontally(props.horizontalPosition)} 
   ${positionVertically(props.verticalPosition)}  
-${transformOrigin(props.horizontalPosition, props.verticalPosition, 15, 10)}   
+${transformOrigin(props.horizontalPosition, props.verticalPosition, 5, 10)}   
   background-color: ${defaultProps.theme.palette.background.main};
-  border-radius: 5px;
+  border-radius: 5px; 
   z-index: 999; 
   margin: ${props.limitBoxToContainer ? '10px 0px 10px 0px' : '10px'};  
   opacity: 0; 
@@ -97,19 +97,20 @@ const BoxContainer = styled('div')(
   z-index: -1;   
   height: 100vh;
     max-width: 1420px;
+
     width: calc(100% - ${2 * props.horizontalPadding}px);  
     `
 );
 
 const BoxWrapper = styled('div')(
   (props) => `
-    position: absolute;
+    position: fixed;
     top: 0; 
     z-index: 1000;  
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     display: flex; 
-    justify-content: center; 
+    justify-content: center;  
       `
 );
 
@@ -119,13 +120,19 @@ interface BackgroundProps {
   darkenBackground: boolean;
 }
 const Background = styled('div')(
-  (props: BackgroundProps) => `
+  (props: BackgroundProps) => (defaultProps) =>
+    `
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0, ${props.darkenBackground ? '0.3' : '0.0'});
+   right: 0; 
+   bottom: 0; 
+   overflow-y: hidden;
+    background-color: rgba(0,0,0, ${
+      props.darkenBackground
+        ? `${defaultProps.theme.activeMode === 'dark' ? '0.5' : '0.3'}`
+        : '0.0'
+    });
     z-index: 1000;  
     opacity: 0; 
     transition: opacity ${props.transitionDuration}ms ease;

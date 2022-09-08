@@ -43,7 +43,8 @@ const Wrapper = styled(Card)(
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    cursor: pointer; 
+    cursor: pointer;
+    border: 1px solid ${defaultProps.theme.palette.border}; 
     ${
       props.active
         ? 'border-bottom: 0px; border-radius: 8px 8px 4px 4px;'

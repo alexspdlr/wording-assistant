@@ -59,6 +59,7 @@ const darkTheme: Theme = {
       contrastText: '#ffffff',
     },
     divider: '#2c3033',
+    border: '#2c3033',
     background: {
       main: '#1c1e21',
       light: '#222426',
@@ -119,6 +120,7 @@ const lightTheme: Theme = {
       contrastText: '#ffffff',
     },
     divider: '#F1F1F1',
+    border: '#dae1e8',
     background: {
       main: '#ffffff',
       light: '#ffffff',

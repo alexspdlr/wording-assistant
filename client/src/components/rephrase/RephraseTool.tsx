@@ -72,6 +72,7 @@ const CommentCard = styled(Card)(
   color: ${defaultProps.theme.palette.text.disabled};
   padding-left: 24px; 
   padding-right: 24px; 
+  border: 1px solid ${defaultProps.theme.palette.border};
   ${props.gridArea && `grid-area: ${props.gridArea};`} 
   `
 );
