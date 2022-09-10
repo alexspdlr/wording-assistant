@@ -1,4 +1,4 @@
 export enum RephraseInteractionMode {
-  Edit = 'Edit',
-  Rephrase = 'Rephrase',
+  Edit = 'Edit Text',
+  Rephrase = 'Rephrase Text',
 }

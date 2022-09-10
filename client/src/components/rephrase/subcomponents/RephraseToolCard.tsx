@@ -19,7 +19,7 @@ const HeaderStyled = styled('div')(
     justify-content: space-between;
     align-items: center;
     padding-left: 24px;
-    padding-right: 24px;
+    padding-right: 12px;
     font-weight: 600;
 
     border-right: ${

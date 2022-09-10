@@ -1,21 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
-
-/* -------------------------------- Container ------------------------------- */
-const Container = styled('div')(
-  (props) => `
-  position: relative;
-  height: 32px;
-  background-color: ${props.theme.palette.background.dark}; 
-  border-radius: 4px;
-  border: 1px solid ${props.theme.palette.border};
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  overflow: hidden; 
-`
-);
+import Tooltip from '../tooltip';
 
 /* ----------------------------- Selection ---------------------------- */
 
@@ -26,35 +12,16 @@ interface SelectionProps {
   leftOffsetPercentage: number;
 }
 
-const Selection = styled('span')(
-  (props: SelectionProps) => (defaultProps) =>
-    `
-    display: block;
-    position: absolute;
-    z-index: 1; 
-    width: 95px;
-    height: 32px;
-    background-color: ${defaultProps.theme.palette.background.main}; 
-    transition: left 200ms ease-out, border-radius 200ms ease;
-    box-shadow: ${defaultProps.theme.palette.border} 0px 0px 0px 1px;
-    left: ${props.leftOffsetPercentage}%;  
-  `
-);
+/* ---------------------------------- Button --------------------------------- */
 
-/* ---------------------------------- Label --------------------------------- */
-
-interface LabelStyledProps {
-  active: boolean;
-}
-
-const LabelStyled = styled('label')(
-  (props: LabelStyledProps) => (defaultProps) =>
+const ButtonStyled = styled('button')(
+  (defaultProps) =>
     `
     z-index: 2; 
-    float: left;
-    width: 95px;
+    float: left; 
     line-height: 32px;  
     font-size: 14px;
+    padding: 0px 12px; 
     text-align: center;
     cursor: pointer; 
     transition: color 0.15s ease-out; 
@@ -66,75 +33,24 @@ const LabelStyled = styled('label')(
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    color: ${
-      props.active
-        ? `${defaultProps.theme.palette.primary.main};`
-        : `${defaultProps.theme.palette.text.disabled};`
-    }  
-    &:hover {
-      color: ${
-        props.active
-          ? `${defaultProps.theme.palette.primary.main};`
-          : `${defaultProps.theme.palette.text.disabled};`
-      }
-     ${
-       !props.active &&
-       `background-color: ${addAlphaToHexColor(
-         defaultProps.theme.palette.text.light,
-         0.05
-       )};`
-     }
-    }
+    border-radius: 4px;
+    background-color: ${defaultProps.theme.palette.background.main};
+    border: 1px solid ${defaultProps.theme.palette.divider};
+    color: ${defaultProps.theme.palette.primary.main};
+    &:hover { 
+      color: ${defaultProps.theme.palette.primary.light} 
+    } 
   `
 );
 
-interface LabelProps {
+interface ButtonProps {
   title: string;
   onChange: Function;
-  active: boolean;
 }
 
-const Label = (props: LabelProps) => {
-  const { title, onChange, active } = props;
-  return (
-    <LabelStyled onClick={() => onChange(title)} active={active}>
-      {title}
-    </LabelStyled>
-  );
-};
-
-/* ---------------------------------- Radio --------------------------------- */
-
-const HiddenRadio = styled('input')(
-  () => `
-    display: none;
-  `
-);
-
-interface RadioProps {
-  value: any;
-  selected: any;
-}
-
-const Radio = (props: RadioProps) => {
-  const { value, selected } = props;
-  return <HiddenRadio type='radio' checked={selected === value} />;
-};
-
-/* ------------------------------ util ----------------------------- */
-
-const determineItemPosition = (
-  selected: string,
-  values: string[]
-): ItemPosition => {
-  if (selected === values[0]) {
-    return 'start';
-  }
-  if (selected === values[values.length - 1]) {
-    return 'end';
-  }
-
-  return 'middle';
+const Button = (props: ButtonProps) => {
+  const { title, onChange } = props;
+  return <ButtonStyled onClick={() => onChange(title)}>{title}</ButtonStyled>;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -154,29 +70,19 @@ const ToggleButton = (props: ToggleButtonProps) => {
   );
 
   const handleChange = (val: string) => {
-    setSelected(val);
-    onSelectionChange(val);
+    const newVal = values.find((val) => val !== selected);
+
+    if (newVal) {
+      setSelected(newVal);
+      onSelectionChange(newVal);
+    }
   };
 
   return (
-    <Container>
-      {values.map((val, i) => {
-        return (
-          <>
-            <Radio value={val} selected={selected} />
-            <Label
-              title={val}
-              active={selected === val}
-              onChange={handleChange}
-            />
-          </>
-        );
-      })}
-      <Selection
-        leftOffsetPercentage={(values.indexOf(selected) / values.length) * 100}
-        itemPosition={determineItemPosition(selected, values)}
-      />
-    </Container>
+    <Button
+      title={values.find((val) => val !== selected) || selected}
+      onChange={handleChange}
+    />
   );
 };
 
