@@ -53,6 +53,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
   return (
     <>
       <TextArea
+        id='source-value-input'
         ref={textareaRef}
         onChange={textAreaChange}
         autoFocus

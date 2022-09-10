@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { useSearchParams } from 'react-router-dom';
 import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
-import { RephraseInteractionMode } from 'src/types/rephrase';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import useRephraseToolTextboxMinHeight from 'src/utils/hooks/useRephraseToolTextboxMinHeight';
 import RephraseHint from '../RephraseHint';
@@ -33,12 +32,9 @@ const Container = styled('div')(
   `
 );
 
-interface RephraseTargetProps {
-  activeMode: RephraseInteractionMode;
-}
+interface RephraseTargetProps {}
 
 const RephraseTarget = (props: RephraseTargetProps) => {
-  const { activeMode } = props;
   const minHeight = useRephraseToolTextboxMinHeight();
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
@@ -56,21 +52,12 @@ const RephraseTarget = (props: RephraseTargetProps) => {
               <TargetSelect value={rephrasedSentence} />
             ) : (
               <>
-                {activeMode === RephraseInteractionMode.Rephrase ? (
+                {value && value.length > 0 && (
                   <RephraseHint
                     hideHint={false}
-                    title='Select a sentence to rephrase'
-                    subtitle='Click on a sentence to rephrase it. You can then click on any word to see possible alternatives.'
+                    title='Switch to Rephrase Mode'
+                    subtitle='Switch to Rephrase Mode to select a phrase. You can then rephrase it word by word.'
                   />
-                ) : (
-                  value &&
-                  value.length > 0 && (
-                    <RephraseHint
-                      hideHint={false}
-                      title='Switch to Rephrase Mode'
-                      subtitle='Switch to Rephrase Mode to select a phrase. You can then rephrase it word by word.'
-                    />
-                  )
                 )}
               </>
             )}

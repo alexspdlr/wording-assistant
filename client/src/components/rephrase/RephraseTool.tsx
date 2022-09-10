@@ -9,7 +9,6 @@ import Card from 'src/components/general/card';
 import RephraseToolCard from 'src/components/rephrase/subcomponents/RephraseToolCard';
 import RephraseSource from './subcomponents/source';
 import { useState } from 'react';
-import { RephraseInteractionMode } from 'src/types/rephrase';
 import useBoundStore from 'src/store';
 import LoadingSpinner from '../general/loading-spinner';
 import TargetSelect from './subcomponents/target/subcomponents/TargetSelect';
@@ -84,12 +83,10 @@ const CommentCard = styled(Card)(
 /* ------------------------------- RephraseToolSection ------------------------------ */
 interface RephraseToolSectionProps {
   isMobileLayout: boolean;
-  interactionMode: RephraseInteractionMode;
-  setInteractionMode: (selectedMode: RephraseInteractionMode) => void;
 }
 
 const RephraseToolSection = (props: RephraseToolSectionProps) => {
-  const { isMobileLayout, interactionMode, setInteractionMode } = props;
+  const { isMobileLayout } = props;
 
   const [searchParams, setSearchParams] = useSearchParams();
   const sourceValue = searchParams.get('source-value');
@@ -99,27 +96,11 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
       <>
         <RephraseToolCard
           gridArea='1 / 1 / 2 / 2'
-          headerTitle={
-            interactionMode === RephraseInteractionMode.Edit
-              ? 'Enter your text'
-              : 'Paraphrase your text'
-          }
+          headerTitle='Enter your text'
           isSource
           isMobileLayout={isMobileLayout}
-          headerEndItem={
-            <>
-              {sourceValue && sourceValue.length > 0 && (
-                <ToggleButton
-                  values={Object.values(RephraseInteractionMode)}
-                  onSelectionChange={(selectedMode: RephraseInteractionMode) =>
-                    setInteractionMode(selectedMode)
-                  }
-                />
-              )}
-            </>
-          }
         >
-          <RephraseSource activeMode={interactionMode} />
+          <RephraseSource />
         </RephraseToolCard>
         <RephraseToolCard
           isMobileLayout={isMobileLayout}
@@ -127,7 +108,7 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
           headerTitle='Paraphrase'
           isSource={false}
         >
-          <RephraseTarget activeMode={interactionMode} />
+          <RephraseTarget />
         </RephraseToolCard>
       </>
     );
@@ -144,26 +125,10 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
       <RephraseToolCard
         isMobileLayout={isMobileLayout}
         gridArea='2 / 1 / 3 / 2'
-        headerTitle={
-          interactionMode === RephraseInteractionMode.Edit
-            ? 'Enter your text'
-            : 'Select a sentence'
-        }
+        headerTitle='Enter your text'
         isSource
-        headerEndItem={
-          <>
-            {sourceValue && sourceValue.length > 0 && (
-              <ToggleButton
-                values={Object.values(RephraseInteractionMode)}
-                onSelectionChange={(selectedMode: RephraseInteractionMode) =>
-                  setInteractionMode(selectedMode)
-                }
-              />
-            )}
-          </>
-        }
       >
-        <RephraseSource activeMode={interactionMode} />
+        <RephraseSource />
       </RephraseToolCard>
       <RephraseToolCard
         isMobileLayout={isMobileLayout}
@@ -171,7 +136,7 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
         headerTitle='Paraphrase'
         isSource={false}
       >
-        <RephraseTarget activeMode={interactionMode} />
+        <RephraseTarget />
       </RephraseToolCard>{' '}
     </div>
   );
@@ -184,8 +149,6 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
 const RephraseTool = () => {
   const activeBreakpoint = useBreakpoint();
   const isMobileLayout = compareBreakpoint(activeBreakpoint, '<', 'S');
-  const [interactionMode, setInteractionMode] =
-    useState<RephraseInteractionMode>(RephraseInteractionMode.Edit);
   const [rephraseFilesDialogOpen, setRephraseFilesDialogOpen] =
     useState<boolean>(false);
 
@@ -220,11 +183,7 @@ const RephraseTool = () => {
           </ActiveToolsContainer>
         )}
 
-        <RephraseToolSection
-          isMobileLayout={isMobileLayout}
-          interactionMode={interactionMode}
-          setInteractionMode={setInteractionMode}
-        />
+        <RephraseToolSection isMobileLayout={isMobileLayout} />
 
         <CommentCard
           gridArea={isMobileLayout ? '3 / 1 / 4 / 2' : '3 / 1 / 4 / 3'}

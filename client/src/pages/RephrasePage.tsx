@@ -3,6 +3,7 @@ import RephraseTool from 'src/components/rephrase';
 import QuoteSection from 'src/components/quote';
 import InfoSection from 'src/components/info/InfoSection';
 import { useTheme } from '@emotion/react';
+import { useEffect } from 'react';
 
 const RephrasePage = () => {
   const theme = useTheme();

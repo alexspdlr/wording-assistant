@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect } from 'react';
-import { RephraseInteractionMode } from 'src/types/rephrase';
+import { useEffect, useState } from 'react';
 import copyToClipboard from 'src/utils/copyToClipboard';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import useLocalStorage from 'src/utils/hooks/useLocalStorage';
@@ -36,20 +35,41 @@ const Container = styled('div')(
   `
 );
 
-interface RephraseSourceProps {
-  activeMode: RephraseInteractionMode;
-}
+interface RephraseSourceProps {}
 
 const RephraseSource = (props: RephraseSourceProps) => {
-  const { activeMode } = props;
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
   const minHeight = useRephraseToolTextboxMinHeight();
 
+  const isMobileDevice = false;
+
+  useEffect(() => {
+    const listener = () => {
+      const selection = window.getSelection();
+      const selectionString = selection?.toString();
+
+      const targetNode = document.getElementById('source-value-input');
+
+      const isSourceInput = selection?.anchorNode?.contains(targetNode);
+
+      if (isSourceInput && selectionString && selectionString.length > 0) {
+        alert(selection?.toString());
+      }
+    };
+
+    window.addEventListener('mouseup', listener);
+    return () => window.removeEventListener('mouseup', listener);
+  }, []);
+
   return (
     <Wrapper>
       <Container minHeight={minHeight}>
-        {activeMode === RephraseInteractionMode.Edit ? (
+        {isMobileDevice ? (
+          <>
+            <SourceSelect value={value || ''} />
+          </>
+        ) : (
           <>
             <RephraseHint
               hideHint={value ? value.length > 0 : false}
@@ -62,10 +82,6 @@ const RephraseSource = (props: RephraseSourceProps) => {
                 setSearchParams({ 'source-value': newVal })
               }
             />
-          </>
-        ) : (
-          <>
-            <SourceSelect value={value || ''} />
           </>
         )}
       </Container>
