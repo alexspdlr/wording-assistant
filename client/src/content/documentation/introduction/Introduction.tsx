@@ -8,6 +8,9 @@ const introductionSection: ContentSection = {
       type: 'Markdown',
 
       value: `
+
+      WICHTIG: Warum habe ich mich für Sotrage in URL entschieden -> sharable & persistent state on reload;
+
   Die DeepL API bietet programmatischen Zugriff auf die maschinelle Übersetzungstechnologie von DeepL und ermöglicht es, qualitativ hochwertige Übersetzungen direkt in Ihre Websites und Anwendungen einzubinden.
 
 Einige Beispiele:

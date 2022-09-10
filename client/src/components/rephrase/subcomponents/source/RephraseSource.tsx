@@ -9,6 +9,7 @@ import SourceCopyButton from './subcomponents/SourceCopyButton';
 import RephraseHint from '../RephraseHint';
 import SourceSelect from './subcomponents/SourceSelect';
 import SourceTextArea from './subcomponents/SourceTextArea';
+import { useSearchParams } from 'react-router-dom';
 
 const Wrapper = styled('div')(
   () => `
@@ -41,8 +42,8 @@ interface RephraseSourceProps {
 
 const RephraseSource = (props: RephraseSourceProps) => {
   const { activeMode } = props;
-  const activeBreakpoint = useBreakpoint();
-  const [value, setValue] = useLocalStorage('source-value', '');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const value = searchParams.get('source-value');
   const minHeight = useRephraseToolTextboxMinHeight();
 
   return (
@@ -55,15 +56,20 @@ const RephraseSource = (props: RephraseSourceProps) => {
               title='Paste or write your text'
               subtitle='Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'
             />
-            <SourceTextArea value={value} setValue={setValue} />
+            <SourceTextArea
+              value={value || ''}
+              setValue={(newVal: any) =>
+                setSearchParams({ 'source-value': newVal })
+              }
+            />
           </>
         ) : (
           <>
-            <SourceSelect value={value} />
+            <SourceSelect value={value || ''} />
           </>
         )}
       </Container>
-      <SourceCopyButton onClick={() => copyToClipboard(value)} />
+      <SourceCopyButton onClick={() => copyToClipboard(value || '')} />
     </Wrapper>
   );
 };

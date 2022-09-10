@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useSearchParams } from 'react-router-dom';
 import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
 import { RephraseInteractionMode } from 'src/types/rephrase';
@@ -39,7 +40,8 @@ interface RephraseTargetProps {
 const RephraseTarget = (props: RephraseTargetProps) => {
   const { activeMode } = props;
   const minHeight = useRephraseToolTextboxMinHeight();
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const value = searchParams.get('source-value');
   const rephrasedSentence = useBoundStore((state) => state.rephrasedSentence);
   const waitingForServer = useBoundStore((state) => state.waitingForServer);
 
@@ -54,12 +56,21 @@ const RephraseTarget = (props: RephraseTargetProps) => {
               <TargetSelect value={rephrasedSentence} />
             ) : (
               <>
-                {activeMode === RephraseInteractionMode.Rephrase && (
+                {activeMode === RephraseInteractionMode.Rephrase ? (
                   <RephraseHint
                     hideHint={false}
                     title='Select a sentence to rephrase'
-                    subtitle='Switch to Rephrase Mode to select a phrase. You can then rephrase it word by word. '
+                    subtitle='Click on a sentence to rephrase it. You can then click on any word to see possible alternatives.'
                   />
+                ) : (
+                  value &&
+                  value.length > 0 && (
+                    <RephraseHint
+                      hideHint={false}
+                      title='Switch to Rephrase Mode'
+                      subtitle='Switch to Rephrase Mode to select a phrase. You can then rephrase it word by word.'
+                    />
+                  )
                 )}
               </>
             )}

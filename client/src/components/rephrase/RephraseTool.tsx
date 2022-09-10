@@ -19,6 +19,7 @@ import Dialog from '../general/dialog';
 import theme from 'src/constants/theme';
 import useLocalStorage from 'src/utils/hooks/useLocalStorage';
 import Tooltip from '../general/tooltip';
+import { useSearchParams } from 'react-router-dom';
 
 /* ------------------------------- GridLayout ------------------------------- */
 interface GridLayoutProps {
@@ -90,6 +91,9 @@ interface RephraseToolSectionProps {
 const RephraseToolSection = (props: RephraseToolSectionProps) => {
   const { isMobileLayout, interactionMode, setInteractionMode } = props;
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sourceValue = searchParams.get('source-value');
+
   if (isMobileLayout) {
     return (
       <>
@@ -103,18 +107,16 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
           isSource
           isMobileLayout={isMobileLayout}
           headerEndItem={
-            <Tooltip
-              content={'Switch between Rephrase & Edit mode'}
-              direction='top'
-              delay={400}
-            >
-              <ToggleButton
-                values={Object.values(RephraseInteractionMode)}
-                onSelectionChange={(selectedMode: RephraseInteractionMode) =>
-                  setInteractionMode(selectedMode)
-                }
-              />
-            </Tooltip>
+            <>
+              {sourceValue && sourceValue.length > 0 && (
+                <ToggleButton
+                  values={Object.values(RephraseInteractionMode)}
+                  onSelectionChange={(selectedMode: RephraseInteractionMode) =>
+                    setInteractionMode(selectedMode)
+                  }
+                />
+              )}
+            </>
           }
         >
           <RephraseSource activeMode={interactionMode} />
@@ -149,18 +151,16 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
         }
         isSource
         headerEndItem={
-          <Tooltip
-            content={'Switch between Rephrase & Edit mode'}
-            direction='top'
-            delay={400}
-          >
-            <ToggleButton
-              values={Object.values(RephraseInteractionMode)}
-              onSelectionChange={(selectedMode: RephraseInteractionMode) =>
-                setInteractionMode(selectedMode)
-              }
-            />
-          </Tooltip>
+          <>
+            {sourceValue && sourceValue.length > 0 && (
+              <ToggleButton
+                values={Object.values(RephraseInteractionMode)}
+                onSelectionChange={(selectedMode: RephraseInteractionMode) =>
+                  setInteractionMode(selectedMode)
+                }
+              />
+            )}
+          </>
         }
       >
         <RephraseSource activeMode={interactionMode} />

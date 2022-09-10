@@ -34,7 +34,7 @@ const ButtonStyled = styled('button')(
     -ms-user-select: none;
     user-select: none;
     border-radius: 4px;
-    background-color: ${defaultProps.theme.palette.background.main};
+    background-color: ${defaultProps.theme.palette.background.light};
     border: 1px solid ${defaultProps.theme.palette.divider};
     color: ${defaultProps.theme.palette.primary.main};
     &:hover { 
