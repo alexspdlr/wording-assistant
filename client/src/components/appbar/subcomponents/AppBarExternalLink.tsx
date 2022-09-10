@@ -7,13 +7,12 @@ interface AppBarExternalLinkProps {
 const AppBarExternalLink = styled('a')(
   (props: AppBarExternalLinkProps) => (defaultProps) =>
     `
-  padding-bottom: 15px; 
+  padding-bottom: 18px; 
   text-decoration: none; 
   color: ${defaultProps.theme.palette.primary.main};
   cursor: pointer;  
-  border-bottom: 3px solid ${defaultProps.theme.palette.background.light}; 
-  transition: border-color 0.2s; 
   &:hover {
+    padding-bottom: 15px; 
     border-bottom: 3px solid ${defaultProps.theme.palette.primary.light};   
     ${
       !props.isFirstItem &&

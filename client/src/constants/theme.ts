@@ -59,7 +59,7 @@ const darkTheme: Theme = {
       contrastText: '#ffffff',
     },
     divider: '#2c3033',
-    border: '#2c3033',
+    border: '#313438',
     background: {
       main: '#1c1e21',
       light: '#222426',

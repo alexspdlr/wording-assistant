@@ -32,11 +32,11 @@ const Selection = styled('span')(
     display: block;
     position: absolute;
     z-index: 1; 
-    width: 85px;
+    width: 95px;
     height: 32px;
     background-color: ${defaultProps.theme.palette.background.main}; 
     transition: left 200ms ease-out, border-radius 200ms ease;
-    box-shadow: ${defaultProps.theme.palette.divider} 0px 0px 0px 1px;
+    box-shadow: ${defaultProps.theme.palette.border} 0px 0px 0px 1px;
     left: ${props.leftOffsetPercentage}%;  
   `
 );
@@ -52,9 +52,9 @@ const LabelStyled = styled('label')(
     `
     z-index: 2; 
     float: left;
-    width: 85px;
+    width: 95px;
     line-height: 32px;  
-    font-size: 13px;
+    font-size: 14px;
     text-align: center;
     cursor: pointer; 
     transition: color 0.15s ease-out; 
@@ -74,7 +74,7 @@ const LabelStyled = styled('label')(
     &:hover {
       color: ${
         props.active
-          ? `${defaultProps.theme.palette.primary.light};`
+          ? `${defaultProps.theme.palette.primary.main};`
           : `${defaultProps.theme.palette.text.disabled};`
       }
      ${

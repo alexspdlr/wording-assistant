@@ -15,6 +15,8 @@ import LoadingSpinner from '../general/loading-spinner';
 import TargetSelect from './subcomponents/target/subcomponents/TargetSelect';
 import RephraseTarget from './subcomponents/target/RephraseTarget';
 import Snackbar from '../general/snackbar';
+import Dialog from '../general/dialog';
+import theme from 'src/constants/theme';
 
 /* ------------------------------- GridLayout ------------------------------- */
 interface GridLayoutProps {
@@ -26,11 +28,11 @@ const GridLayout = styled('div')(
   padding-top: 18px; 
   padding-bottom: 56px; 
   display: grid;
-  grid-gap: 8px;
+  grid-row-gap: 8px;
   ${
     props.isMobileLayout
       ? 'grid-template-columns: 100%; grid-template-rows: repeat(2, 1fr) 58px;'
-      : 'grid-template-columns: repeat(2, 1fr); grid-template-rows: 78px auto 58px;'
+      : 'grid-template-columns: 1fr; grid-template-rows: repeat(3, auto);'
   }
   `
 );
@@ -70,12 +72,87 @@ const CommentCard = styled(Card)(
   align-items: center;
   font-weight: 400;
   color: ${defaultProps.theme.palette.text.disabled};
-  padding-left: 24px; 
-  padding-right: 24px; 
+  padding: 18px 24px;
   border: 1px solid ${defaultProps.theme.palette.border};
   ${props.gridArea && `grid-area: ${props.gridArea};`} 
   `
 );
+
+/* ------------------------------- RephraseToolSection ------------------------------ */
+interface RephraseToolSectionProps {
+  isMobileLayout: boolean;
+  interactionMode: RephraseInteractionMode;
+  setInteractionMode: (selectedMode: RephraseInteractionMode) => void;
+}
+
+const RephraseToolSection = (props: RephraseToolSectionProps) => {
+  const { isMobileLayout, interactionMode, setInteractionMode } = props;
+  if (isMobileLayout) {
+    return (
+      <>
+        <RephraseToolCard
+          gridArea='1 / 1 / 2 / 2'
+          headerTitle='Input text'
+          isSource
+          isMobileLayout={isMobileLayout}
+          headerEndItem={
+            <ToggleButton
+              values={Object.keys(RephraseInteractionMode)}
+              onSelectionChange={(selectedMode: RephraseInteractionMode) =>
+                setInteractionMode(selectedMode)
+              }
+            />
+          }
+        >
+          <RephraseSource activeMode={interactionMode} />
+        </RephraseToolCard>
+        <RephraseToolCard
+          isMobileLayout={isMobileLayout}
+          gridArea='2 / 1 / 3 / 2'
+          headerTitle='Rephrase'
+          isSource={false}
+        >
+          <RephraseTarget activeMode={interactionMode} />
+        </RephraseToolCard>
+      </>
+    );
+  }
+  return (
+    <div
+      style={{
+        display: 'flex',
+        borderRadius: '8px',
+        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px 0px',
+        marginTop: '10px',
+      }}
+    >
+      <RephraseToolCard
+        isMobileLayout={isMobileLayout}
+        gridArea='2 / 1 / 3 / 2'
+        headerTitle='Input text'
+        isSource
+        headerEndItem={
+          <ToggleButton
+            values={Object.keys(RephraseInteractionMode)}
+            onSelectionChange={(selectedMode: RephraseInteractionMode) =>
+              setInteractionMode(selectedMode)
+            }
+          />
+        }
+      >
+        <RephraseSource activeMode={interactionMode} />
+      </RephraseToolCard>
+      <RephraseToolCard
+        isMobileLayout={isMobileLayout}
+        gridArea='2 / 2 / 3 / 3'
+        headerTitle='Rephrase'
+        isSource={false}
+      >
+        <RephraseTarget activeMode={interactionMode} />
+      </RephraseToolCard>{' '}
+    </div>
+  );
+};
 
 /* -------------------------------------------------------------------------- */
 /*                                RephraseTool                                */
@@ -86,6 +163,8 @@ const RephraseTool = () => {
   const isMobileLayout = compareBreakpoint(activeBreakpoint, '<', 'S');
   const [interactionMode, setInteractionMode] =
     useState<RephraseInteractionMode>(RephraseInteractionMode.Edit);
+  const [rephraseFilesDialogOpen, setRephraseFilesDialogOpen] =
+    useState<boolean>(false);
 
   const isErrorActive = useBoundStore((state) => state.isErrorActive);
 
@@ -105,41 +184,45 @@ const RephraseTool = () => {
             <ActiveToolButton
               icon={<RephraseTextIcon />}
               text='Rephrase text'
+              subtitle='29 languages'
               active
             />
             <ActiveToolButton
               icon={<RephraseFilesIcon />}
               text='Rephrase files'
+              subtitle='.pdf, .docx, .pptx'
               active={false}
+              onClick={() => setRephraseFilesDialogOpen(true)}
             />
           </ActiveToolsContainer>
         )}
-        <RephraseToolCard
-          gridArea={isMobileLayout ? '1 / 1 / 2 / 2' : '2 / 1 / 3 / 2'}
-          headerTitle='Input text'
-          headerEndItem={
-            <ToggleButton
-              values={Object.keys(RephraseInteractionMode)}
-              onSelectionChange={(selectedMode: RephraseInteractionMode) =>
-                setInteractionMode(selectedMode)
-              }
-            />
-          }
-        >
-          <RephraseSource activeMode={interactionMode} />
-        </RephraseToolCard>
-        <RephraseToolCard
-          gridArea={isMobileLayout ? '2 / 1 / 3 / 2' : '2 / 2 / 3 / 3'}
-          headerTitle='Rephrase'
-        >
-          <RephraseTarget activeMode={interactionMode} />
-        </RephraseToolCard>
+
+        <RephraseToolSection
+          isMobileLayout={isMobileLayout}
+          interactionMode={interactionMode}
+          setInteractionMode={setInteractionMode}
+        />
+
         <CommentCard
           gridArea={isMobileLayout ? '3 / 1 / 4 / 2' : '3 / 1 / 4 / 3'}
         >
           Switch between Edit &amp; Rephrase mode to craft beautiful text.
         </CommentCard>
       </GridLayout>
+      <Dialog
+        open={rephraseFilesDialogOpen}
+        onClose={() => setRephraseFilesDialogOpen(false)}
+        transitionDuration={100}
+        horizontalPosition='center'
+        verticalPosition='center'
+        darkenBackground
+      >
+        <div
+          style={{ padding: 50, color: 'white', fontSize: 36, fontWeight: 500 }}
+        >
+          Coming soon
+        </div>
+      </Dialog>
     </>
   );
 };

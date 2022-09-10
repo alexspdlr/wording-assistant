@@ -58,15 +58,17 @@ const Wrapper = styled(Card)(
 interface ActiveToolButtonProps {
   icon: ReactElement<any, string | JSXElementConstructor<any>>;
   text: string;
+  subtitle: string;
   active: boolean;
+  onClick?: () => void;
 }
 
 const RephraseActiveToolButton = (props: ActiveToolButtonProps) => {
-  const { active, icon, text } = props;
+  const { active, icon, text, onClick, subtitle } = props;
   const theme = useTheme();
   const colors = determineColor(active, theme);
   return (
-    <Wrapper active={active} as='button'>
+    <Wrapper active={active} as='button' onClick={onClick}>
       <div
         style={{
           height: '100%',
@@ -90,11 +92,24 @@ const RephraseActiveToolButton = (props: ActiveToolButtonProps) => {
             fontSize: 16,
             color: colors.textColor,
             marginBottom: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
             fontFamily:
               "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
           }}
         >
           {text}
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 400,
+              color: theme.palette.text.disabled,
+              paddingTop: 2,
+            }}
+          >
+            {subtitle}
+          </div>
         </div>
       </div>
       <div

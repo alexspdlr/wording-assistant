@@ -37,6 +37,8 @@ const Sentence = styled('span')(
   padding-bottom: 3px; 
   white-space: pre-wrap;
 
+
+
   ${
     props.active
       ? `
@@ -47,7 +49,7 @@ const Sentence = styled('span')(
     `
       : props.otherTokenActive
       ? `
-    color: ${addAlphaToHexColor(defaultProps.theme.palette.text.main, 0.5)};  
+    color: ${addAlphaToHexColor(defaultProps.theme.palette.text.main, 0.3)};  
     transition: 0.2s color;
     `
       : `
@@ -60,7 +62,7 @@ const Sentence = styled('span')(
       defaultProps.theme.palette.primary.light,
       0.1
     )}; 
-    color: ${defaultProps.theme.palette.primary.light};
+    color: ${defaultProps.theme.palette.text.main};
     cursor: pointer; 
     transition: 0.2s background-color, 0.2s color; 
   }
