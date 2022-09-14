@@ -13,7 +13,7 @@ const Wrapper = styled('div')(
   display: flex;
   align-content: stretch;
   align-items: stretch;
-  position: relative; 
+  position: relative;
   `
 );
 
@@ -23,12 +23,11 @@ interface ContainerProps {
 
 const Container = styled('div')(
   (props: ContainerProps) => `
-  margin: 8px;
   padding: 0; 
   flex-grow: 1; 
   min-height: ${props.minHeight};
   position: relative;
-  display: flex;
+  display: flex; 
   `
 );
 

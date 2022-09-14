@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import copyToClipboard from 'src/utils/copyToClipboard';
-import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import useLocalStorage from 'src/utils/hooks/useLocalStorage';
 import useRephraseToolTextboxMinHeight from 'src/utils/hooks/useRephraseToolTextboxMinHeight';
 import SourceCopyButton from './subcomponents/SourceCopyButton';
 import RephraseHint from '../RephraseHint';
 import SourceSelect from './subcomponents/SourceSelect';
 import SourceTextArea from './subcomponents/SourceTextArea';
 import { useSearchParams } from 'react-router-dom';
+import useBoundStore from 'src/store';
+import useClickAway from 'src/utils/hooks/useClickAway';
 
 const Wrapper = styled('div')(
   () => `
@@ -16,7 +16,8 @@ const Wrapper = styled('div')(
   display: flex;
   align-content: stretch;
   align-items: stretch;
-  position: relative; 
+  position: relative;  
+  height: 100%;
   `
 );
 
@@ -25,11 +26,9 @@ interface ContainerProps {
 }
 
 const Container = styled('div')(
-  (props: ContainerProps) => `
-  margin: 8px;
-  padding: 0; 
+  (props: ContainerProps) => ` 
   flex-grow: 1; 
-  min-height: ${props.minHeight};
+  min-height: ${props.minHeight}; 
   position: relative;
   display: flex;
   `
@@ -41,8 +40,11 @@ const RephraseSource = (props: RephraseSourceProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
   const minHeight = useRephraseToolTextboxMinHeight();
-
   const isMobileDevice = false;
+
+  const generateRephrasingBase = useBoundStore(
+    (state) => state.generateRephrasingBase
+  );
 
   useEffect(() => {
     const listener = () => {
@@ -54,12 +56,16 @@ const RephraseSource = (props: RephraseSourceProps) => {
       const isSourceInput = selection?.anchorNode?.contains(targetNode);
 
       if (isSourceInput && selectionString && selectionString.length > 0) {
-        alert(selection?.toString());
+        if (selection) generateRephrasingBase(selection.toString());
       }
     };
 
     window.addEventListener('mouseup', listener);
-    return () => window.removeEventListener('mouseup', listener);
+
+    return () => {
+      window.removeEventListener('mouseup', listener);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -77,6 +83,7 @@ const RephraseSource = (props: RephraseSourceProps) => {
               subtitle='Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'
             />
             <SourceTextArea
+              parentMinHeight={minHeight}
               value={value || ''}
               setValue={(newVal: any) =>
                 setSearchParams({ 'source-value': newVal })

@@ -63,7 +63,7 @@ interface BodyProps {
 
 const Body = styled('div')(
   (props: BodyProps) => (defaultProps) =>
-    `   
+    `    
   border-right: ${
     props.isSource && `1px solid ${defaultProps.theme.palette.border}`
   };
@@ -95,8 +95,7 @@ const ToolCardContainer = styled(Card)(
   (props: ToolCardContainerProps) => (defaultProps) =>
     `  
       display: flex; 
-      width: 100%;
-      height: auto;
+      width: 100%;  
       flex-direction: column; 
       box-shadow: ${!props.isMobileLayout && 'none'}; 
       border: none; 

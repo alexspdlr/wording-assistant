@@ -14,7 +14,7 @@ const Container = styled('div')(
     align-items: strech;
     flex-direction: column;
     text-align: left;
-    margin: 16px 56px 72px 28px; 
+    margin: 24px 56px 72px 36px; 
     `
 );
 
