@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { useEffect, useRef, useState } from 'react';
 import copyToClipboard from 'src/utils/copyToClipboard';
-import useRephraseToolTextboxMinHeight from 'src/utils/hooks/useRephraseToolTextboxMinHeight';
 import SourceCopyButton from './subcomponents/SourceCopyButton';
 import RephraseHint from '../RephraseHint';
 import SourceSelect from './subcomponents/SourceSelect';
@@ -21,14 +20,11 @@ const Wrapper = styled('div')(
   `
 );
 
-interface ContainerProps {
-  minHeight: string;
-}
+interface ContainerProps {}
 
 const Container = styled('div')(
   (props: ContainerProps) => ` 
   flex-grow: 1; 
-  min-height: ${props.minHeight}; 
   position: relative;
   display: flex;
   `
@@ -39,7 +35,6 @@ interface RephraseSourceProps {}
 const RephraseSource = (props: RephraseSourceProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
-  const minHeight = useRephraseToolTextboxMinHeight();
   const isMobileDevice = false;
 
   const generateRephrasingBase = useBoundStore(
@@ -70,7 +65,7 @@ const RephraseSource = (props: RephraseSourceProps) => {
 
   return (
     <Wrapper>
-      <Container minHeight={minHeight}>
+      <Container>
         {isMobileDevice ? (
           <>
             <SourceSelect value={value || ''} />
@@ -83,7 +78,6 @@ const RephraseSource = (props: RephraseSourceProps) => {
               subtitle='Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'
             />
             <SourceTextArea
-              parentMinHeight={minHeight}
               value={value || ''}
               setValue={(newVal: any) =>
                 setSearchParams({ 'source-value': newVal })

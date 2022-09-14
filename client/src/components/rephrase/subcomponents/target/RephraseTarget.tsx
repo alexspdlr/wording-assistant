@@ -2,8 +2,6 @@ import styled from '@emotion/styled';
 import { useSearchParams } from 'react-router-dom';
 import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
-import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import useRephraseToolTextboxMinHeight from 'src/utils/hooks/useRephraseToolTextboxMinHeight';
 import RephraseHint from '../RephraseHint';
 import TargetSelect from './subcomponents/TargetSelect';
 
@@ -17,15 +15,12 @@ const Wrapper = styled('div')(
   `
 );
 
-interface ContainerProps {
-  minHeight: string;
-}
+interface ContainerProps {}
 
 const Container = styled('div')(
   (props: ContainerProps) => `
   padding: 0; 
   flex-grow: 1; 
-  min-height: ${props.minHeight};
   position: relative;
   display: flex; 
   `
@@ -34,7 +29,6 @@ const Container = styled('div')(
 interface RephraseTargetProps {}
 
 const RephraseTarget = (props: RephraseTargetProps) => {
-  const minHeight = useRephraseToolTextboxMinHeight();
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
   const rephrasedSentence = useBoundStore((state) => state.rephrasedSentence);
@@ -42,9 +36,11 @@ const RephraseTarget = (props: RephraseTargetProps) => {
 
   return (
     <Wrapper>
-      <Container minHeight={minHeight}>
+      <Container>
         {waitingForServer ? (
-          <LoadingSpinner />
+          <div style={{ padding: '24px 32px' }}>
+            <LoadingSpinner />
+          </div>
         ) : (
           <>
             {rephrasedSentence ? (

@@ -27,7 +27,7 @@ const TextArea = styled('textarea')(
         : defaultProps.theme.palette.text.main
     };   
     overflow: visible;
-    margin: 0px 56px 0px 0px; 
+    margin: 0px 60px 0px 0px; 
     padding: 24px 0px 0px 36px;
     line-height: 0;
     position: relative; 
@@ -52,11 +52,10 @@ const TextArea = styled('textarea')(
 interface SourceTextAreaProps {
   value: string;
   setValue: Function;
-  parentMinHeight: string;
 }
 
 const SourceTextArea = (props: SourceTextAreaProps) => {
-  const { value, setValue, parentMinHeight } = props;
+  const { value, setValue } = props;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const selectedSentence = useBoundStore((state) => state.originalSentence);
   useRephraseToolTextboxSize(value, textareaRef);

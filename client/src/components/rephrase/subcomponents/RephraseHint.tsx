@@ -15,6 +15,7 @@ const Container = styled('div')(
     flex-direction: column;
     text-align: left;
     margin: 24px 56px 72px 36px; 
+    cursor: default; 
     `
 );
 

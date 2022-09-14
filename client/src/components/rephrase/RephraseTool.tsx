@@ -31,11 +31,12 @@ const GridLayout = styled('div')(
   padding-bottom: 56px; 
   display: grid;
   grid-row-gap: 8px;
+
   ${
     props.isMobileLayout
       ? 'grid-template-columns: 100%; grid-template-rows: repeat(2, 1fr) 58px;'
       : 'grid-template-columns: 1fr; grid-template-rows: repeat(3, auto);'
-  }
+  } 
   `
 );
 
@@ -48,7 +49,7 @@ interface ActiveToolsContainerProps {
 const ActiveToolsContainer = styled('div')(
   (props: ActiveToolsContainerProps) => `  
     display: flex;
-    gap: 10px;
+    gap: 10px;  
     grid-area: ${props.gridArea};
     `
 );
@@ -76,7 +77,8 @@ const CommentCard = styled(Card)(
   color: ${defaultProps.theme.palette.text.disabled};
   padding: 18px 24px;
   border: 1px solid ${defaultProps.theme.palette.border};
-  ${props.gridArea && `grid-area: ${props.gridArea};`} 
+  height: 20px; 
+  ${props.gridArea && `grid-area: ${props.gridArea};`}  
   `
 );
 
@@ -120,6 +122,7 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
         borderRadius: '8px',
         boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px 0px',
         marginTop: '10px',
+        minHeight: '60vh',
       }}
     >
       <RephraseToolCard
