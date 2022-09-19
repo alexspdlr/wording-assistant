@@ -1,6 +1,6 @@
 export interface RephraseState {
-  originalSentence: string | null;
-  rephrasedSentence: string | null;
+  originalText: string | null;
+  rephrasedText: string | null;
   selectedWordIndex: number | null;
   alternatives: string[] | null;
   waitingForServer: boolean;

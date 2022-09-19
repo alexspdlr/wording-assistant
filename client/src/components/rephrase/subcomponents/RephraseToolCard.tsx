@@ -14,14 +14,11 @@ interface HeaderStyledProps {
 const HeaderStyled = styled('div')(
   (props: HeaderStyledProps) => (defaultProps) =>
     `  
-    height: 56px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding-left: 24px;
-    padding-right: 12px;
+    align-items: center; 
+    padding: 19px 12px 19px 24px;
     font-weight: 600;
-
     border-right: ${
       props.isSource && `1px solid ${defaultProps.theme.palette.border}`
     };
@@ -71,6 +68,7 @@ const Body = styled('div')(
   border-right: ${
     props.isSource && !props.isMobileLayout && '1px solid transparent'
   };
+  display: flex; 
   flex-grow: 1;
   border-radius: ${
     props.isSource
@@ -80,6 +78,8 @@ const Body = styled('div')(
   &:focus-within {
     border: 1px solid ${defaultProps.theme.palette.primary.light};
   }
+
+  transition: border 150ms linear;
         `
 );
 
@@ -100,8 +100,7 @@ const ToolCardContainer = styled(Card)(
       box-shadow: ${!props.isMobileLayout && 'none'}; 
       border: none; 
       border-radius: ${props.isSource ? '8px 0px 0px 8px' : '0px 8px 8px 0px'};
-      border-radius: ${props.isMobileLayout && '8px'};
-
+      border-radius: ${props.isMobileLayout && '8px'}; 
       ${props.gridArea && `grid-area: ${props.gridArea};`} 
       `
 );

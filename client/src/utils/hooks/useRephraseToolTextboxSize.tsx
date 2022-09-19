@@ -5,7 +5,7 @@ import useWindowHeight from './useWindowHeight';
 
 const useRephraseToolTextboxSize = (
   text: string,
-  targetRef: React.MutableRefObject<HTMLTextAreaElement | null>
+  targetRef: React.MutableRefObject<HTMLElement | null>
 ) => {
   const activeBreakpoint = useBreakpoint();
   const windowHeight = useWindowHeight();

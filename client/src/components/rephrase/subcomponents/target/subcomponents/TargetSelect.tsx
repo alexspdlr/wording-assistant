@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
+import useBoundStore from 'src/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
+import useClickAway from 'src/utils/hooks/useClickAway';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import splitIntoWords from 'src/utils/splitIntoWords';
 
 const Container = styled('div')(
   () => `
-  padding: 24px 56px 72px 36px; 
   flex-grow: 1; 
   outline: none;
   display: block; 
@@ -16,7 +17,7 @@ const Container = styled('div')(
   overflow: visible; 
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -khtml-user-select: none;
+  -khtml-user-select: none; 
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
@@ -42,9 +43,9 @@ const Word = styled('span')(
       ? `
     background-color: ${addAlphaToHexColor(
       defaultProps.theme.palette.primary.light,
-      0.1
+      0.175
     )}; 
-    color: ${defaultProps.theme.palette.primary.light};
+    color: ${defaultProps.theme.palette.text.main};
     cursor: pointer; 
     transition: 0.2s background-color, 0.2s color;
     `
@@ -70,31 +71,37 @@ const TargetSelect = (props: TargetSelectProps) => {
   useRephraseToolTextboxSize(value, containerRef);
   const [hoveredWord, setHoveredWord] = useState<string | null>(null);
 
-  useEffect(() => {
-    document.getElementById('source-select-container')?.focus();
-  }, [containerRef]);
+  const resetSelection = useBoundStore((state) => state.reset);
+
+  const onClickAway = (event: any) => {
+    resetSelection();
+  };
+
+  useClickAway(containerRef, onClickAway);
 
   return (
-    <Container ref={containerRef} tabIndex={0} id='source-select-container'>
-      {splitIntoWords(value).map((token, i) =>
-        token.kind === 'Word' ? (
-          <Word
-            onMouseEnter={() => setHoveredWord(`token_${i}`)}
-            onMouseLeave={() => setHoveredWord(null)}
-            hovered={hoveredWord === `token_${i}`}
-            otherTokenHovered={
-              hoveredWord !== null && hoveredWord !== `token_${i}`
-            }
-            key={`token_${i}`}
-          >
-            {token.value}
-          </Word>
-        ) : (
-          <span key={`token_${i}`} style={{ whiteSpace: 'pre-wrap' }}>
-            {token.value}
-          </span>
-        )
-      )}
+    <Container ref={containerRef} tabIndex={0} id='target-select-container'>
+      <div style={{ padding: '24px 56px 72px 36px' }}>
+        {splitIntoWords(value).map((token, i) =>
+          token.kind === 'clickable' ? (
+            <Word
+              onMouseEnter={() => setHoveredWord(`token_${i}`)}
+              onMouseLeave={() => setHoveredWord(null)}
+              hovered={hoveredWord === `token_${i}`}
+              otherTokenHovered={
+                hoveredWord !== null && hoveredWord !== `token_${i}`
+              }
+              key={`token_${i}`}
+            >
+              {token.value}
+            </Word>
+          ) : (
+            <span key={`token_${i}`} style={{ whiteSpace: 'pre-wrap' }}>
+              {token.value}
+            </span>
+          )
+        )}
+      </div>
     </Container>
   );
 };

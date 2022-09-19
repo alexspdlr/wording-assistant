@@ -21,7 +21,7 @@ import useBoundStore from 'src/store';
 const PositionedLogoLight = styled(LogoLight)(
   () => `
   margin-bottom: -14px; 
-  width: 50px;
+  width: 52px;
   margin-right: 10px;
   cursor: pointer;
 `
@@ -29,7 +29,7 @@ const PositionedLogoLight = styled(LogoLight)(
 const PositionedLogoDark = styled(LogoDark)(
   () => `
   margin-bottom: -14px; 
-  width: 50px;
+  width: 52px;
   margin-right: 10px;
   cursor: pointer;
 `

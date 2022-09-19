@@ -14,7 +14,7 @@ const Container = styled('div')(
     align-items: strech;
     flex-direction: column;
     text-align: left;
-    margin: 24px 56px 72px 36px; 
+    padding: 24px 56px 72px 36px; 
     cursor: default; 
     `
 );

@@ -27,7 +27,7 @@ const reformat = (
     index === array.length - 1
       ? [
           { value: before, kind: 'whitespace' },
-          { value: currentValue, kind: 'sentence' },
+          { value: currentValue, kind: 'clickable' },
           {
             value: after.endsWith('\n') ? after.concat('\n') : after,
             kind: 'whitespace',
@@ -35,7 +35,7 @@ const reformat = (
         ]
       : [
           { value: before, kind: 'whitespace' },
-          { value: currentValue, kind: 'sentence' },
+          { value: currentValue, kind: 'clickable' },
         ];
 
   const result: Accumulator = {

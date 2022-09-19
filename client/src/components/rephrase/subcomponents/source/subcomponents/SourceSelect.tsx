@@ -107,7 +107,7 @@ const SourceSelect = (props: SourceSelectProps) => {
   return (
     <Container ref={containerRef} tabIndex={0} id='source-select-container'>
       {splitIntoSentences(value).map((token, i) =>
-        token.kind === 'sentence' ? (
+        token.kind === 'clickable' ? (
           <Sentence
             ref={sentenceRef}
             onClick={() => selectSentence(token.value, i)}

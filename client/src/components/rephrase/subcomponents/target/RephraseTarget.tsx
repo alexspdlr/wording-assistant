@@ -31,7 +31,7 @@ interface RephraseTargetProps {}
 const RephraseTarget = (props: RephraseTargetProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
-  const rephrasedSentence = useBoundStore((state) => state.rephrasedSentence);
+  const rephrasedText = useBoundStore((state) => state.rephrasedText);
   const waitingForServer = useBoundStore((state) => state.waitingForServer);
 
   return (
@@ -43,8 +43,8 @@ const RephraseTarget = (props: RephraseTargetProps) => {
           </div>
         ) : (
           <>
-            {rephrasedSentence ? (
-              <TargetSelect value={rephrasedSentence} />
+            {rephrasedText ? (
+              <TargetSelect value={rephrasedText} />
             ) : (
               <>
                 {value && value.length > 0 && (

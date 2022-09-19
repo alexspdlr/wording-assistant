@@ -3,8 +3,8 @@ import serverRequest from 'src/utils/serverRequest';
 import { StateCreator } from 'zustand';
 
 const ininitalState: RephraseState = {
-  originalSentence: null,
-  rephrasedSentence: null,
+  originalText: null,
+  rephrasedText: null,
   selectedWordIndex: null,
   alternatives: null,
   waitingForServer: false,
@@ -12,8 +12,8 @@ const ininitalState: RephraseState = {
 };
 
 const resetState: Omit<RephraseState, 'waitingForServer' | 'isErrorActive'> = {
-  originalSentence: null,
-  rephrasedSentence: null,
+  originalText: null,
+  rephrasedText: null,
   selectedWordIndex: null,
   alternatives: null,
 };
@@ -25,7 +25,7 @@ export const createRephraseSlice: StateCreator<
   RephraseSlice
 > = (set) => ({
   ...ininitalState,
-  generateRephrasingBase: async (selectedSentence) => {
+  generateRephrasingBase: async (selectedText) => {
     set(() => ({
       waitingForServer: true,
     }));
@@ -33,12 +33,8 @@ export const createRephraseSlice: StateCreator<
     const response = await serverRequest({
       endpoint: '/generate-rephrasing-base',
       method: 'POST',
-      inputBody: { input: selectedSentence },
+      inputBody: { input: selectedText },
     });
-
-    const controller = new AbortController();
-
-    controller.abort();
 
     if (!response) {
       set(() => ({
@@ -48,8 +44,8 @@ export const createRephraseSlice: StateCreator<
     } else {
       set(() => ({
         waitingForServer: false,
-        originalSentence: selectedSentence,
-        rephrasedSentence: response.result,
+        originalText: selectedText,
+        rephrasedText: response.result,
         isErrorActive: false,
       }));
     }

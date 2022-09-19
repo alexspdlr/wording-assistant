@@ -19,6 +19,8 @@ import theme from 'src/constants/theme';
 import useLocalStorage from 'src/utils/hooks/useLocalStorage';
 import Tooltip from '../general/tooltip';
 import { useSearchParams } from 'react-router-dom';
+import SourceTextArea from './subcomponents/source/subcomponents/SourceTextArea';
+import RephraseToolLayout from './subcomponents/RephraseToolLayout';
 
 /* ------------------------------- GridLayout ------------------------------- */
 interface GridLayoutProps {
@@ -27,7 +29,7 @@ interface GridLayoutProps {
 
 const GridLayout = styled('div')(
   (props: GridLayoutProps) => ` 
-  padding-top: 18px; 
+  padding-top: 24px; 
   padding-bottom: 56px; 
   display: grid;
   grid-row-gap: 8px;
@@ -89,7 +91,6 @@ interface RephraseToolSectionProps {
 
 const RephraseToolSection = (props: RephraseToolSectionProps) => {
   const { isMobileLayout } = props;
-
   const [searchParams, setSearchParams] = useSearchParams();
   const sourceValue = searchParams.get('source-value');
 
@@ -122,7 +123,9 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
         borderRadius: '8px',
         boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px 0px',
         marginTop: '10px',
-        minHeight: '60vh',
+
+        height: '60vh',
+        maxHeight: sourceValue && sourceValue.length > 0 ? 'none' : '600px',
       }}
     >
       <RephraseToolCard
@@ -140,7 +143,7 @@ const RephraseToolSection = (props: RephraseToolSectionProps) => {
         isSource={false}
       >
         <RephraseTarget />
-      </RephraseToolCard>{' '}
+      </RephraseToolCard>
     </div>
   );
 };
@@ -186,7 +189,8 @@ const RephraseTool = () => {
           </ActiveToolsContainer>
         )}
 
-        <RephraseToolSection isMobileLayout={isMobileLayout} />
+        {/*  <RephraseToolSection isMobileLayout={isMobileLayout} /> */}
+        <RephraseToolLayout />
 
         <CommentCard
           gridArea={isMobileLayout ? '3 / 1 / 4 / 2' : '3 / 1 / 4 / 3'}
@@ -194,6 +198,7 @@ const RephraseTool = () => {
           Switch between Edit &amp; Rephrase mode to craft beautiful text.
         </CommentCard>
       </GridLayout>
+
       <Dialog
         open={rephraseFilesDialogOpen}
         onClose={() => setRephraseFilesDialogOpen(false)}

@@ -6,8 +6,8 @@ import IconButton from 'src/components/general/icon-button';
 const Layout = styled('div')(
   () => `
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 16px;
+      right: 16px;
           `
 );
 

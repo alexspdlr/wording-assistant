@@ -8,25 +8,25 @@ import SourceTextArea from './subcomponents/SourceTextArea';
 import { useSearchParams } from 'react-router-dom';
 import useBoundStore from 'src/store';
 import useClickAway from 'src/utils/hooks/useClickAway';
+import SourceHighlighter from './subcomponents/SourceHighlighter';
 
 const Wrapper = styled('div')(
   () => `
   width: 100%;
-  display: flex;
-  align-content: stretch;
-  align-items: stretch;
-  position: relative;  
-  height: 100%;
+  background-color: red; 
+  display: flex; 
+  flex-grow: 1;
   `
 );
 
 interface ContainerProps {}
 
 const Container = styled('div')(
-  (props: ContainerProps) => ` 
-  flex-grow: 1; 
-  position: relative;
-  display: flex;
+  (props: ContainerProps) => `   
+  width: 100%;  
+  display: flex; 
+  flex-grow: 1;
+  background-color: blue; 
   `
 );
 
@@ -37,39 +37,11 @@ const RephraseSource = (props: RephraseSourceProps) => {
   const value = searchParams.get('source-value');
   const isMobileDevice = false;
 
-  const generateRephrasingBase = useBoundStore(
-    (state) => state.generateRephrasingBase
-  );
-
-  useEffect(() => {
-    const listener = () => {
-      const selection = window.getSelection();
-      const selectionString = selection?.toString();
-
-      const targetNode = document.getElementById('source-value-input');
-
-      const isSourceInput = selection?.anchorNode?.contains(targetNode);
-
-      if (isSourceInput && selectionString && selectionString.length > 0) {
-        if (selection) generateRephrasingBase(selection.toString());
-      }
-    };
-
-    window.addEventListener('mouseup', listener);
-
-    return () => {
-      window.removeEventListener('mouseup', listener);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <Wrapper>
-      <Container>
+      <Container id='source-container'>
         {isMobileDevice ? (
-          <>
-            <SourceSelect value={value || ''} />
-          </>
+          <>{/* <SourceSelect value={value || ''} />*/}</>
         ) : (
           <>
             <RephraseHint
