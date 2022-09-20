@@ -12,12 +12,12 @@
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint", 
+        "@typescript-eslint",  
     ],
     "rules": { 
         "import/extensions": "off" 
     },
     "settings": {
-        "import/extensions": [".js", ".mjs",".ts"] 
+        "import/extensions": [".js", ".mjs",".ts", ".cjs"] 
       } 
 }

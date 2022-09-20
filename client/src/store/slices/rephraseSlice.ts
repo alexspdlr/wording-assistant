@@ -31,7 +31,7 @@ export const createRephraseSlice: StateCreator<
     }));
 
     const response = await serverRequest({
-      endpoint: '/generate-rephrasing-base',
+      endpoint: '/setup-rephrasing',
       method: 'POST',
       inputBody: { input: selectedText },
     });

@@ -1,8 +1,8 @@
 const closeRephrasingOptions = async (req, res, page) => {
   await page.keyboard.press('Escape');
-  res.json({
+  return {
     closed: true,
-  });
+  };
 };
 
 export default closeRephrasingOptions;

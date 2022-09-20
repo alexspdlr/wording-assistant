@@ -40,9 +40,9 @@ const showRephrasingOptions = async (req, res, page) => {
         (item) => item.innerHTML
       )
   );
-  res.json({
+  return {
     rephrasingAlternatives: rephrasingAlternatives,
-  });
+  };
 };
 
 export default showRephrasingOptions;

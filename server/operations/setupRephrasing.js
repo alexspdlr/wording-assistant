@@ -1,4 +1,4 @@
-const generateRephrasingBase = async (req, res, page) => {
+const setupRephrasing = async (req, res, page) => {
   try {
     const clienSourceInput = req.body.input;
 
@@ -78,15 +78,15 @@ const generateRephrasingBase = async (req, res, page) => {
       await page.keyboard.press('Tab');
     }
 
-    res.json({
+    return {
       result: result,
-    });
+    };
   } catch (error) {
     console.error(
       'An error occurred while generating the rephrasing base. It is possible that the action was executed one more time before the previous action was finished.'
     );
-    return;
+    return {};
   }
 };
 
-export default generateRephrasingBase;
+export default setupRephrasing;

@@ -65,9 +65,9 @@ const selectRephrasingOption = async (req, res, page) => {
     (div) => div.innerHTML
   );
 
-  res.json({
+  return {
     rephrasingResult: rephrasingResult,
-  });
+  };
 };
 
 export default selectRephrasingOption;
