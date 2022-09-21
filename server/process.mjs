@@ -3,14 +3,11 @@ import setup from './operations/setup.js';
 import showRephrasingOptions from './operations/showRephrasingOptions.js';
 import closeRephrasingOptions from './operations/closeRephrasingOptions.js';
 import selectRephrasingOption from './operations/selectRephrasingOption.js';
-
-console.time();
+import { parentPort } from 'worker_threads';
 
 const page = await setup();
 
-console.timeEnd();
-
-process.on('message', async (message) => {
+parentPort.on('message', async (message) => {
   console.log('child message: ', message.requestBody);
 
   const response = await selectOperation(
@@ -18,7 +15,7 @@ process.on('message', async (message) => {
     JSON.parse(message.requestBody)
   );
 
-  process.send(response);
+  parentPort.postMessage(response);
 });
 
 const selectOperation = async (endpoint, requestBody) => {

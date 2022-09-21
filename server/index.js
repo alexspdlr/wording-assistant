@@ -1,5 +1,78 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { Worker } from 'worker_threads';
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+  res.send('Page running 👍');
+});
+
+let workers = [];
+
+const findWorkerByID = (id) => workers.find((worker) => worker.id === id);
+
+app.post('/setup-rephrasing', (req, res) => {
+  console.time();
+
+  console.log('/setup-rephrasing');
+
+  const worker = new Worker('./process.mjs');
+
+  if (!workers.includes(worker)) {
+    workers.push(worker);
+  }
+
+  worker.on('message', (response) => {
+    console.log('RESULT IN PARENT: ', response);
+    const { result } = response;
+
+    console.timeEnd();
+    res.json({
+      rephrasingResult: result,
+      processID: worker.pid,
+    });
+  });
+
+  worker.on('exit', (code) => {
+    if (workers.includes(worker)) {
+      workers.pop(worker);
+    }
+  });
+
+  //Post message to the worker thread.
+  worker.postMessage({
+    endpoint: '/setup-rephrasing',
+    requestBody: JSON.stringify(req.body),
+  });
+});
+
+app.post('/finish-rephrasing', (req, res) => {
+  const targetProcess = findWorkerByID(req.body.processID);
+  if (targetProcess) targetProcess.kill('SIGINT');
+});
+
+[
+  '/show-rephrasing-options',
+  '/close-rephrasing-options',
+  '/select-rephrasing-option',
+].map((endpoint) =>
+  app.post(endpoint, (req, res) => {
+    const targetProcess = findWorkerByID(req.body.processID);
+    if (targetProcess) targetProcess.send({ endpoint, req, res });
+  })
+);
+
+app.listen(3001, () => console.log('DeepL-Puppeteer is running on port 3001.'));
+
+/*
+
+USING CHILD_workers
+
+import express from 'express';
+import bodyParser from 'body-parser';
 import { fork } from 'child_process';
 
 const app = express();
@@ -10,48 +83,48 @@ app.get('/', (req, res) => {
   res.send('Page running 👍');
 });
 
-let processes = [];
+let workers = [];
 
-const findProcessByID = (id) => processes.find((proc) => proc?.pid === id);
+const findWorkerByID = (id) => workers.find((proc) => proc?.pid === id);
 
 app.post('/setup-rephrasing', (req, res) => {
   console.log('/setup-rephrasing');
 
   // kill process if still active after 5 minutes
 
-  const childProcess = fork('./process.mjs', { timeout: 300000 });
+  const worker = fork('./process.mjs', { timeout: 300000 });
 
   // watch if this bug occurs again: https://github.com/nodejs/node/issues/37782
-  childProcess.send({
+  worker.send({
     endpoint: '/setup-rephrasing',
     requestBody: JSON.stringify(req.body),
   });
 
-  childProcess.on('message', (response) => {
+  worker.on('message', (response) => {
     console.log('RESULT IN PARENT: ', response);
     const { result } = response;
 
     res.json({
       rephrasingResult: result,
-      processID: childProcess.pid,
+      processID: worker.pid,
     });
   });
 
-  childProcess.on('spawn', (data) => {
-    if (!processes.includes(childProcess)) {
-      processes.push(childProcess);
+  worker.on('spawn', (data) => {
+    if (!workers.includes(worker)) {
+      workers.push(worker);
     }
   });
 
-  childProcess.on('exit', (data) => {
-    if (processes.includes(childProcess)) {
-      processes.pop(childProcess);
+  worker.on('exit', (data) => {
+    if (workers.includes(worker)) {
+      workers.pop(worker);
     }
   });
 });
 
 app.post('/finish-rephrasing', (req, res) => {
-  const targetProcess = findProcessByID(req.body.processID);
+  const targetProcess = findWorkerByID(req.body.processID);
   if (targetProcess) targetProcess.kill('SIGINT');
 });
 
@@ -61,36 +134,13 @@ app.post('/finish-rephrasing', (req, res) => {
   '/select-rephrasing-option',
 ].map((endpoint) =>
   app.post(endpoint, (req, res) => {
-    const targetProcess = findProcessByID(req.body.processID);
+    const targetProcess = findWorkerByID(req.body.processID);
     if (targetProcess) targetProcess.send({ endpoint, req, res });
   })
 );
 
-// OLD
 
-/*
-app.post('/generate-rephrasing-base', async (req, res) => {
-  console.log('/generate-rephrasing-base');
-
-  //TODO: implement abort Controller : https://leanylabs.com/blog/cancel-promise-abortcontroller/
-
-  await generateRephrasingBase(req, res, page);
-});
-
-app.post('/show-rephrasing-options', async (req, res) => {
-  console.log('/show-rephrasing-options');
-  await showRephrasingOptions(req, res, page);
-});
-
-app.post('/close-rephrasing-options', async (req, res) => {
-  console.log('/close-rephrasing-options');
-  await closeRephrasingOptions(req, res, page);
-}); 
-  
-app.post('/select-rephrasing-option', async (req, res) => {
-  console.log('/select-rephrasing-option');
-  await selectRephrasingOption(req, res, page);
-});
-*/
 
 app.listen(3001, () => console.log('DeepL-Puppeteer is running on port 3001.'));
+
+*/
