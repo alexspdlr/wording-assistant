@@ -1,6 +1,8 @@
-const setupRephrasing = async (req, res, page) => {
+const setupRephrasing = async (requestBody, page) => {
   try {
-    const clienSourceInput = req.body.input;
+    const clienSourceInput = requestBody.input;
+
+    console.log('client input: ', clienSourceInput);
 
     // Generate clean setup by reloading page
     await page.goto('https://www.deepl.com/translator');

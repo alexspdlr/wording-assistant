@@ -1,7 +1,7 @@
 import isJsonObject from '../utils/isJsonObject.js';
 
-const selectRephrasingOption = async (req, res, page) => {
-  const selectedOption = req.body.selectedOption;
+const selectRephrasingOption = async (requestBody, page) => {
+  const selectedOption = requestBody.selectedOption;
 
   /* Store text before selecting option */
   const outputBeforeSelection = await page.$eval(

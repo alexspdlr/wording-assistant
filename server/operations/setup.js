@@ -2,9 +2,9 @@ import puppeteer from 'puppeteer';
 
 const setup = async () => {
   /* Load broser & DeepL Page */
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
-  await page.setDefaultTimeout(8000);
+  page.setDefaultTimeout(8000);
   await page.goto('https://www.deepl.com/translator');
 
   /* Accept necessary cookies */

@@ -1,7 +1,7 @@
 import moveTextCursor from '../utils/moveTextCursor.js';
 
-const showRephrasingOptions = async (req, res, page) => {
-  const targetWordWordIndex = req.body.targetWordIndex;
+const showRephrasingOptions = async (requestBody, page) => {
+  const targetWordWordIndex = requestBody.targetWordIndex;
 
   /* Store translation result */
   const rephrasingBase = await page.$eval(

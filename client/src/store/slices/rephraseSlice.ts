@@ -45,7 +45,7 @@ export const createRephraseSlice: StateCreator<
       set(() => ({
         waitingForServer: false,
         originalText: selectedText,
-        rephrasedText: response.result,
+        rephrasedText: `processID: ${response.processID}, result: ${response.rephrasingResult}`,
         isErrorActive: false,
       }));
     }

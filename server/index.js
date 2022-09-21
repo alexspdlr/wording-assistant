@@ -17,14 +17,24 @@ const findProcessByID = (id) => processes.find((proc) => proc?.pid === id);
 app.post('/setup-rephrasing', (req, res) => {
   console.log('/setup-rephrasing');
 
+  // kill process if still active after 5 minutes
+
   const childProcess = fork('./process.mjs', { timeout: 300000 });
 
-  // timeout "fixes" this bug : https://github.com/nodejs/node/issues/37782
-  // const payload = { endpoint: parseString('/setup-rephrasing'), req, res }
-  childProcess.send({});
+  // watch if this bug occurs again: https://github.com/nodejs/node/issues/37782
+  childProcess.send({
+    endpoint: '/setup-rephrasing',
+    requestBody: JSON.stringify(req.body),
+  });
 
-  childProcess.on('message', (result) => {
-    console.log('GOT RESULT');
+  childProcess.on('message', (response) => {
+    console.log('RESULT IN PARENT: ', response);
+    const { result } = response;
+
+    res.json({
+      rephrasingResult: result,
+      processID: childProcess.pid,
+    });
   });
 
   childProcess.on('spawn', (data) => {

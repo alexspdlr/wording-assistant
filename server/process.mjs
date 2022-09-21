@@ -4,27 +4,36 @@ import showRephrasingOptions from './operations/showRephrasingOptions.js';
 import closeRephrasingOptions from './operations/closeRephrasingOptions.js';
 import selectRephrasingOption from './operations/selectRephrasingOption.js';
 
+console.time();
+
 const page = await setup();
 
-process.on('message', (message) => {
-  console.log('got to child !!!!!!!');
-  //const response = selectOperation(message.endpoint, message.req, message.res);
-  process.send('result');
+console.timeEnd();
+
+process.on('message', async (message) => {
+  console.log('child message: ', message.requestBody);
+
+  const response = await selectOperation(
+    message.endpoint,
+    JSON.parse(message.requestBody)
+  );
+
+  process.send(response);
 });
 
-const selectOperation = async (endpoint, req, res) => {
+const selectOperation = async (endpoint, requestBody) => {
   switch (endpoint) {
     case '/setup-rephrasing':
-      return await setupRephrasing(req, res, page);
+      return await setupRephrasing(requestBody, page);
 
     case '/show-rephrasing-options':
-      return await showRephrasingOptions(req, res, page);
+      return await showRephrasingOptions(requestBody, page);
 
     case '/close-rephrasing-options':
-      return await closeRephrasingOptions(req, res, page);
+      return await closeRephrasingOptions(requestBody, page);
 
     case '/select-rephrasing-option':
-      return await selectRephrasingOption(req, res, page);
+      return await selectRephrasingOption(requestBody, page);
 
     case '/finish-rephrasing':
       // do nothing
