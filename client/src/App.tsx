@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import theme from './constants/theme';
 import Routes from './Routes';
 import useBoundStore from './store';
