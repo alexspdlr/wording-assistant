@@ -4,7 +4,7 @@ import { Socket, Server } from 'socket.io';
 import { v4 } from 'uuid';
 import { Worker, WorkerOptions } from 'worker_threads';
 import { PuppetMaster } from './PuppetMaster/PuppetMaster';
-
+import os from 'os';
 export class ServerSocket {
   public static instance: ServerSocket;
   public io: Server;
@@ -39,6 +39,7 @@ export class ServerSocket {
   spawnPuppetMaster = (puppetMasterID: string) => {
     const newPuppetMaster: PuppetMaster = new PuppetMaster(puppetMasterID);
     this.puppetMasters.push(newPuppetMaster);
+    console.log('cpu usage: ', os.loadavg());
   };
 
   killPuppetMaster = (puppetMasterID: string) => {

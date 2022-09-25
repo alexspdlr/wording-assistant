@@ -1,17 +1,7 @@
 import { Browser, Page } from 'puppeteer';
 import { parentPort } from 'worker_threads';
 import setup from '../../operations/setup';
-import { PuppetAction } from './types';
-
-parentPort?.on('message', async (action: PuppetAction) => {
-  const response = await executeAction(action);
-
-  if (response) {
-    parentPort?.postMessage(response);
-  }
-});
-
-console.info('Spawned a PUPPET_WORKER');
+import { PuppetAction, PuppetWorkerResponse } from './types';
 
 interface PuppetWorkerState {
   page: Page | null;
@@ -23,18 +13,31 @@ let localState: PuppetWorkerState = {
   browser: null,
 };
 
-const executeAction = async (action: PuppetAction): Promise<any> => {
+parentPort?.on('message', async (action: PuppetAction) => {
+  const response = await executeAction(action);
+
+  if (response) {
+    parentPort?.postMessage(response);
+  }
+});
+
+console.info('Spawned a PUPPET_WORKER');
+
+const executeAction = async (
+  action: PuppetAction
+): Promise<PuppetWorkerResponse | undefined> => {
   switch (action.command) {
     case 'OTHER':
       // code block
       return;
 
     case 'START':
-      const response = await start(action.payload.id);
-      return response;
+      const startResponse = await start(action.payload.id);
+      return startResponse;
     case 'EXIT':
       // code block
-      break;
+      const exitResponse = await exit();
+      return exitResponse;
     default:
       return;
   }
@@ -46,42 +49,27 @@ const start = async (id: number) => {
   localState.page = page;
   localState.browser = browser;
 
-  if (page && browser) {
-    console.log(`Started PUPPET_WORKER with id: ${id}`);
-    return true;
-  }
+  const response: PuppetWorkerResponse = {
+    code: 'START_COMPLETED',
+    payload: {
+      id,
+    },
+  };
 
-  return false;
+  return response;
 };
 
-/*
-import { Browser, Page } from 'puppeteer';
-import { parentPort } from 'worker_threads';
-import setup from './operations/setup';
+const exit = async () => {
+  console.log(`Exit PUPPET_WORKER`);
 
-let setup1: {
-  page: Page;
-  browser: Browser;
+  await localState.browser?.close();
+
+  // parentPort?.close();
+
+  const response: PuppetWorkerResponse = {
+    code: 'EXIT_COMPLETED',
+    payload: {},
+  };
+
+  return response;
 };
-
-const spawnPuppet = async () => {
-  setup1 = await setup();
-};
-
-parentPort?.on('message', async (message) => {
-  if (message === 'SPAWN') {
-    await spawnPuppet();
-    log('puppet spawned');
-  }
-});
-
-parentPort?.on('close', async () => {
-  await setup1.browser.close(); 
-
-  log('puppet killed');
-});
-
-const log = (msg: string) => {
-  console.log(msg);
-};
-*/
