@@ -160,13 +160,21 @@ const RephraseTool = () => {
 
   const isErrorActive = useBoundStore((state) => state.isErrorActive);
 
+  const isConnectedToServer = useBoundStore(
+    (state) => state.isConnectedToServer
+  );
+
   return (
     <>
-      {isErrorActive && (
+      {(isErrorActive || !isConnectedToServer) && (
         <SnackbarContainer>
           <Snackbar
             variant='error'
-            message=' Sorry, something went wrong. Please reload the page or try again later.'
+            message={
+              !isConnectedToServer
+                ? 'The server cannot be reached. Please make sure you are connect to the internet & reload the page.'
+                : 'Sorry, something went wrong. Please reload the page or try again later.'
+            }
           />
         </SnackbarContainer>
       )}

@@ -19,6 +19,7 @@ const ininitalState: AppState = {
       ? 'dark'
       : 'light') ||
     'light',
+  isConnectedToServer: true,
 };
 
 export interface AppSlice extends AppState, AppActions {}
@@ -37,6 +38,11 @@ export const createAppSlice: StateCreator<AppSlice, [], [], AppSlice> = (
     localStorage.setItem('color-mode', JSON.stringify('dark'));
     set(() => ({
       colorMode: 'dark',
+    }));
+  },
+  setIsConnectedToServer: (isConnectedToServer: boolean) => {
+    set(() => ({
+      isConnectedToServer,
     }));
   },
 });

@@ -46,8 +46,8 @@ app.use((req, res, next) => {
 });
 
 /** Healthcheck */
-app.get('/ping', (req, res, next) => {
-  return res.status(200).json({ hello: 'world!' });
+app.get('/', (req, res, next) => {
+  return res.status(200).json({ serverStatus: 'running' });
 });
 
 /** Socket Information */

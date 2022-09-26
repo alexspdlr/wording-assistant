@@ -4,57 +4,51 @@ import React, {
   useReducer,
   useState,
 } from 'react';
-import {
-  defaultSocketContextState,
-  SocketContextProvider,
-  SocketReducer,
-} from './contexts/SocketContext';
+
+import useBoundStore from './store';
 import { useSocket } from './utils/hooks/useSocket';
 
-export interface ISocketContextComponentProps extends PropsWithChildren {}
+export interface ISocketWrapperComponentProps extends PropsWithChildren {}
 
-const SocketContextComponent: React.FunctionComponent<
-  ISocketContextComponentProps
+const SocketWrapperComponent: React.FunctionComponent<
+  ISocketWrapperComponentProps
 > = (props) => {
   const { children } = props;
 
+  const setIsConnectedToServer = useBoundStore(
+    (state) => state.setIsConnectedToServer
+  );
+
   const socket = useSocket('ws://localhost:3001', {
     reconnectionAttempts: 5,
-    reconnectionDelay: 1000,
+    reconnectionDelay: 500,
     autoConnect: false,
   });
 
-  const [SocketState, SocketDispatch] = useReducer(
-    SocketReducer,
-    defaultSocketContextState
-  );
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     socket.connect();
-    SocketDispatch({ type: 'update_socket', payload: socket });
-    StartListeners();
-    SendHandshake();
+    startListeners();
+    sendHandshake();
     // eslint-disable-next-line
   }, []);
 
-  const StartListeners = () => {
+  const startListeners = () => {
     /** Messages */
-    socket.on('user_connected', (users: string[]) => {
-      console.info('User connected message received');
-      SocketDispatch({ type: 'update_users', payload: users });
-    });
-
-    /** Messages */
-    socket.on('user_disconnected', (uid: string) => {
-      console.info('User disconnected message received');
-      SocketDispatch({ type: 'remove_user', payload: uid });
-    });
 
     /** Connection / reconnection listeners */
+    socket.on('connect', () => {
+      //alert(`Socket is connected:  ${socket.connected}`);
+      setIsConnectedToServer(true);
+    });
+
+    socket.on('disconnect', () => {
+      //alert(`Socket is connected:  ${socket.connected}`);
+    });
+
     socket.io.on('reconnect', (attempt) => {
       console.info('Reconnected on attempt: ' + attempt);
-      SendHandshake();
+      sendHandshake();
+      setIsConnectedToServer(true);
     });
 
     socket.io.on('reconnect_attempt', (attempt) => {
@@ -67,31 +61,19 @@ const SocketContextComponent: React.FunctionComponent<
 
     socket.io.on('reconnect_failed', () => {
       console.info('Reconnection failure.');
-      alert(
-        'We are unable to connect you to the chat service.  Please make sure your internet connection is stable or try again later.'
-      );
+      setIsConnectedToServer(false);
     });
   };
 
-  const SendHandshake = async () => {
+  const sendHandshake = async () => {
     console.info('Sending handshake to server ...');
 
     socket.emit('handshake', async (uid: string, users: string[]) => {
       console.info('User handshake callback message received');
-      SocketDispatch({ type: 'update_users', payload: users });
-      SocketDispatch({ type: 'update_uid', payload: uid });
     });
-
-    setLoading(false);
   };
 
-  if (loading) return <p>... loading Socket IO ....</p>;
-
-  return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch }}>
-      {children}
-    </SocketContextProvider>
-  );
+  return <>{children}</>;
 };
 
-export default SocketContextComponent;
+export default SocketWrapperComponent;

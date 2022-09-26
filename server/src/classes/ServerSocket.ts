@@ -65,9 +65,7 @@ export class ServerSocket {
       console.clear();
       process.stdout.cursorTo(0);
       process.stdout.write(
-        `Memory usage: ${memoryUsageMB} MB / ${maxMemoryMB} MB (${Math.round(
-          (memoryUsageMB / maxMemoryMB) * 100
-        )} %) | CPU usage: ${cpuUsage} % \n\nPUPPET MASTERS: \n${this.puppetMasters
+        `Memory usage: ${memoryUsageMB} MB | CPU usage: ${cpuUsage} % \n\nPUPPET MASTERS: \n${this.puppetMasters
           .map(
             (pm, i) => `\n${i}. PuppetMaster(${pm.pmId})\n\n${
               pm.puppetInfos.length > 0
