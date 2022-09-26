@@ -1,22 +1,20 @@
-import { ChildProcess, fork } from 'child_process';
-import { Server as HttpServer } from 'http';
-import { Socket, Server } from 'socket.io';
-import { v4 } from 'uuid';
-import { Worker, WorkerOptions } from 'worker_threads';
-import { PuppetMasterAction, PuppetMasterWorkerResponse } from './types';
+import { Worker } from 'worker_threads';
+import { PuppetInfo } from '../../types/puppet';
+import {
+  PuppetMasterAction,
+  PuppetMasterWorkerResponse,
+} from '../../types/puppetMaster';
 
 export class PuppetMaster {
   public static instance: PuppetMaster;
   public pmId: string;
   private worker: Worker;
   private numberOfMaintainedPuppets = 2;
-
-  /** Master list of all connected users */
-  public puppets: string[];
+  public puppetInfos: PuppetInfo[];
 
   constructor(socketId: string) {
     PuppetMaster.instance = this;
-    this.puppets = [];
+    this.puppetInfos = [];
     this.worker = new Worker('./src/classes/PuppetMaster/worker.ts', {
       execArgv: ['--require', 'ts-node/register'],
     });
@@ -41,33 +39,45 @@ export class PuppetMaster {
   }
 
   public kill() {
-    console.log('Killing PUPPET_MASTER with id: ', this.pmId);
     this.action({
       command: 'EXIT',
       payload: {},
     });
   }
 
+  private updatePuppetInfos = (puppetInfos: PuppetInfo[]) => {
+    /*
+    console.log('-------------------');
+    console.log(
+      `PuppetInfos of PUPPET_MASTER with id : ${this.pmId} were updated.`
+    );
+    console.log(`BEFORE: `, this.puppetInfos);
+    */
+    this.puppetInfos = puppetInfos;
+    /*
+    console.log(`AFTER: `, puppetInfos);
+    console.log(
+      `PuppetInfos of PUPPET_MASTER with id : ${this.pmId} were updated.`
+    );
+    console.log('-------------------');
+    */
+  };
+
   private action(payload: PuppetMasterAction) {
     this.worker.postMessage(payload);
   }
 
   private async handleWorkerResponse(response: PuppetMasterWorkerResponse) {
-    console.log(
-      `PUPPET_MASTER_THREAD with id ${this.pmId} sent message to parent class: `,
-      response
-    );
+    this.updatePuppetInfos(response.payload);
+
     switch (response.code) {
       case 'OTHER':
-        // code block
         return;
 
       case 'START_COMPLETED':
-        console.log(`PUPPET_MASTER_THREAD with id ${this.pmId} was started`);
         return;
       case 'EXIT_COMPLETED':
         await this.worker.terminate();
-        console.log(`PUPPET_MASTER_THREAD with id ${this.pmId} was terminated`);
         return;
       default:
         return;

@@ -1,7 +1,7 @@
 import { Browser, Page } from 'puppeteer';
 import { parentPort } from 'worker_threads';
 import setup from '../../operations/setup';
-import { PuppetAction, PuppetWorkerResponse } from './types';
+import { PuppetAction, PuppetWorkerResponse } from '../../types/puppet';
 
 interface PuppetWorkerState {
   page: Page | null;
@@ -20,8 +20,6 @@ parentPort?.on('message', async (action: PuppetAction) => {
     parentPort?.postMessage(response);
   }
 });
-
-console.info('Spawned a PUPPET_WORKER');
 
 const executeAction = async (
   action: PuppetAction
@@ -60,11 +58,7 @@ const start = async (id: number) => {
 };
 
 const exit = async () => {
-  console.log(`Exit PUPPET_WORKER`);
-
   await localState.browser?.close();
-
-  // parentPort?.close();
 
   const response: PuppetWorkerResponse = {
     code: 'EXIT_COMPLETED',

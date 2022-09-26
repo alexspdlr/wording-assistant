@@ -3,13 +3,19 @@ import { Server as HttpServer } from 'http';
 import { Socket, Server } from 'socket.io';
 import { v4 } from 'uuid';
 import { Worker, WorkerOptions } from 'worker_threads';
-import { PuppetAction, PuppetWorkerResponse } from './types';
+import {
+  PuppetAction,
+  PuppetState,
+  PuppetWorkerResponse,
+} from '../../types/puppet';
 
 export class Puppet {
   public static instance: Puppet;
   public pId: number;
   public parentId: string;
   public workerTerminated: boolean;
+  public workerStarted: boolean;
+  public puppetState: PuppetState;
   private worker: Worker;
 
   constructor(parentId: string) {
@@ -20,8 +26,9 @@ export class Puppet {
     this.pId = this.worker.threadId;
     this.parentId = parentId;
     this.workerTerminated = false;
+    this.workerStarted = false;
     this.startWorkerListeners(this.worker);
-
+    this.puppetState = 'initializing';
     this.action({
       command: 'START',
       payload: { id: this.pId },
@@ -34,18 +41,12 @@ export class Puppet {
     });
 
     worker.on('exit', (code) => {
-      console.log(
-        `PUPPET_THREAD with id ${this.pId} exit tracked in parent class`
-      );
+      // do something
     });
   }
 
-  public setup() {
-    console.log('Preparing PUPPET with id: ', this.pId);
-  }
-
   public kill() {
-    console.log('Killing PUPPET with id: ', this.pId);
+    this.puppetState = 'terminating';
     this.action({
       command: 'EXIT',
       payload: {},
@@ -57,22 +58,18 @@ export class Puppet {
   }
 
   private async handleWorkerResponse(response: PuppetWorkerResponse) {
-    console.log(
-      `PUPPET_THREAD with id ${this.pId} sent message to parent class: `,
-      response
-    );
     switch (response.code) {
       case 'OTHER':
         // code block
         return;
 
       case 'START_COMPLETED':
-        console.log(`PUPPET_THREAD with id ${this.pId} was started`);
+        this.workerStarted = true;
+        this.puppetState = 'waitingForSelectedText';
         return;
       case 'EXIT_COMPLETED':
         await this.worker.terminate();
         this.workerTerminated = true;
-        console.log(`PUPPET_THREAD with id ${this.pId} was terminated`);
         return;
       default:
         return;

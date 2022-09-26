@@ -8,8 +8,8 @@ const app = express();
 const httpServer = http.createServer(app);
 
 /** Start Socket */
-new ServerSocket(httpServer);
-
+const server = new ServerSocket(httpServer);
+server.printPuppetMasters();
 /** Log the request */
 app.use((req, res, next) => {
   console.info(

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-// parent instance to worker
+// parent instance
 
 export type PuppetAction = START | EXIT | OTHER;
 
@@ -22,7 +22,24 @@ interface OTHER {
   };
 }
 
-// worker to parent instance
+type PuppetWaitingState =
+  | 'waitingForSelectedText'
+  | 'waitingForSelectedWord'
+  | 'waitingForSelectedWordingAlternative';
+type PuppetProcessingState =
+  | 'initializing'
+  | 'generatingRephrasingBase'
+  | 'generatingWordingAlternatives'
+  | 'generatingRephrasedText'
+  | 'deselectingWord'
+  | 'terminating';
+export type PuppetState = PuppetWaitingState | PuppetProcessingState;
+export interface PuppetInfo {
+  id: number;
+  puppetState: PuppetState;
+}
+
+// worker
 
 export type PuppetWorkerResponse =
   | START_COMPLETED

@@ -1,9 +1,11 @@
 import { parentPort, threadId } from 'worker_threads';
 import { Puppet } from '../Puppet/Puppet';
-import { PuppetMasterAction, PuppetMasterWorkerResponse } from './types';
-import { waitUntil } from 'async-wait-until';
-
-console.info('Spawned a PUPPET_MASTER_WORKER');
+import {
+  PuppetMasterAction,
+  PuppetMasterWorkerResponse,
+} from '../../types/puppetMaster';
+import { PuppetInfo } from '../../types/puppet';
+import waitUntil from '../../utils/waitUntil';
 
 parentPort?.on('message', async (action: PuppetMasterAction) => {
   const response = await executeAction(action);
@@ -47,29 +49,43 @@ const start = async (id: string, numberOfMaintainedPuppets: number) => {
   const puppets = [...Array(numberOfMaintainedPuppets)].map(
     () => new Puppet(id)
   );
-
   localState.puppets = puppets;
-  console.log(`Started PUPPET_MASTER_WORKER with id: ${id}`);
 
-  const startResponse: PuppetMasterWorkerResponse = {
-    code: 'START_COMPLETED',
-    payload: {
-      puppetIds: puppets.map((puppet) => puppet.pId),
-    },
+  const generateResponse = (): PuppetMasterWorkerResponse => {
+    return {
+      code: 'START_COMPLETED',
+      payload: localState.puppets.map((puppet) => {
+        return {
+          id: puppet.pId,
+          puppetState: puppet.puppetState,
+        };
+      }),
+    };
   };
 
-  return startResponse;
+  // update state in parent before worker started
+  parentPort?.postMessage(generateResponse());
+
+  // update state in parent after 1st worker started
+  await waitUntil(() => localState.puppets[0].workerStarted === true);
+  parentPort?.postMessage(generateResponse());
+
+  // update state in parent after all workers started
+  await waitUntil(
+    () =>
+      localState.puppets.filter((puppet) => puppet.workerStarted === false)
+        .length === 0
+  );
+
+  const allWorkersStartedResponse: PuppetMasterWorkerResponse =
+    generateResponse();
+  return allWorkersStartedResponse;
 };
 
 const exit = async () => {
-  // TODO: dont return response before all puppet workers have sent "EXIT_COMPLETED"
-
-  // wait until puppet.workerTerminated = true for all puppets
   for (const puppet of localState.puppets) {
     puppet.kill();
   }
-
-  console.log(`Before that.`);
 
   await waitUntil(
     () =>
@@ -77,11 +93,14 @@ const exit = async () => {
         .length === 0
   );
 
-  console.log(`After that.`);
-
   const exitResponse: PuppetMasterWorkerResponse = {
     code: 'EXIT_COMPLETED',
-    payload: {},
+    payload: localState.puppets.map((puppet) => {
+      return {
+        id: puppet.pId,
+        puppetState: puppet.puppetState,
+      };
+    }),
   };
 
   return exitResponse;

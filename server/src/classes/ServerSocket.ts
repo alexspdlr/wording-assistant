@@ -5,6 +5,7 @@ import { v4 } from 'uuid';
 import { Worker, WorkerOptions } from 'worker_threads';
 import { PuppetMaster } from './PuppetMaster/PuppetMaster';
 import os from 'os';
+import osu from 'node-os-utils';
 export class ServerSocket {
   public static instance: ServerSocket;
   public io: Server;
@@ -38,8 +39,8 @@ export class ServerSocket {
 
   spawnPuppetMaster = (puppetMasterID: string) => {
     const newPuppetMaster: PuppetMaster = new PuppetMaster(puppetMasterID);
+
     this.puppetMasters.push(newPuppetMaster);
-    console.log('cpu usage: ', os.loadavg());
   };
 
   killPuppetMaster = (puppetMasterID: string) => {
@@ -52,5 +53,40 @@ export class ServerSocket {
 
   findPuppetMasterById = (id: string) => {
     return this.puppetMasters.find((el) => el.pmId === id);
+  };
+
+  printPuppetMasters = () => {
+    setTimeout(async () => {
+      const cpuUsage = await osu.cpu.usage();
+      const memoryUsageMB =
+        Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100;
+      const maxMemoryMB =
+        Math.round((process.memoryUsage().rss / 1024 / 1024) * 100) / 100;
+      console.clear();
+      process.stdout.cursorTo(0);
+      process.stdout.write(
+        `Memory usage: ${memoryUsageMB} MB / ${maxMemoryMB} MB (${Math.round(
+          (memoryUsageMB / maxMemoryMB) * 100
+        )} %) | CPU usage: ${cpuUsage} % \n\nPUPPET MASTERS: \n${this.puppetMasters
+          .map(
+            (pm, i) => `\n${i}. PuppetMaster(${pm.pmId})\n\n${
+              pm.puppetInfos.length > 0
+                ? pm.puppetInfos
+                    .map(
+                      (pi: { id: any; puppetState: any }, j: number) =>
+                        `      Puppet (${pi.id}) - ${pi.puppetState}${
+                          j !== pm.puppetInfos.length - 1 ? '\n' : ''
+                        }`
+                    )
+                    .join('')
+                : '      No puppets spawned yet.'
+            } 
+  `
+          )
+          .join('')}`
+      );
+
+      this.printPuppetMasters();
+    }, 100);
   };
 }
