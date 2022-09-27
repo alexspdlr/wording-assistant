@@ -1,8 +1,8 @@
 import { Worker } from 'worker_threads';
 import { PuppetInfo } from '../../types/puppet';
 import {
-  PuppetMasterAction,
-  PuppetMasterWorkerResponse,
+  PuppetMasterDispatchableEvent,
+  PuppetMasterReceivableEvent,
 } from '../../types/puppetMaster';
 
 export class PuppetMaster {
@@ -23,8 +23,8 @@ export class PuppetMaster {
 
     this.startWorkerListeners(this.worker);
 
-    this.action({
-      command: 'START',
+    this.dispatchEvent({
+      command: 'START_PUPPETMASTER',
       payload: {
         id: this.pmId,
         numberOfMaintainedPuppets: this.numberOfMaintainedPuppets,
@@ -33,54 +33,84 @@ export class PuppetMaster {
   }
 
   private startWorkerListeners(worker: Worker) {
-    worker.on('message', async (response) => {
+    worker.on('message', async (response: PuppetMasterReceivableEvent) => {
       await this.handleWorkerResponse(response);
     });
   }
 
-  public kill() {
-    this.action({
-      command: 'EXIT',
-      payload: {},
-    });
-  }
-
   private updatePuppetInfos = (puppetInfos: PuppetInfo[]) => {
-    /*
-    console.log('-------------------');
-    console.log(
-      `PuppetInfos of PUPPET_MASTER with id : ${this.pmId} were updated.`
-    );
-    console.log(`BEFORE: `, this.puppetInfos);
-    */
     this.puppetInfos = puppetInfos;
-    /*
-    console.log(`AFTER: `, puppetInfos);
-    console.log(
-      `PuppetInfos of PUPPET_MASTER with id : ${this.pmId} were updated.`
-    );
-    console.log('-------------------');
-    */
   };
 
-  private action(payload: PuppetMasterAction) {
-    this.worker.postMessage(payload);
+  private dispatchEvent(event: PuppetMasterDispatchableEvent) {
+    this.worker.postMessage(event);
   }
 
-  private async handleWorkerResponse(response: PuppetMasterWorkerResponse) {
+  private async handleWorkerResponse(response: PuppetMasterReceivableEvent) {
     this.updatePuppetInfos(response.payload);
 
-    switch (response.code) {
-      case 'OTHER':
-        return;
+    console.log(`${response.code}: `, response.payload);
 
-      case 'START_COMPLETED':
+    switch (response.code) {
+      case 'PUPPETMASTER_OTHER_EVENT_COMPLETED':
         return;
-      case 'EXIT_COMPLETED':
+      case 'PUPPETMASTER_ERROR_OCCURED':
+        return;
+      case 'PUPPETMASTER_START_COMPLETED':
+        return;
+      case 'PUPPETMASTER_EXIT_COMPLETED':
         await this.worker.terminate();
         return;
       default:
         return;
     }
   }
+
+  public kill() {
+    this.dispatchEvent({
+      command: 'EXIT_PUPPETMASTER',
+      payload: {},
+    });
+  }
+
+  // puppet actions
+  public selectText(inputText: string) {
+    this.dispatchEvent({
+      command: 'SELECT_TEXT',
+      payload: {
+        inputText,
+      },
+    });
+  }
+
+  /*
+
+  public deselectText() {
+    this.dispatchEvent({
+      command: 'DESELECT_TEXT',
+      payload: {},
+    });
+  }
+
+  public selectWord() {
+    this.dispatchEvent({
+      command: 'SELECT_WORD',
+      payload: {},
+    });
+  }
+
+  public deselectWord() {
+    this.dispatchEvent({
+      command: 'DESELECT_WORD',
+      payload: {},
+    });
+  }
+
+  public selectWordingAlternative() {
+    this.dispatchEvent({
+      command: 'SELECT_WORDING_ALTERNATIVE',
+      payload: {},
+    });
+  }
+  */
 }

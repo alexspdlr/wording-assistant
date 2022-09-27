@@ -1,17 +1,18 @@
 import { parentPort, threadId } from 'worker_threads';
 import { Puppet } from '../Puppet/Puppet';
-import {
-  PuppetMasterAction,
-  PuppetMasterWorkerResponse,
-} from '../../types/puppetMaster';
-import { PuppetInfo } from '../../types/puppet';
 import waitUntil from '../../utils/waitUntil';
+import {
+  PuppetMasterDispatchableEvent,
+  PuppetMasterReceivableEvent,
+  PuppetMasterUserDispatchableEvent,
+} from '../../types/puppetMaster';
+import { puppetProcessingStateNames } from '../../types/puppet';
 
-parentPort?.on('message', async (action: PuppetMasterAction) => {
-  const response = await executeAction(action);
+parentPort?.on('message', async (event: PuppetMasterDispatchableEvent) => {
+  const response = await handleDispatchableEvent(event);
 
   if (response) {
-    parentPort?.postMessage(response);
+    respondToParent(response);
   }
 });
 
@@ -23,21 +24,70 @@ const localState: PuppetMasterWorkerState = {
   puppets: [],
 };
 
-const executeAction = async (
-  action: PuppetMasterAction
-): Promise<PuppetMasterWorkerResponse | undefined> => {
-  switch (action.command) {
-    case 'OTHER':
-      // code block
-      return;
+const handleDispatchableEvent = async (
+  event: PuppetMasterDispatchableEvent
+): Promise<PuppetMasterReceivableEvent | undefined> => {
+  let targetPuppet: Puppet;
 
-    case 'START':
-      const { id, numberOfMaintainedPuppets } = action.payload;
-      const response = start(id, numberOfMaintainedPuppets);
+  console.log(`${event.command}: `, event.payload);
+
+  if (event.command !== 'START_PUPPETMASTER' && !localState.puppets[0]) {
+    respondToParentWithError('NO_PUPPET_AVAILABLE');
+    return;
+  } else {
+    targetPuppet = localState.puppets[0];
+  }
+
+  switch (event.command) {
+    case 'START_PUPPETMASTER':
+      const { id, numberOfMaintainedPuppets } = event.payload;
+
+      const response = startAllPuppets(id, numberOfMaintainedPuppets);
+
       return response;
 
-    case 'EXIT':
-      const exitResponse = exit();
+    case 'SELECT_TEXT':
+      if (targetPuppet.puppetState.stateName !== 'waitingForSelectText') {
+        const targetPuppetIsProcessing = Object.values(
+          puppetProcessingStateNames
+        ).includes(targetPuppet.puppetState.stateName);
+
+        const timeout = 10000;
+        if (targetPuppetIsProcessing) {
+          const preconditionFulfilled = await waitUntil(
+            () => targetPuppet.puppetState.stateName === 'waitingForSelectText',
+            timeout
+          );
+
+          if (!preconditionFulfilled) {
+            respondToParentWithError(
+              'PRECONDITION_NOT_FULFILLED_AFTER_TIMEOUT'
+            );
+            return;
+          }
+        } else {
+          respondToParentWithError('PRECONDITION_NOT_FULFILLED');
+          return;
+        }
+      }
+
+      forwardEventToPuppet(targetPuppet, event);
+      return;
+
+    case 'DESELECT_TEXT':
+      return;
+
+    case 'SELECT_WORD':
+      return;
+
+    case 'DESELECT_WORD':
+      return;
+
+    case 'SELECT_WORDING_ALTERNATIVE':
+      return;
+
+    case 'EXIT_PUPPETMASTER':
+      const exitResponse = terminateAllPuppets();
       return exitResponse;
 
     default:
@@ -45,30 +95,17 @@ const executeAction = async (
   }
 };
 
-const start = async (id: string, numberOfMaintainedPuppets: number) => {
+const startAllPuppets = async (
+  id: string,
+  numberOfMaintainedPuppets: number
+) => {
   const puppets = [...Array(numberOfMaintainedPuppets)].map(
     () => new Puppet(id)
   );
   localState.puppets = puppets;
 
-  const generateResponse = (): PuppetMasterWorkerResponse => {
-    return {
-      code: 'START_COMPLETED',
-      payload: localState.puppets.map((puppet) => {
-        return {
-          id: puppet.pId,
-          puppetState: puppet.puppetState,
-        };
-      }),
-    };
-  };
-
-  // update state in parent before worker started
-  parentPort?.postMessage(generateResponse());
-
   // update state in parent after 1st worker started
   await waitUntil(() => localState.puppets[0].workerStarted === true);
-  parentPort?.postMessage(generateResponse());
 
   // update state in parent after all workers started
   await waitUntil(
@@ -77,12 +114,26 @@ const start = async (id: string, numberOfMaintainedPuppets: number) => {
         .length === 0
   );
 
-  const allWorkersStartedResponse: PuppetMasterWorkerResponse =
-    generateResponse();
-  return allWorkersStartedResponse;
+  const startedResponse: PuppetMasterReceivableEvent = {
+    code: 'PUPPETMASTER_START_COMPLETED',
+    payload: localState.puppets.map((puppet) => {
+      return {
+        id: puppet.pId,
+        puppetState: puppet.puppetState,
+      };
+    }),
+  };
+  return startedResponse;
 };
 
-const exit = async () => {
+const forwardEventToPuppet = (
+  puppet: Puppet,
+  event: PuppetMasterUserDispatchableEvent
+) => {
+  puppet.dispatchEvent(event);
+};
+
+const terminateAllPuppets = async () => {
   for (const puppet of localState.puppets) {
     puppet.kill();
   }
@@ -93,8 +144,8 @@ const exit = async () => {
         .length === 0
   );
 
-  const exitResponse: PuppetMasterWorkerResponse = {
-    code: 'EXIT_COMPLETED',
+  const exitResponse: PuppetMasterReceivableEvent = {
+    code: 'PUPPETMASTER_EXIT_COMPLETED',
     payload: localState.puppets.map((puppet) => {
       return {
         id: puppet.pId,
@@ -104,4 +155,24 @@ const exit = async () => {
   };
 
   return exitResponse;
+};
+
+const respondToParent = (response: PuppetMasterReceivableEvent) => {
+  parentPort?.postMessage(response);
+};
+
+const respondToParentWithError = (errorText: string) => {
+  console.error(errorText);
+
+  const response: PuppetMasterReceivableEvent = {
+    code: 'PUPPETMASTER_ERROR_OCCURED',
+    payload: localState.puppets.map((puppet) => {
+      return {
+        id: puppet.pId,
+        puppetState: puppet.puppetState,
+      };
+    }),
+  };
+
+  parentPort?.postMessage(response);
 };

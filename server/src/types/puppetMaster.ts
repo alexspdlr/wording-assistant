@@ -1,38 +1,51 @@
 /* eslint-disable @typescript-eslint/ban-types */
-// parent instance
+import { PuppetInfo, PuppetUserDispatchableEvent } from './puppet';
 
-import { PuppetInfo } from './puppet';
+/* -------------------------------------------------------------------------- */
+/*                             DISPATCHABLE EVENT                             */
+/* -------------------------------------------------------------------------- */
 
-export type PuppetMasterAction = START | EXIT | OTHER;
+export type PuppetMasterDispatchableEvent =
+  | PuppetMasterServerDispatchableEvent
+  | PuppetUserDispatchableEvent;
 
-interface START {
-  command: 'START';
+/* ---------------------------- SERVER DISPATCHED --------------------------- */
+
+type PuppetMasterServerDispatchableEvent =
+  | START_PUPPETMASTER
+  | EXIT_PUPPETMASTER;
+interface START_PUPPETMASTER {
+  command: 'START_PUPPETMASTER';
   payload: {
     id: string;
     numberOfMaintainedPuppets: number;
   };
 }
 
-interface EXIT {
-  command: 'EXIT';
+interface EXIT_PUPPETMASTER {
+  command: 'EXIT_PUPPETMASTER';
   payload: {};
 }
 
-interface OTHER {
-  command: 'OTHER';
-  payload: {
-    data: any;
-  };
-}
+/* ----------------------------- USER DISPATCHED ---------------------------- */
 
-// worker
+export type PuppetMasterUserDispatchableEvent = PuppetUserDispatchableEvent;
 
-export interface PuppetMasterWorkerResponse {
-  code: PuppetMasterWorkerResponseCode;
+/* -------------------------------------------------------------------------- */
+/*                             RECEIVABLE EVENT                               */
+/* -------------------------------------------------------------------------- */
+
+export interface PuppetMasterReceivableEvent {
+  code: PuppetMasterReceivableEventCode;
   payload: PuppetInfo[];
 }
 
-type PuppetMasterWorkerResponseCode =
-  | 'START_COMPLETED'
-  | 'EXIT_COMPLETED'
-  | 'OTHER';
+type PuppetMasterReceivableEventCode =
+  | 'PUPPETMASTER_START_COMPLETED'
+  | 'PUPPETMASTER_EXIT_COMPLETED'
+  | 'PUPPETMASTER_ERROR_OCCURED'
+  | 'PUPPETMASTER_OTHER_EVENT_COMPLETED';
+
+/* -------------------------------------------------------------------------- */
+/*                             OTHER                                          */
+/* -------------------------------------------------------------------------- */

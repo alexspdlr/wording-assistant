@@ -5,19 +5,21 @@ import React, {
   useState,
 } from 'react';
 
-import useBoundStore from './store';
-import { useSocket } from './utils/hooks/useSocket';
+import useBoundStore from '../store';
+import { useSocket } from '../utils/hooks/useSocket';
 
-export interface ISocketWrapperComponentProps extends PropsWithChildren {}
+export interface ISocketContextComponentProps extends PropsWithChildren {}
 
-const SocketWrapperComponent: React.FunctionComponent<
-  ISocketWrapperComponentProps
+const SocketContextComponent: React.FunctionComponent<
+  ISocketContextComponentProps
 > = (props) => {
   const { children } = props;
 
   const setIsConnectedToServer = useBoundStore(
     (state) => state.setIsConnectedToServer
   );
+
+  const setSocket = useBoundStore((state) => state.setSocket);
 
   const socket = useSocket('ws://localhost:3001', {
     reconnectionAttempts: 5,
@@ -31,6 +33,12 @@ const SocketWrapperComponent: React.FunctionComponent<
     sendHandshake();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    setSocket(socket);
+
+    // eslint-disable-next-line
+  }, [socket]);
 
   const startListeners = () => {
     /** Messages */
@@ -66,8 +74,6 @@ const SocketWrapperComponent: React.FunctionComponent<
   };
 
   const sendHandshake = async () => {
-    console.info('Sending handshake to server ...');
-
     socket.emit('handshake', async (uid: string, users: string[]) => {
       console.info('User handshake callback message received');
     });
@@ -76,4 +82,4 @@ const SocketWrapperComponent: React.FunctionComponent<
   return <>{children}</>;
 };
 
-export default SocketWrapperComponent;
+export default SocketContextComponent;

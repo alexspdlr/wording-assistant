@@ -1,9 +1,13 @@
 import waitUntil, { WAIT_FOREVER } from 'async-wait-until';
 
-const waitUntilCustomized = (fn: () => boolean) => {
+const waitUntilCustomized = (
+  fn: () => boolean,
+  customTimeout?: number,
+  customIntervalBetweenAttempts?: number
+) => {
   return waitUntil(fn, {
-    timeout: WAIT_FOREVER,
-    intervalBetweenAttempts: 50,
+    timeout: customTimeout || 20000,
+    intervalBetweenAttempts: customIntervalBetweenAttempts || 50,
   });
 };
 

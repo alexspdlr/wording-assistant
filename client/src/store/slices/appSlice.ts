@@ -1,3 +1,5 @@
+import { Socket } from 'socket.io-client';
+import { EmittableSocketEvent } from 'src/types/socket';
 import { AppState, AppActions } from 'src/types/store';
 import { StateCreator } from 'zustand';
 
@@ -20,12 +22,14 @@ const ininitalState: AppState = {
       : 'light') ||
     'light',
   isConnectedToServer: true,
+  socket: null,
 };
 
 export interface AppSlice extends AppState, AppActions {}
 
 export const createAppSlice: StateCreator<AppSlice, [], [], AppSlice> = (
-  set
+  set,
+  get
 ) => ({
   ...ininitalState,
   setLightMode: () => {
@@ -44,5 +48,20 @@ export const createAppSlice: StateCreator<AppSlice, [], [], AppSlice> = (
     set(() => ({
       isConnectedToServer,
     }));
+  },
+  setSocket: (socket: Socket) => {
+    set(() => ({
+      socket,
+    }));
+  },
+  socketEmit: (event: EmittableSocketEvent) => {
+    const { eventName, payload } = event;
+
+    const socket = get().socket;
+    if (socket) {
+      socket.emit(eventName, payload, async (callback: any) => {
+        console.info(`Callback for ${eventName}: `, callback);
+      });
+    }
   },
 });

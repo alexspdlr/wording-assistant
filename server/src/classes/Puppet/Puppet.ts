@@ -4,9 +4,9 @@ import { Socket, Server } from 'socket.io';
 import { v4 } from 'uuid';
 import { Worker, WorkerOptions } from 'worker_threads';
 import {
-  PuppetAction,
+  PuppetDispatchableEvent,
+  PuppetReceivableEvent,
   PuppetState,
-  PuppetWorkerResponse,
 } from '../../types/puppet';
 
 export class Puppet {
@@ -28,9 +28,12 @@ export class Puppet {
     this.workerTerminated = false;
     this.workerStarted = false;
     this.startWorkerListeners(this.worker);
-    this.puppetState = 'initializing';
-    this.action({
-      command: 'START',
+    this.puppetState = {
+      stateName: 'processingInitialize',
+      data: {},
+    };
+    this.dispatchEvent({
+      command: 'START_PUPPET',
       payload: { id: this.pId },
     });
   }
@@ -46,28 +49,35 @@ export class Puppet {
   }
 
   public kill() {
-    this.puppetState = 'terminating';
-    this.action({
-      command: 'EXIT',
+    this.puppetState = {
+      stateName: 'processingTerminate',
+      data: {},
+    };
+    this.dispatchEvent({
+      command: 'EXIT_PUPPET',
       payload: {},
     });
   }
 
-  private action(payload: PuppetAction) {
-    this.worker.postMessage(payload);
+  public dispatchEvent(event: PuppetDispatchableEvent) {
+    console.log('1');
+    this.worker.postMessage({ event });
   }
 
-  private async handleWorkerResponse(response: PuppetWorkerResponse) {
+  private async handleWorkerResponse(response: PuppetReceivableEvent) {
     switch (response.code) {
-      case 'OTHER':
+      case 'PUPPET_OTHER_ACTION_COMPLETED':
         // code block
         return;
 
-      case 'START_COMPLETED':
+      case 'PUPPET_START_COMPLETED':
+        this.puppetState = {
+          stateName: 'waitingForSelectText',
+          data: {},
+        };
         this.workerStarted = true;
-        this.puppetState = 'waitingForSelectedText';
         return;
-      case 'EXIT_COMPLETED':
+      case 'PUPPET_EXIT_COMPLETED':
         await this.worker.terminate();
         this.workerTerminated = true;
         return;

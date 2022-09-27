@@ -12,5 +12,10 @@
     "strict": true,                                     
     "noImplicitAny": true,                              
     "skipLibCheck": true                                
-  }
+  },
+  "include": [
+    "src",
+    "node_modules/@types/puppeteer/index.d.ts"
+  ]
 } 
+ 
