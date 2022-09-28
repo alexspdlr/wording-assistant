@@ -4,10 +4,10 @@ import { Socket, Server } from 'socket.io';
 import { v4 } from 'uuid';
 import { Worker, WorkerOptions } from 'worker_threads';
 import {
-  PuppetDispatchableEvent,
-  PuppetReceivableEvent,
+  DispatchableEvent,
+  ReceivableEvent,
   PuppetState,
-} from '../../types/puppet';
+} from '../../types/index';
 
 export class Puppet {
   public static instance: Puppet;
@@ -39,7 +39,7 @@ export class Puppet {
   }
 
   private startWorkerListeners(worker: Worker) {
-    worker.on('message', async (response) => {
+    worker.on('message', async (response: ReceivableEvent) => {
       await this.handleWorkerResponse(response);
     });
 
@@ -59,12 +59,11 @@ export class Puppet {
     });
   }
 
-  public dispatchEvent(event: PuppetDispatchableEvent) {
-    console.log('1');
-    this.worker.postMessage({ event });
+  public dispatchEvent(event: DispatchableEvent) {
+    this.worker.postMessage(event);
   }
 
-  private async handleWorkerResponse(response: PuppetReceivableEvent) {
+  private async handleWorkerResponse(response: ReceivableEvent) {
     switch (response.code) {
       case 'PUPPET_OTHER_ACTION_COMPLETED':
         // code block

@@ -6,6 +6,7 @@ import { Worker, WorkerOptions } from 'worker_threads';
 import { PuppetMaster } from './PuppetMaster/PuppetMaster';
 import os from 'os';
 import osu from 'node-os-utils';
+import { DispatchableEvent, ReceivableEvent } from '../types/index';
 export class ServerSocket {
   public static instance: ServerSocket;
   public io: Server;
@@ -35,10 +36,57 @@ export class ServerSocket {
     socket.on('disconnect', () => {
       this.killPuppetMaster(socket.id);
     });
+
+    socket.on('selectText', (payload) => {
+      const event: DispatchableEvent = {
+        command: 'SELECT_TEXT',
+        payload,
+      };
+      this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
+    });
+
+    socket.on('deselectText', (payload) => {
+      const event: DispatchableEvent = {
+        command: 'DESELECT_TEXT',
+        payload,
+      };
+      this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
+    });
+
+    socket.on('selectWord', (payload) => {
+      const event: DispatchableEvent = {
+        command: 'SELECT_WORD',
+        payload,
+      };
+      this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
+    });
+
+    socket.on('deselectWord', (payload) => {
+      const event: DispatchableEvent = {
+        command: 'DESELECT_WORD',
+        payload,
+      };
+      this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
+    });
+
+    socket.on('selectWordingAlternative', (payload) => {
+      const event: DispatchableEvent = {
+        command: 'SELECT_WORDING_ALTERNATIVE',
+        payload,
+      };
+      this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
+    });
+  };
+
+  respondToClient = (event: ReceivableEvent) => {
+    console.log('___FROM SOCKET__ respond to client : ', event);
   };
 
   spawnPuppetMaster = (puppetMasterID: string) => {
-    const newPuppetMaster: PuppetMaster = new PuppetMaster(puppetMasterID);
+    const newPuppetMaster: PuppetMaster = new PuppetMaster(
+      puppetMasterID,
+      this.respondToClient
+    );
 
     this.puppetMasters.push(newPuppetMaster);
   };
@@ -72,9 +120,9 @@ export class ServerSocket {
                 ? pm.puppetInfos
                     .map(
                       (pi: { id: any; puppetState: any }, j: number) =>
-                        `      Puppet (${pi.id}) - ${pi.puppetState}${
-                          j !== pm.puppetInfos.length - 1 ? '\n' : ''
-                        }`
+                        `      Puppet (${pi.id}) - ${JSON.stringify(
+                          pi.puppetState
+                        )}${j !== pm.puppetInfos.length - 1 ? '\n' : ''}`
                     )
                     .join('')
                 : '      No puppets spawned yet.'
@@ -85,6 +133,6 @@ export class ServerSocket {
       );
 
       this.printPuppetMasters();
-    }, 100);
+    }, 50);
   };
 }

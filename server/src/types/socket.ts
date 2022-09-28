@@ -3,7 +3,7 @@
 
 // Emittable Socket Events
 
-export type EmittableSocketEvent =
+export type ClientEmittableSocketEvent =
   | SELECT_TEXT
   | DESELECT_TEXT
   | SELECT_WORD
@@ -11,29 +11,24 @@ export type EmittableSocketEvent =
   | SELECT_WORDING_ALTERNATIVE;
 
 interface SELECT_TEXT {
-  eventName: 'selectText';
   payload: {
     inputText: string;
   };
 }
 
 interface DESELECT_TEXT {
-  eventName: 'deselectText';
   payload: {};
 }
 
 interface SELECT_WORD {
-  eventName: 'selectWord';
   payload: {};
 }
 
 interface DESELECT_WORD {
-  eventName: 'deselectWord';
   payload: {};
 }
 
 interface SELECT_WORDING_ALTERNATIVE {
-  eventName: 'selectWordingAlternative';
   payload: {};
 }
 

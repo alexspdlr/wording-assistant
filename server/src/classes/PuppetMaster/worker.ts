@@ -1,12 +1,9 @@
 import { parentPort, threadId } from 'worker_threads';
 import { Puppet } from '../Puppet/Puppet';
 import waitUntil from '../../utils/waitUntil';
-import {
-  PuppetMasterDispatchableEvent,
-  PuppetMasterReceivableEvent,
-} from '../../types/puppetMaster';
+import { DispatchableEvent, ReceivableEvent } from '../../types/index';
 
-parentPort?.on('message', async (event: PuppetMasterDispatchableEvent) => {
+parentPort?.on('message', async (event: DispatchableEvent) => {
   const response = await handleDispatchableEvent(event);
 
   if (response) {
@@ -23,8 +20,8 @@ const localState: PuppetMasterWorkerState = {
 };
 
 const handleDispatchableEvent = async (
-  event: PuppetMasterDispatchableEvent
-): Promise<PuppetMasterReceivableEvent | undefined> => {
+  event: DispatchableEvent
+): Promise<ReceivableEvent | undefined> => {
   let targetPuppet: Puppet;
 
   console.log(`${event.command}: `, event.payload);
@@ -112,7 +109,7 @@ const startAllPuppets = async (
         .length === 0
   );
 
-  const startedResponse: PuppetMasterReceivableEvent = {
+  const startedResponse: ReceivableEvent = {
     code: 'PUPPETMASTER_START_COMPLETED',
     payload: localState.puppets.map((puppet) => {
       return {
@@ -124,10 +121,7 @@ const startAllPuppets = async (
   return startedResponse;
 };
 
-const forwardEventToPuppet = (
-  puppet: Puppet,
-  event: PuppetMasterDispatchableEvent
-) => {
+const forwardEventToPuppet = (puppet: Puppet, event: DispatchableEvent) => {
   puppet.dispatchEvent(event);
 };
 
@@ -142,7 +136,7 @@ const terminateAllPuppets = async () => {
         .length === 0
   );
 
-  const exitResponse: PuppetMasterReceivableEvent = {
+  const exitResponse: ReceivableEvent = {
     code: 'PUPPETMASTER_EXIT_COMPLETED',
     payload: localState.puppets.map((puppet) => {
       return {
@@ -155,14 +149,14 @@ const terminateAllPuppets = async () => {
   return exitResponse;
 };
 
-const respondToParent = (response: PuppetMasterReceivableEvent) => {
+const respondToParent = (response: ReceivableEvent) => {
   parentPort?.postMessage(response);
 };
 
 const respondToParentWithError = (errorText: string) => {
   console.error(errorText);
 
-  const response: PuppetMasterReceivableEvent = {
+  const response: ReceivableEvent = {
     code: 'PUPPETMASTER_ERROR_OCCURED',
     payload: localState.puppets.map((puppet) => {
       return {
