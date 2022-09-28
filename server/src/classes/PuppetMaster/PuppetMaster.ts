@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Worker } from 'worker_threads';
 import { PuppetInfo } from '../../types/puppet';
 import {
@@ -33,7 +34,7 @@ export class PuppetMaster {
   }
 
   private startWorkerListeners(worker: Worker) {
-    worker.on('message', async (response: PuppetMasterReceivableEvent) => {
+    worker.on('message', async (response) => {
       await this.handleWorkerResponse(response);
     });
   }
@@ -42,11 +43,20 @@ export class PuppetMaster {
     this.puppetInfos = puppetInfos;
   };
 
-  private dispatchEvent(event: PuppetMasterDispatchableEvent) {
+  private dispatchEvent(event: {
+    command: string;
+    payload:
+      | { id: string; numberOfMaintainedPuppets: number }
+      | { inputText: string }
+      | {};
+  }) {
     this.worker.postMessage(event);
   }
 
-  private async handleWorkerResponse(response: PuppetMasterReceivableEvent) {
+  private async handleWorkerResponse(response: {
+    payload: PuppetInfo[];
+    code: any;
+  }) {
     this.updatePuppetInfos(response.payload);
 
     console.log(`${response.code}: `, response.payload);

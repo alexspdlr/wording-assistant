@@ -6,7 +6,6 @@ import { Worker, WorkerOptions } from 'worker_threads';
 import { PuppetMaster } from './PuppetMaster/PuppetMaster';
 import os from 'os';
 import osu from 'node-os-utils';
-import { PuppetState } from '../types/puppet';
 export class ServerSocket {
   public static instance: ServerSocket;
   public io: Server;
@@ -36,27 +35,6 @@ export class ServerSocket {
     socket.on('disconnect', () => {
       this.killPuppetMaster(socket.id);
     });
-
-    socket.on('selectText', (payload) => {
-      const { inputText } = payload;
-      this.findPuppetMasterById(socket.id)?.selectText(inputText);
-    });
-
-    socket.on('deselectText', (payload) => {
-      null;
-    });
-
-    socket.on('selectWord', (payload) => {
-      null;
-    });
-
-    socket.on('deselectWord', (payload) => {
-      null;
-    });
-
-    socket.on('selectWordingAlternative', (payload) => {
-      null;
-    });
   };
 
   spawnPuppetMaster = (puppetMasterID: string) => {
@@ -82,6 +60,8 @@ export class ServerSocket {
       const cpuUsage = await osu.cpu.usage();
       const memoryUsageMB =
         Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100;
+      const maxMemoryMB =
+        Math.round((process.memoryUsage().rss / 1024 / 1024) * 100) / 100;
       console.clear();
       process.stdout.cursorTo(0);
       process.stdout.write(
@@ -91,11 +71,8 @@ export class ServerSocket {
               pm.puppetInfos.length > 0
                 ? pm.puppetInfos
                     .map(
-                      (
-                        pi: { id: number; puppetState: PuppetState },
-                        j: number
-                      ) =>
-                        `      Puppet (${pi.id}) - ${pi.puppetState.stateName}${
+                      (pi: { id: any; puppetState: any }, j: number) =>
+                        `      Puppet (${pi.id}) - ${pi.puppetState}${
                           j !== pm.puppetInfos.length - 1 ? '\n' : ''
                         }`
                     )

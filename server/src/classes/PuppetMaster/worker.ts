@@ -4,9 +4,7 @@ import waitUntil from '../../utils/waitUntil';
 import {
   PuppetMasterDispatchableEvent,
   PuppetMasterReceivableEvent,
-  PuppetMasterUserDispatchableEvent,
 } from '../../types/puppetMaster';
-import { puppetProcessingStateNames } from '../../types/puppet';
 
 parentPort?.on('message', async (event: PuppetMasterDispatchableEvent) => {
   const response = await handleDispatchableEvent(event);
@@ -40,17 +38,17 @@ const handleDispatchableEvent = async (
 
   switch (event.command) {
     case 'START_PUPPETMASTER':
-      const { id, numberOfMaintainedPuppets } = event.payload;
-
-      const response = startAllPuppets(id, numberOfMaintainedPuppets);
+      const response = startAllPuppets(
+        event.payload.id,
+        event.payload.numberOfMaintainedPuppets
+      );
 
       return response;
 
     case 'SELECT_TEXT':
       if (targetPuppet.puppetState.stateName !== 'waitingForSelectText') {
-        const targetPuppetIsProcessing = Object.values(
-          puppetProcessingStateNames
-        ).includes(targetPuppet.puppetState.stateName);
+        const targetPuppetIsProcessing =
+          targetPuppet.puppetState.stateName.startsWith('processing');
 
         const timeout = 10000;
         if (targetPuppetIsProcessing) {
@@ -128,7 +126,7 @@ const startAllPuppets = async (
 
 const forwardEventToPuppet = (
   puppet: Puppet,
-  event: PuppetMasterUserDispatchableEvent
+  event: PuppetMasterDispatchableEvent
 ) => {
   puppet.dispatchEvent(event);
 };
