@@ -98,7 +98,7 @@ export interface SocketServerEvent {
   payload: ActiveWorkerState;
 }
 
-type SocketServerEventEndpoint =
+export type SocketServerEventEndpoint =
   | 'setupFinished'
   | 'selectTextStarted'
   | 'selectTextFinished'

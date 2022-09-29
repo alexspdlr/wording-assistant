@@ -1,6 +1,6 @@
 import http from 'http';
 import express from 'express';
-import { ServerSocket } from './classes/ServerSocket';
+import { ServerSocket } from './classes/ServerSocket/ServerSocket';
 
 const app = express();
 
@@ -9,7 +9,7 @@ const httpServer = http.createServer(app);
 
 /** Start Socket */
 const server = new ServerSocket(httpServer);
-server.printPuppetMasters();
+// server.printPuppetMasters();
 /** Log the request */
 app.use((req, res, next) => {
   console.info(

@@ -2,19 +2,13 @@ import { Worker } from 'worker_threads';
 import {
   DispatchableEvent,
   DispatchableEventPayload_StartPuppet,
-  ReceivableEventPayload_PuppetSelectTextCompleted,
-  ReceivableEventPayload_PuppetSelectTextStarted,
   ReceivableEventPuppet,
 } from '../../types/index';
-import {
-  ActiveWorkerState,
-  ActiveWorkerStateData_ProcessingSelectText,
-  ActiveWorkerStateData_WaitingForSelectWord,
-} from '../../types/socket';
-import exitCompleted from './handleReceivableEvent/exitCompleted';
-import selectTextCompleted from './handleReceivableEvent/selectTextCompleted';
-import selectTextStarted from './handleReceivableEvent/selectTextStarted';
-import startCompleted from './handleReceivableEvent/startCompleted';
+import { ActiveWorkerState } from '../../types/socket';
+import exitCompleted from './receivableEvents/exitCompleted';
+import selectTextCompleted from './receivableEvents/selectTextCompleted';
+import selectTextStarted from './receivableEvents/selectTextStarted';
+import startCompleted from './receivableEvents/startCompleted';
 
 export class Puppet {
   public static instance: Puppet;
@@ -25,6 +19,8 @@ export class Puppet {
   public workerState: ActiveWorkerState;
   private worker: Worker;
   private respondToPuppetMaster: (response: ReceivableEventPuppet) => void;
+
+  /* ------------------------------- CONSTRUCTOR ------------------------------ */
 
   constructor(
     parentId: string,
@@ -52,15 +48,7 @@ export class Puppet {
     });
   }
 
-  private startWorkerListeners(worker: Worker) {
-    worker.on('message', async (response: ReceivableEventPuppet) => {
-      await this.handleWorkerResponse(response);
-    });
-
-    worker.on('exit', (code) => {
-      // do something
-    });
-  }
+  /* ----------------------------- PUBLIC METHODS ----------------------------- */
 
   public kill() {
     this.workerState = {
@@ -75,6 +63,14 @@ export class Puppet {
 
   public dispatchEvent(event: DispatchableEvent) {
     this.worker.postMessage(event);
+  }
+
+  /* ----------------------------- PRIVATE METHODS ---------------------------- */
+
+  private startWorkerListeners(worker: Worker) {
+    worker.on('message', async (response: ReceivableEventPuppet) => {
+      await this.handleWorkerResponse(response);
+    });
   }
 
   private updateWorkerState = (newState: ActiveWorkerState) => {

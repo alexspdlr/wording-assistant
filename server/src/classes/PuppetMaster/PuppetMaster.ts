@@ -11,7 +11,8 @@ export class PuppetMaster {
   public puppetInfos: PuppetInfo[];
   private respondToClient: (event: ReceivableEvent) => void;
 
-  // CONSTRUCTOR
+  /* ------------------------------- CONSTRUCTOR ------------------------------ */
+
   constructor(
     socketId: string,
     respondToClient: (event: ReceivableEvent) => void
@@ -36,7 +37,7 @@ export class PuppetMaster {
     });
   }
 
-  // PUBLIC METHODS
+  /* ----------------------------- PUBLIC METHODS ----------------------------- */
 
   public kill() {
     this.dispatchEvent({
@@ -45,11 +46,11 @@ export class PuppetMaster {
     });
   }
 
-  public forwardClientEvent(event: DispatchableEvent) {
-    this.dispatchEvent(event);
+  public dispatchEvent(event: DispatchableEvent) {
+    this.worker.postMessage(event);
   }
 
-  // PRIVATE METHODS
+  /* ----------------------------- PRIVATE METHODS ---------------------------- */
 
   private startWorkerListeners(worker: Worker) {
     worker.on('message', async (response: ReceivableEvent) => {
@@ -61,19 +62,8 @@ export class PuppetMaster {
     this.puppetInfos = puppetInfos;
   };
 
-  private dispatchEvent(event: DispatchableEvent) {
-    this.worker.postMessage(event);
-  }
-
   private async handleWorkerResponse(response: ReceivableEvent) {
     this.updatePuppetInfos(response.puppetInfo as PuppetInfo[]);
-
-    /*
-    Issue: start passes puppetInfo as payload (which alwasy required to inform 
-    puppet master about state of puppets), but other methods need to pass the client event as well 
-    */
-
-    // -> USE: Type ReceivableEventPuppet for that communication
 
     switch (response.code) {
       case 'PUPPETMASTER_EXIT_COMPLETED':

@@ -4,6 +4,7 @@
 /* -------------------------------------------------------------------------- */
 
 import { Browser, Page } from 'puppeteer';
+import { Puppet } from '../classes/Puppet/Puppet';
 import { ActiveWorkerState } from './socket';
 
 /* ------------------------------ DISPATCHABLE ------------------------------ */
@@ -121,3 +122,11 @@ export interface PuppetWorkerState {
 }
 
 export type ReceivableEventPuppet = Omit<ReceivableEvent, 'puppetInfo'>;
+
+/* -------------------------------------------------------------------------- */
+/*                                PUPPET MASTER                               */
+/* -------------------------------------------------------------------------- */
+
+export interface PuppetMasterWorkerState {
+  puppets: Puppet[];
+}
