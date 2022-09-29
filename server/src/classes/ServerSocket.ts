@@ -6,7 +6,20 @@ import { Worker, WorkerOptions } from 'worker_threads';
 import { PuppetMaster } from './PuppetMaster/PuppetMaster';
 import os from 'os';
 import osu from 'node-os-utils';
-import { DispatchableEvent, ReceivableEvent } from '../types/index';
+import {
+  DispatchableEvent,
+  ReceivableEvent,
+  ReceivableEventPuppet,
+} from '../types/index';
+import {
+  SocketClientEventPayload_DeselectText,
+  SocketClientEventPayload_DeselectWord,
+  SocketClientEventPayload_SelectText,
+  SocketClientEventPayload_SelectWord,
+  SocketClientEventPayload_SelectWordingAlternative,
+  SocketServerEvent,
+} from '../types/socket';
+
 export class ServerSocket {
   public static instance: ServerSocket;
   public io: Server;
@@ -37,7 +50,7 @@ export class ServerSocket {
       this.killPuppetMaster(socket.id);
     });
 
-    socket.on('selectText', (payload) => {
+    socket.on('selectText', (payload: SocketClientEventPayload_SelectText) => {
       const event: DispatchableEvent = {
         command: 'SELECT_TEXT',
         payload,
@@ -45,15 +58,18 @@ export class ServerSocket {
       this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
     });
 
-    socket.on('deselectText', (payload) => {
-      const event: DispatchableEvent = {
-        command: 'DESELECT_TEXT',
-        payload,
-      };
-      this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
-    });
+    socket.on(
+      'deselectText',
+      (payload: SocketClientEventPayload_DeselectText) => {
+        const event: DispatchableEvent = {
+          command: 'DESELECT_TEXT',
+          payload,
+        };
+        this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
+      }
+    );
 
-    socket.on('selectWord', (payload) => {
+    socket.on('selectWord', (payload: SocketClientEventPayload_SelectWord) => {
       const event: DispatchableEvent = {
         command: 'SELECT_WORD',
         payload,
@@ -61,31 +77,74 @@ export class ServerSocket {
       this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
     });
 
-    socket.on('deselectWord', (payload) => {
-      const event: DispatchableEvent = {
-        command: 'DESELECT_WORD',
-        payload,
-      };
-      this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
-    });
+    socket.on(
+      'deselectWord',
+      (payload: SocketClientEventPayload_DeselectWord) => {
+        const event: DispatchableEvent = {
+          command: 'DESELECT_WORD',
+          payload,
+        };
+        this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
+      }
+    );
 
-    socket.on('selectWordingAlternative', (payload) => {
-      const event: DispatchableEvent = {
-        command: 'SELECT_WORDING_ALTERNATIVE',
-        payload,
-      };
-      this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
-    });
+    socket.on(
+      'selectWordingAlternative',
+      (payload: SocketClientEventPayload_SelectWordingAlternative) => {
+        const event: DispatchableEvent = {
+          command: 'SELECT_WORDING_ALTERNATIVE',
+          payload,
+        };
+        this.findPuppetMasterById(socket.id)?.forwardClientEvent(event);
+      }
+    );
   };
 
-  respondToClient = (event: ReceivableEvent) => {
-    console.log('___FROM SOCKET__ respond to client : ', event);
+  respondToClient = (socketId: string, event: ReceivableEventPuppet) => {
+    console.log('SOCKET reponds to client on event :', event.code);
+
+    switch (event.code) {
+      case 'PUPPETMASTER_START_COMPLETED':
+        const responseEventStarted: SocketServerEvent = {
+          endpoint: 'setupFinished',
+          payload: event.puppetInfo[0].activeWorkerState,
+        };
+
+        this.io
+          .to(socketId)
+          .emit(responseEventStarted.endpoint, responseEventStarted.payload);
+
+        return;
+
+      case 'PUPPET_SELECT_TEXT_COMPLETED':
+        const responseEventSelecedText: SocketServerEvent = {
+          endpoint: 'selectTextFinished',
+          payload: event.puppetInfo[0].activeWorkerState,
+        };
+
+        console.log(
+          'EMITTED PAYLOAD',
+          JSON.stringify(responseEventSelecedText.payload)
+        );
+
+        this.io
+          .to(socketId)
+          .emit(
+            responseEventSelecedText.endpoint,
+            responseEventSelecedText.payload
+          );
+
+        return;
+
+      default:
+        return;
+    }
   };
 
-  spawnPuppetMaster = (puppetMasterID: string) => {
+  spawnPuppetMaster = (socketId: string) => {
     const newPuppetMaster: PuppetMaster = new PuppetMaster(
-      puppetMasterID,
-      this.respondToClient
+      socketId,
+      (event: ReceivableEventPuppet) => this.respondToClient(socketId, event)
     );
 
     this.puppetMasters.push(newPuppetMaster);
@@ -119,9 +178,9 @@ export class ServerSocket {
               pm.puppetInfos.length > 0
                 ? pm.puppetInfos
                     .map(
-                      (pi: { id: any; puppetState: any }, j: number) =>
+                      (pi: { id: any; activeWorkerState: any }, j: number) =>
                         `      Puppet (${pi.id}) - ${JSON.stringify(
-                          pi.puppetState
+                          pi.activeWorkerState
                         )}${j !== pm.puppetInfos.length - 1 ? '\n' : ''}`
                     )
                     .join('')

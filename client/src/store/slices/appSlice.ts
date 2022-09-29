@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import { EmittableSocketEvent } from 'src/types/socket';
+import { ActiveWorkerState, SocketClientEvent } from 'src/types/socket';
 import { AppState, AppActions } from 'src/types/store';
 import { StateCreator } from 'zustand';
 
@@ -23,6 +23,10 @@ const ininitalState: AppState = {
     'light',
   isConnectedToServer: true,
   socket: null,
+  activeWorkerState: {
+    stateName: 'processingInitialize',
+    data: {},
+  },
 };
 
 export interface AppSlice extends AppState, AppActions {}
@@ -54,14 +58,19 @@ export const createAppSlice: StateCreator<AppSlice, [], [], AppSlice> = (
       socket,
     }));
   },
-  socketEmit: (event: EmittableSocketEvent) => {
-    const { eventName, payload } = event;
+  socketEmit: (event: SocketClientEvent) => {
+    const { endpoint, payload } = event;
 
     const socket = get().socket;
     if (socket) {
-      socket.emit(eventName, payload, async (callback: any) => {
-        console.info(`Callback for ${eventName}: `, callback);
+      socket.emit(endpoint, payload, async (callback: any) => {
+        console.info(`Callback for ${endpoint}: `, callback);
       });
     }
+  },
+  updateActiveWorkerState: (newState: ActiveWorkerState) => {
+    set(() => ({
+      activeWorkerState: newState,
+    }));
   },
 });

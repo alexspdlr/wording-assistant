@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import { EmittableSocketEvent } from './socket';
+import { ActiveWorkerState, SocketClientEvent } from './socket';
 
 export interface RephraseState {
   originalText: string | null;
@@ -21,6 +21,7 @@ export interface AppState {
   colorMode: 'light' | 'dark';
   socket: Socket | null;
   isConnectedToServer: boolean;
+  activeWorkerState: ActiveWorkerState;
 }
 
 export interface AppActions {
@@ -28,5 +29,6 @@ export interface AppActions {
   setDarkMode: () => void;
   setIsConnectedToServer: (isConnectedToServer: boolean) => void;
   setSocket: (socket: Socket) => void;
-  socketEmit: (event: EmittableSocketEvent) => void;
+  socketEmit: (event: SocketClientEvent) => void;
+  updateActiveWorkerState: (newState: ActiveWorkerState) => void;
 }

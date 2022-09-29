@@ -4,6 +4,7 @@ import React, {
   useReducer,
   useState,
 } from 'react';
+import { ActiveWorkerState } from 'src/types/socket';
 
 import useBoundStore from '../store';
 import { useSocket } from '../utils/hooks/useSocket';
@@ -20,6 +21,9 @@ const SocketContextComponent: React.FunctionComponent<
   );
 
   const setSocket = useBoundStore((state) => state.setSocket);
+  const updateActiveWorkerState = useBoundStore(
+    (state) => state.updateActiveWorkerState
+  );
 
   const socket = useSocket('ws://localhost:3001', {
     reconnectionAttempts: 5,
@@ -45,15 +49,34 @@ const SocketContextComponent: React.FunctionComponent<
 
     /** Connection / reconnection listeners */
     socket.on('connect', () => {
-      //alert(`Socket is connected:  ${socket.connected}`);
       setIsConnectedToServer(true);
+      updateActiveWorkerState({
+        stateName: 'processingInitialize',
+        data: {},
+      });
     });
 
     socket.on('disconnect', () => {
-      //alert(`Socket is connected:  ${socket.connected}`);
+      updateActiveWorkerState({
+        stateName: 'processingInitialize',
+        data: {},
+      });
     });
 
+    socket.on('setupFinished', (payload: ActiveWorkerState) => {
+      updateActiveWorkerState(payload);
+    });
+
+    socket.on('selectTextFinished', (payload: ActiveWorkerState) => {
+      updateActiveWorkerState(payload);
+    });
+
+    // HANDLE RECONNECTION
     socket.io.on('reconnect', (attempt) => {
+      updateActiveWorkerState({
+        stateName: 'processingInitialize',
+        data: {},
+      });
       console.info('Reconnected on attempt: ' + attempt);
       sendHandshake();
       setIsConnectedToServer(true);

@@ -2,6 +2,8 @@
 /*                                   GENERAL                                  */
 /* -------------------------------------------------------------------------- */
 
+import { ActiveWorkerState } from './socket';
+
 export interface DispatchableEvent {
   command: string;
   payload: {
@@ -20,14 +22,11 @@ export interface ReceivableEvent {
 /*                                   PUPPET                                   */
 /* -------------------------------------------------------------------------- */
 
-export interface PuppetState {
-  stateName: string;
-  data: {
-    [key: string]: any;
-  };
-}
-
 export interface PuppetInfo {
   id: number;
-  puppetState: PuppetState;
+  activeWorkerState: ActiveWorkerState;
+}
+
+export interface ReceivableEventPuppet extends ReceivableEvent {
+  puppetInfo: PuppetInfo[];
 }

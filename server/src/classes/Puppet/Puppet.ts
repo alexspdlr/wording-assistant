@@ -1,13 +1,6 @@
-import { ChildProcess, fork } from 'child_process';
-import { Server as HttpServer } from 'http';
-import { Socket, Server } from 'socket.io';
-import { v4 } from 'uuid';
-import { Worker, WorkerOptions } from 'worker_threads';
-import {
-  DispatchableEvent,
-  ReceivableEvent,
-  PuppetState,
-} from '../../types/index';
+import { Worker } from 'worker_threads';
+import { DispatchableEvent, ReceivableEvent } from '../../types/index';
+import { ActiveWorkerState } from '../../types/socket';
 
 export class Puppet {
   public static instance: Puppet;
@@ -15,10 +8,14 @@ export class Puppet {
   public parentId: string;
   public workerTerminated: boolean;
   public workerStarted: boolean;
-  public puppetState: PuppetState;
+  public workerState: ActiveWorkerState;
   private worker: Worker;
+  private respondToPuppetMaster: (response: ReceivableEvent) => void;
 
-  constructor(parentId: string) {
+  constructor(
+    parentId: string,
+    respondToPuppetMaster: (response: ReceivableEvent) => void
+  ) {
     Puppet.instance = this;
     this.worker = new Worker('./src/classes/Puppet/worker.ts', {
       execArgv: ['--require', 'ts-node/register'],
@@ -27,8 +24,9 @@ export class Puppet {
     this.parentId = parentId;
     this.workerTerminated = false;
     this.workerStarted = false;
+    this.respondToPuppetMaster = respondToPuppetMaster;
     this.startWorkerListeners(this.worker);
-    this.puppetState = {
+    this.workerState = {
       stateName: 'processingInitialize',
       data: {},
     };
@@ -49,7 +47,7 @@ export class Puppet {
   }
 
   public kill() {
-    this.puppetState = {
+    this.workerState = {
       stateName: 'processingTerminate',
       data: {},
     };
@@ -65,12 +63,18 @@ export class Puppet {
 
   private async handleWorkerResponse(response: ReceivableEvent) {
     switch (response.code) {
-      case 'PUPPET_OTHER_ACTION_COMPLETED':
-        // code block
+      case 'PUPPET_SELECT_TEXT_COMPLETED':
+        this.workerState = {
+          stateName: 'waitingForSelectWord',
+          data: {
+            rephrasingBase: response.payload.rephrasingBase,
+          },
+        };
+        this.respondToPuppetMaster(response);
         return;
 
       case 'PUPPET_START_COMPLETED':
-        this.puppetState = {
+        this.workerState = {
           stateName: 'waitingForSelectText',
           data: {},
         };
