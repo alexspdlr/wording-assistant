@@ -7,14 +7,8 @@ const setup = async () => {
   });
   const page = await browser.newPage();
   page.setDefaultTimeout(8000);
-  await page.goto('https://www.deepl.com/translator');
-  /* Accept necessary cookies */
-  await page.evaluate(() => {
-    const targetEl: HTMLElement | null = document.querySelector(
-      '[dl-test=cookie-banner-strict-accept-selected]'
-    );
-    if (targetEl) targetEl.click();
-  });
+  await page.goto('https://www.deepl.com/en/translator#en/de/');
   return { page, browser };
 };
+
 export default setup;

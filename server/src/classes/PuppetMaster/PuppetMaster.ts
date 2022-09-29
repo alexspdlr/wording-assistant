@@ -13,7 +13,7 @@ export class PuppetMaster {
   public static instance: PuppetMaster;
   public pmId: string;
   private worker: Worker;
-  public numberOfMaintainedPuppets = 3;
+  public numberOfMaintainedPuppets = 1;
   public puppetInfos: PuppetInfo[];
   private respondToClient: (event: ReceivableEvent) => void;
 

@@ -1,11 +1,13 @@
 import { Page } from 'puppeteer';
+import delay from '../utils/delay';
 
 const selectText = async (inputText: string, page: Page) => {
   try {
     const clienSourceInput = inputText;
 
     // Generate clean setup by reloading page
-    await page.goto('https://www.deepl.com/translator');
+    await page.goto('about:blank');
+    await page.goto('https://www.deepl.com/en/translator#en/de/');
 
     // Wait until page is loaded
     await page.waitForSelector('#source-dummydiv');
@@ -21,6 +23,7 @@ const selectText = async (inputText: string, page: Page) => {
 
     // Tab out and back into translator input field to trigger translation
     await page.keyboard.press('Tab');
+
     await page.keyboard.down('ShiftLeft');
     await page.keyboard.press('Tab');
     await page.keyboard.up('ShiftLeft');

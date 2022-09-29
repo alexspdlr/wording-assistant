@@ -52,6 +52,8 @@ export class ServerSocket {
   private startSocketListeners = (socket: Socket) => {
     this.spawnPuppetMaster(socket.id);
 
+    console.time();
+
     socket.on('disconnect', () => {
       this.killPuppetMaster(socket.id);
     });
@@ -94,6 +96,7 @@ export class ServerSocket {
     switch (event.code) {
       case 'PUPPETMASTER_START_COMPLETED':
         startCompleted(event, socketId, this.emitToSocket);
+        console.timeEnd();
         return;
 
       case 'PUPPET_SELECT_TEXT_STARTED':

@@ -56,7 +56,6 @@ const deselectText = async (
   );
 
   // respond: deselect text completed
-
   const payload: ReceivableEventPayload_PuppetDeselectTextCompleted = {};
   const response: ReceivableEvent = {
     code: 'PUPPET_DESELECT_TEXT_COMPLETED',
