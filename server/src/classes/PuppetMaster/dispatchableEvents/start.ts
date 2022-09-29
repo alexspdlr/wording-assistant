@@ -24,12 +24,6 @@ const start = async (
 
   updateLocalState(puppets);
 
-  // update state in parent after 1st worker started
-  await waitUntil(() => localState.puppets[0].workerStarted === true, {
-    intervalBetweenAttempts: 50,
-    timeout: 15000,
-  });
-
   // update state in parent after all workers started
   await waitUntil(
     () =>

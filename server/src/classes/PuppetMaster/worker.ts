@@ -85,19 +85,9 @@ const restockPuppetQueue = (
   pmId: string,
   numberOfMaintainedPuppets: number
 ) => {
-  console.log('UNO !!! :', localState.puppets.length);
-  console.log('DOS !!! :', numberOfMaintainedPuppets);
-
-  while (localState.puppets.length < numberOfMaintainedPuppets) {
-    const newlyQueuedPuppet = new Puppet(pmId, respondToPuppetMaster);
-    console.log(
-      '##   ###   ###   ###  localstate.puppets before: ',
-      localState.puppets
-    );
-    localState.puppets.push(newlyQueuedPuppet);
-    console.log(
-      '##   ###   ###   ###   localstste.puppets after: ',
-      localState.puppets
-    );
-  }
+  Array.from(
+    Array(numberOfMaintainedPuppets - localState.puppets.length)
+  ).forEach(() => {
+    localState.puppets.push(new Puppet(pmId, respondToPuppetMaster));
+  });
 };

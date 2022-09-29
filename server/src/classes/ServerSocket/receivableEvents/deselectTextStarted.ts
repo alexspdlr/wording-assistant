@@ -1,14 +1,25 @@
 import { ReceivableEvent } from '../../../types';
-import { SocketServerEvent } from '../../../types/socket';
+import {
+  ActiveWorkerState,
+  ActiveWorkerStateData_ProcessingDeselectText,
+  SocketServerEvent,
+} from '../../../types/socket';
 
 const deselectTextStarted = (
   event: ReceivableEvent,
   socketId: string,
   emitToSocket: (socketId: string, event: SocketServerEvent) => void
 ) => {
+  const data: ActiveWorkerStateData_ProcessingDeselectText = {};
+
+  const interceptedWorkerState: ActiveWorkerState = {
+    stateName: 'processingDeselectText',
+    data,
+  };
+
   const responseEvent: SocketServerEvent = {
     endpoint: 'deselectTextStarted',
-    payload: event.puppetInfo[0].activeWorkerState,
+    payload: interceptedWorkerState,
   };
 
   emitToSocket(socketId, responseEvent);

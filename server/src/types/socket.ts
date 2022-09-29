@@ -48,7 +48,7 @@ interface ActiveWorkerStateData_ProcessingInitialize {}
 export interface ActiveWorkerStateData_ProcessingSelectText {
   inputText: string;
 }
-interface ActiveWorkerStateData_ProcessingDeselectText {}
+export interface ActiveWorkerStateData_ProcessingDeselectText {}
 interface ActiveWorkerStateData_ProcessingSelectWord {}
 interface ActiveWorkerStateData_ProcessingDeselectWord {}
 interface ActiveWorkerStateData_ProcessingSelectWordingAlternative {}

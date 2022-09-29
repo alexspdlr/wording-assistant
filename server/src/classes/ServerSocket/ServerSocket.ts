@@ -91,8 +91,6 @@ export class ServerSocket {
   /* -------------------------------------------------------------------------- */
 
   private respondToClient = (socketId: string, event: ReceivableEvent) => {
-    console.log('RESPOND TO CLIENT FROM SOCKET: ', JSON.stringify(event));
-
     switch (event.code) {
       case 'PUPPETMASTER_START_COMPLETED':
         startCompleted(event, socketId, this.emitToSocket);
@@ -111,6 +109,8 @@ export class ServerSocket {
         return;
 
       case 'PUPPET_DESELECT_TEXT_COMPLETED':
+        console.log('2');
+        console.timeEnd();
         deselectTextCompleted(event, socketId, this.emitToSocket);
         return;
       default:

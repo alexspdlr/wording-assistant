@@ -43,13 +43,17 @@ const deselectText = async (
     event.payload as DispatchableEventPayload_DeselectText;
 
   // restock puppets
-  console.log('______ eventPayload:: ', event.payload);
   restockPuppetQueue(id, numberOfMaintainedPuppets);
 
-  await waitUntil(() => getLocalState().puppets[0].workerStarted === true, {
-    intervalBetweenAttempts: 10,
-    timeout: 10000,
-  });
+  await waitUntil(
+    () =>
+      getLocalState().puppets[0].workerState.stateName ===
+      'waitingForSelectText',
+    {
+      intervalBetweenAttempts: 10,
+      timeout: 15000,
+    }
+  );
 
   // respond: deselect text completed
 
@@ -70,12 +74,10 @@ const deselectText = async (
 
   // kill inactive puppet
 
-  setTimeout(
-    () => console.log('waited for 5 seconds, now killing inactive puppet'),
-    5000
-  );
-
-  inactivePuppet?.kill();
+  setTimeout(() => {
+    console.log('waited for 8 seconds, now killing inactive puppet');
+    inactivePuppet?.kill();
+  }, 8000);
 };
 
 export default deselectText;

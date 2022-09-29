@@ -79,6 +79,7 @@ export class PuppetMaster {
       case 'PUPPETMASTER_EXIT_COMPLETED':
         await this.worker.terminate();
         return;
+
       default:
         this.respondToClient(response);
         return;
