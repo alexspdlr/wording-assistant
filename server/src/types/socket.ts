@@ -37,14 +37,17 @@ type ActiveWorkerStateDataProcessing =
   | ActiveWorkerStateData_ProcessingSelectWordingAlternative
   | ActiveWorkerStateData_ProcessingTerminate;
 
-interface ActiveWorkerStateData_WaitingForSelectText {}
-interface ActiveWorkerStateData_WaitingForSelectWord {
+export interface ActiveWorkerStateData_WaitingForSelectText {}
+export interface ActiveWorkerStateData_WaitingForSelectWord {
+  inputText: string;
   rephrasingBase: string;
 }
 interface ActiveWorkerStateData_WaitingForSelectWordingAlternative {}
 
 interface ActiveWorkerStateData_ProcessingInitialize {}
-interface ActiveWorkerStateData_ProcessingSelectText {}
+export interface ActiveWorkerStateData_ProcessingSelectText {
+  inputText: string;
+}
 interface ActiveWorkerStateData_ProcessingDeselectText {}
 interface ActiveWorkerStateData_ProcessingSelectWord {}
 interface ActiveWorkerStateData_ProcessingDeselectWord {}
@@ -97,8 +100,11 @@ export interface SocketServerEvent {
 
 type SocketServerEventEndpoint =
   | 'setupFinished'
+  | 'selectTextStarted'
   | 'selectTextFinished'
-  | 'deselectTextFinished'
+  | 'selectWordStarted'
   | 'selectWordFinished'
+  | 'deselectWordStarted'
   | 'deselectWordFinished'
+  | 'selectWordingAlternativeStarted'
   | 'selectWordingAlternativeFinished';

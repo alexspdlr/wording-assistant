@@ -1,6 +1,20 @@
 import { Worker } from 'worker_threads';
-import { DispatchableEvent, ReceivableEvent } from '../../types/index';
-import { ActiveWorkerState } from '../../types/socket';
+import {
+  DispatchableEvent,
+  DispatchableEventPayload_StartPuppet,
+  ReceivableEventPayload_PuppetSelectTextCompleted,
+  ReceivableEventPayload_PuppetSelectTextStarted,
+  ReceivableEventPuppet,
+} from '../../types/index';
+import {
+  ActiveWorkerState,
+  ActiveWorkerStateData_ProcessingSelectText,
+  ActiveWorkerStateData_WaitingForSelectWord,
+} from '../../types/socket';
+import exitCompleted from './handleReceivableEvent/exitCompleted';
+import selectTextCompleted from './handleReceivableEvent/selectTextCompleted';
+import selectTextStarted from './handleReceivableEvent/selectTextStarted';
+import startCompleted from './handleReceivableEvent/startCompleted';
 
 export class Puppet {
   public static instance: Puppet;
@@ -10,11 +24,11 @@ export class Puppet {
   public workerStarted: boolean;
   public workerState: ActiveWorkerState;
   private worker: Worker;
-  private respondToPuppetMaster: (response: ReceivableEvent) => void;
+  private respondToPuppetMaster: (response: ReceivableEventPuppet) => void;
 
   constructor(
     parentId: string,
-    respondToPuppetMaster: (response: ReceivableEvent) => void
+    respondToPuppetMaster: (response: ReceivableEventPuppet) => void
   ) {
     Puppet.instance = this;
     this.worker = new Worker('./src/classes/Puppet/worker.ts', {
@@ -30,14 +44,16 @@ export class Puppet {
       stateName: 'processingInitialize',
       data: {},
     };
+
+    const eventPayload: DispatchableEventPayload_StartPuppet = { id: this.pId };
     this.dispatchEvent({
       command: 'START_PUPPET',
-      payload: { id: this.pId },
+      payload: eventPayload,
     });
   }
 
   private startWorkerListeners(worker: Worker) {
-    worker.on('message', async (response: ReceivableEvent) => {
+    worker.on('message', async (response: ReceivableEventPuppet) => {
       await this.handleWorkerResponse(response);
     });
 
@@ -61,28 +77,44 @@ export class Puppet {
     this.worker.postMessage(event);
   }
 
-  private async handleWorkerResponse(response: ReceivableEvent) {
+  private updateWorkerState = (newState: ActiveWorkerState) => {
+    this.workerState = newState;
+    return;
+  };
+
+  private async handleWorkerResponse(response: ReceivableEventPuppet) {
     switch (response.code) {
-      case 'PUPPET_SELECT_TEXT_COMPLETED':
-        this.workerState = {
-          stateName: 'waitingForSelectWord',
-          data: {
-            rephrasingBase: response.payload.rephrasingBase,
-          },
-        };
-        this.respondToPuppetMaster(response);
+      case 'PUPPET_SELECT_TEXT_STARTED':
+        selectTextStarted(
+          response,
+          this.updateWorkerState,
+          this.respondToPuppetMaster
+        );
         return;
 
-      case 'PUPPET_START_COMPLETED':
-        this.workerState = {
-          stateName: 'waitingForSelectText',
-          data: {},
-        };
-        this.workerStarted = true;
+      case 'PUPPET_SELECT_TEXT_COMPLETED':
+        selectTextCompleted(
+          response,
+          this.updateWorkerState,
+          this.respondToPuppetMaster
+        );
         return;
+
+      // don'T respond to parent in these cases
+
+      case 'PUPPET_START_COMPLETED':
+        startCompleted(
+          this.updateWorkerState,
+          () => (this.workerStarted = true)
+        );
+        return;
+
       case 'PUPPET_EXIT_COMPLETED':
-        await this.worker.terminate();
-        this.workerTerminated = true;
+        await exitCompleted(
+          () => this.worker.terminate(),
+          () => (this.workerTerminated = true)
+        );
+
         return;
       default:
         return;

@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import { ActiveWorkerState, SocketClientEvent } from 'src/types/socket';
+import { SocketClientEvent, ActiveWorkerState } from 'src/types/socket';
 import { AppState, AppActions } from 'src/types/store';
 import { StateCreator } from 'zustand';
 
@@ -23,10 +23,7 @@ const ininitalState: AppState = {
     'light',
   isConnectedToServer: true,
   socket: null,
-  activeWorkerState: {
-    stateName: 'processingInitialize',
-    data: {},
-  },
+  activeWorkerState: 'disconnected',
 };
 
 export interface AppSlice extends AppState, AppActions {}
@@ -68,7 +65,7 @@ export const createAppSlice: StateCreator<AppSlice, [], [], AppSlice> = (
       });
     }
   },
-  updateActiveWorkerState: (newState: ActiveWorkerState) => {
+  updateActiveWorkerState: (newState: ActiveWorkerState | 'disconnected') => {
     set(() => ({
       activeWorkerState: newState,
     }));

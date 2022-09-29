@@ -34,7 +34,6 @@ const SocketContextComponent: React.FunctionComponent<
   useEffect(() => {
     socket.connect();
     startListeners();
-    sendHandshake();
     // eslint-disable-next-line
   }, []);
 
@@ -57,10 +56,7 @@ const SocketContextComponent: React.FunctionComponent<
     });
 
     socket.on('disconnect', () => {
-      updateActiveWorkerState({
-        stateName: 'processingInitialize',
-        data: {},
-      });
+      updateActiveWorkerState('disconnected');
     });
 
     socket.on('setupFinished', (payload: ActiveWorkerState) => {
@@ -78,7 +74,6 @@ const SocketContextComponent: React.FunctionComponent<
         data: {},
       });
       console.info('Reconnected on attempt: ' + attempt);
-      sendHandshake();
       setIsConnectedToServer(true);
     });
 
@@ -93,12 +88,6 @@ const SocketContextComponent: React.FunctionComponent<
     socket.io.on('reconnect_failed', () => {
       console.info('Reconnection failure.');
       setIsConnectedToServer(false);
-    });
-  };
-
-  const sendHandshake = async () => {
-    socket.emit('handshake', async (uid: string, users: string[]) => {
-      console.info('User handshake callback message received');
     });
   };
 

@@ -21,7 +21,7 @@ export interface AppState {
   colorMode: 'light' | 'dark';
   socket: Socket | null;
   isConnectedToServer: boolean;
-  activeWorkerState: ActiveWorkerState;
+  activeWorkerState: ActiveWorkerState | 'disconnected';
 }
 
 export interface AppActions {
@@ -30,5 +30,7 @@ export interface AppActions {
   setIsConnectedToServer: (isConnectedToServer: boolean) => void;
   setSocket: (socket: Socket) => void;
   socketEmit: (event: SocketClientEvent) => void;
-  updateActiveWorkerState: (newState: ActiveWorkerState) => void;
+  updateActiveWorkerState: (
+    newState: ActiveWorkerState | 'disconnected'
+  ) => void;
 }

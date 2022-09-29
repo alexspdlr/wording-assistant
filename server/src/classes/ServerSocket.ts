@@ -6,11 +6,7 @@ import { Worker, WorkerOptions } from 'worker_threads';
 import { PuppetMaster } from './PuppetMaster/PuppetMaster';
 import os from 'os';
 import osu from 'node-os-utils';
-import {
-  DispatchableEvent,
-  ReceivableEvent,
-  ReceivableEventPuppet,
-} from '../types/index';
+import { DispatchableEvent, ReceivableEvent } from '../types/index';
 import {
   SocketClientEventPayload_DeselectText,
   SocketClientEventPayload_DeselectWord,
@@ -100,9 +96,7 @@ export class ServerSocket {
     );
   };
 
-  respondToClient = (socketId: string, event: ReceivableEventPuppet) => {
-    console.log('SOCKET reponds to client on event :', event.code);
-
+  respondToClient = (socketId: string, event: ReceivableEvent) => {
     switch (event.code) {
       case 'PUPPETMASTER_START_COMPLETED':
         const responseEventStarted: SocketServerEvent = {
@@ -122,11 +116,6 @@ export class ServerSocket {
           payload: event.puppetInfo[0].activeWorkerState,
         };
 
-        console.log(
-          'EMITTED PAYLOAD',
-          JSON.stringify(responseEventSelecedText.payload)
-        );
-
         this.io
           .to(socketId)
           .emit(
@@ -144,7 +133,7 @@ export class ServerSocket {
   spawnPuppetMaster = (socketId: string) => {
     const newPuppetMaster: PuppetMaster = new PuppetMaster(
       socketId,
-      (event: ReceivableEventPuppet) => this.respondToClient(socketId, event)
+      (event: ReceivableEvent) => this.respondToClient(socketId, event)
     );
 
     this.puppetMasters.push(newPuppetMaster);

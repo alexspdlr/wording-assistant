@@ -83,12 +83,12 @@ const selectText = async (inputText: string, page: Page) => {
       await page.keyboard.press('Tab');
     }
 
-    return result;
+    return result as string;
   } catch (error) {
     console.error(
       'An error occurred while generating the rephrasing base. It is possible that the action was executed one more time before the previous action was finished.'
     );
-    return {};
+    return '';
   }
 };
 

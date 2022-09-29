@@ -4,8 +4,9 @@ import waitUntil from '../../utils/waitUntil';
 import {
   DispatchableEvent,
   PuppetInfo,
-  ReceivableEvent,
   ReceivableEventPuppet,
+  ReceivableEvent,
+  DispatchableEventPayload_StartPuppetMaster,
 } from '../../types/index';
 
 parentPort?.on('message', async (event: DispatchableEvent) => {
@@ -26,13 +27,10 @@ const localState: PuppetMasterWorkerState = {
 
 const handleDispatchableEvent = async (
   event: DispatchableEvent
-): Promise<ReceivableEventPuppet | undefined> => {
+): Promise<ReceivableEvent | undefined> => {
   let targetPuppet: Puppet;
 
-  console.log(`${event.command}: `, event.payload);
-
   if (event.command !== 'START_PUPPETMASTER' && !localState.puppets[0]) {
-    respondToPuppetMasterWithError('NO_PUPPET_AVAILABLE');
     return;
   } else {
     targetPuppet = localState.puppets[0];
@@ -41,35 +39,16 @@ const handleDispatchableEvent = async (
   switch (event.command) {
     case 'START_PUPPETMASTER':
       const response = startAllPuppets(
-        event.payload.id,
-        event.payload.numberOfMaintainedPuppets
+        (event.payload as DispatchableEventPayload_StartPuppetMaster).id,
+        (event.payload as DispatchableEventPayload_StartPuppetMaster)
+          .numberOfMaintainedPuppets
       );
 
       return response;
 
     case 'SELECT_TEXT':
-      if (targetPuppet.workerState.stateName !== 'waitingForSelectText') {
-        const targetPuppetIsProcessing =
-          targetPuppet.workerState.stateName.startsWith('processing');
-
-        const timeout = 10000;
-        if (targetPuppetIsProcessing) {
-          const preconditionFulfilled = await waitUntil(
-            () => targetPuppet.workerState.stateName === 'waitingForSelectText',
-            timeout
-          );
-
-          if (!preconditionFulfilled) {
-            respondToPuppetMasterWithError(
-              'PRECONDITION_NOT_FULFILLED_AFTER_TIMEOUT'
-            );
-            return;
-          }
-        } else {
-          respondToPuppetMasterWithError('PRECONDITION_NOT_FULFILLED');
-          return;
-        }
-      }
+      // 1. update puppet state in pm
+      // 2. respond with processing state to client
 
       forwardEventToPuppet(targetPuppet, event);
       return;
@@ -98,7 +77,7 @@ const handleDispatchableEvent = async (
 const startAllPuppets = async (
   id: string,
   numberOfMaintainedPuppets: number
-): Promise<ReceivableEventPuppet> => {
+): Promise<ReceivableEvent> => {
   const puppets = [...Array(numberOfMaintainedPuppets)].map(
     () => new Puppet(id, respondToPuppetMaster)
   );
@@ -114,7 +93,7 @@ const startAllPuppets = async (
         .length === 0
   );
 
-  const startedResponse: ReceivableEventPuppet = {
+  const startedResponse: ReceivableEvent = {
     code: 'PUPPETMASTER_START_COMPLETED',
     payload: {},
     puppetInfo: localState.puppets.map((puppet) => {
@@ -144,7 +123,7 @@ const terminateAllPuppets = async () => {
         .length === 0
   );
 
-  const exitResponse: ReceivableEventPuppet = {
+  const exitResponse: ReceivableEvent = {
     code: 'PUPPETMASTER_EXIT_COMPLETED',
     payload: {},
     puppetInfo: localState.puppets.map((puppet) => {
@@ -159,8 +138,8 @@ const terminateAllPuppets = async () => {
   return exitResponse;
 };
 
-const respondToPuppetMaster = (response: ReceivableEvent) => {
-  const responseWithPuppetInfo: ReceivableEventPuppet = {
+const respondToPuppetMaster = (response: ReceivableEventPuppet) => {
+  const responseWithPuppetInfo: ReceivableEvent = {
     code: response.code,
     payload: response.payload,
     puppetInfo: localState.puppets.map((puppet) => {
@@ -172,25 +151,5 @@ const respondToPuppetMaster = (response: ReceivableEvent) => {
     }),
   };
 
-  console.log('RESONSE TO PM: ', responseWithPuppetInfo);
-
   parentPort?.postMessage(responseWithPuppetInfo);
-};
-
-const respondToPuppetMasterWithError = (errorText: string) => {
-  console.error(errorText);
-
-  const response: ReceivableEventPuppet = {
-    code: 'PUPPETMASTER_ERROR_OCCURED',
-    payload: {},
-    puppetInfo: localState.puppets.map((puppet) => {
-      const info: PuppetInfo = {
-        id: puppet.pId,
-        activeWorkerState: puppet.workerState,
-      };
-      return info;
-    }),
-  };
-
-  parentPort?.postMessage(response);
 };
