@@ -8,7 +8,7 @@ const deselectTextCompleted = (
 ) => {
   const responseEvent: SocketServerEvent = {
     endpoint: 'deselectTextCompleted',
-    payload: event.puppetInfo[0].activeWorkerState,
+    payload: event.workerState,
   };
 
   emitToSocket(socketId, responseEvent);

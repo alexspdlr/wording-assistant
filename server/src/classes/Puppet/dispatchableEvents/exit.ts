@@ -1,19 +1,19 @@
 import {
   PuppetWorkerState,
-  ReceivableEventPayload_PuppetExitCompleted,
-  ReceivableEventPuppet,
+  ReceivableEventPayload_ExitCompleted,
+  ReceivableEventWorker,
 } from '../../../types';
 
 const exit = async (
   localState: PuppetWorkerState,
-  respondToPuppet: (response: ReceivableEventPuppet) => void
+  respondToPuppet: (response: ReceivableEventWorker) => void
 ) => {
   await localState.browser?.close();
 
-  const payload: ReceivableEventPayload_PuppetExitCompleted = {};
+  const payload: ReceivableEventPayload_ExitCompleted = {};
 
-  const response: ReceivableEventPuppet = {
-    code: 'PUPPET_EXIT_COMPLETED',
+  const response: ReceivableEventWorker = {
+    code: 'EXIT_COMPLETED',
     payload,
   };
 

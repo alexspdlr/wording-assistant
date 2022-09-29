@@ -9,7 +9,7 @@ import {
   SocketClientEventPayload_SelectWordingAlternative,
   SocketServerEvent,
 } from '../../types/socket';
-import { PuppetMaster } from '../PuppetMaster/PuppetMaster';
+import { Puppet } from '../Puppet/Puppet';
 import deselectText from './dispatchableEvents/deselectText';
 import deselectWord from './dispatchableEvents/deselectWord';
 import selectText from './dispatchableEvents/selectText';
@@ -25,13 +25,13 @@ import printServerInfo from './util/printServerInfo';
 export class ServerSocket {
   public static instance: ServerSocket;
   public io: Server;
-  public puppetMasters: PuppetMaster[];
+  public puppets: Puppet[];
 
   /* ------------------------------- CONSTRUCTOR ------------------------------ */
 
   constructor(server: HttpServer) {
     ServerSocket.instance = this;
-    this.puppetMasters = [];
+    this.puppets = [];
     this.io = new Server(server, {
       serveClient: false,
       pingInterval: 10000,
@@ -50,40 +50,40 @@ export class ServerSocket {
   /* -------------------------------------------------------------------------- */
 
   private startSocketListeners = (socket: Socket) => {
-    this.spawnPuppetMaster(socket.id);
+    this.spawnPuppet(socket.id);
 
     console.time();
 
     socket.on('disconnect', () => {
-      this.killPuppetMaster(socket.id);
+      this.killPuppet(socket.id);
     });
 
     socket.on('selectText', (payload: SocketClientEventPayload_SelectText) => {
-      selectText(payload, this.findPuppetMasterById(socket.id));
+      selectText(payload, this.findPuppetById(socket.id));
     });
 
     socket.on(
       'deselectText',
       (payload: SocketClientEventPayload_DeselectText) => {
-        deselectText(payload, this.findPuppetMasterById(socket.id));
+        deselectText(payload, this.findPuppetById(socket.id));
       }
     );
 
     socket.on('selectWord', (payload: SocketClientEventPayload_SelectWord) => {
-      selectWord(payload, this.findPuppetMasterById(socket.id));
+      selectWord(payload, this.findPuppetById(socket.id));
     });
 
     socket.on(
       'deselectWord',
       (payload: SocketClientEventPayload_DeselectWord) => {
-        deselectWord(payload, this.findPuppetMasterById(socket.id));
+        deselectWord(payload, this.findPuppetById(socket.id));
       }
     );
 
     socket.on(
       'selectWordingAlternative',
       (payload: SocketClientEventPayload_SelectWordingAlternative) => {
-        selectWordingAlternative(payload, this.findPuppetMasterById(socket.id));
+        selectWordingAlternative(payload, this.findPuppetById(socket.id));
       }
     );
   };
@@ -94,26 +94,23 @@ export class ServerSocket {
 
   private respondToClient = (socketId: string, event: ReceivableEvent) => {
     switch (event.code) {
-      case 'PUPPETMASTER_START_COMPLETED':
+      case 'START_COMPLETED':
         startCompleted(event, socketId, this.emitToSocket);
-        console.timeEnd();
         return;
 
-      case 'PUPPET_SELECT_TEXT_STARTED':
+      case 'SELECT_TEXT_STARTED':
         selectTextStarted(event, socketId, this.emitToSocket);
         return;
 
-      case 'PUPPET_SELECT_TEXT_COMPLETED':
+      case 'SELECT_TEXT_COMPLETED':
         selectTextCompleted(event, socketId, this.emitToSocket);
         return;
 
-      case 'PUPPET_DESELECT_TEXT_STARTED':
+      case 'DESELECT_TEXT_STARTED':
         deselectTextStarted(event, socketId, this.emitToSocket);
         return;
 
-      case 'PUPPET_DESELECT_TEXT_COMPLETED':
-        console.log('2');
-        console.timeEnd();
+      case 'DESELECT_TEXT_COMPLETED':
         deselectTextCompleted(event, socketId, this.emitToSocket);
         return;
       default:
@@ -129,26 +126,23 @@ export class ServerSocket {
     this.io.to(socketId).emit(event.endpoint, event.payload);
   };
 
-  private spawnPuppetMaster = (socketId: string) => {
-    const newPuppetMaster: PuppetMaster = new PuppetMaster(
-      socketId,
-      (event: ReceivableEvent) => this.respondToClient(socketId, event)
+  private spawnPuppet = (socketId: string) => {
+    const newPuppet: Puppet = new Puppet(socketId, (event: ReceivableEvent) =>
+      this.respondToClient(socketId, event)
     );
 
-    this.puppetMasters.push(newPuppetMaster);
+    this.puppets.push(newPuppet);
   };
 
-  private killPuppetMaster = (puppetMasterID: string) => {
-    const target = this.findPuppetMasterById(puppetMasterID);
-    this.puppetMasters = this.puppetMasters.filter(
-      (pm) => pm.pmId !== target?.pmId
-    );
+  private killPuppet = (puppetID: string) => {
+    const target = this.findPuppetById(puppetID);
+    this.puppets = this.puppets.filter((puppet) => puppet.id !== target?.id);
     target?.kill();
   };
 
-  private findPuppetMasterById = (id: string) => {
-    return this.puppetMasters.find((el) => el.pmId === id);
+  private findPuppetById = (id: string) => {
+    return this.puppets.find((puppet) => puppet.id === id);
   };
 
-  public printPuppetMasters = () => printServerInfo(() => this.puppetMasters);
+  public printPuppets = () => printServerInfo(() => this.puppets);
 }

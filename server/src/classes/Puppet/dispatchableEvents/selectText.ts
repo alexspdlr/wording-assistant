@@ -1,39 +1,43 @@
 import puppeteer_select_text from '../../../operations/selectText';
 import {
   PuppetWorkerState,
-  ReceivableEventPayload_PuppetSelectTextCompleted,
-  ReceivableEventPayload_PuppetSelectTextStarted,
-  ReceivableEventPuppet,
+  ReceivableEventPayload_SelectTextCompleted,
+  ReceivableEventPayload_SelectTextStarted,
+  ReceivableEventWorker,
 } from '../../../types';
 
 const selectText = async (
   inputText: string,
   localState: PuppetWorkerState,
-  respondToPuppet: (response: ReceivableEventPuppet) => void
+  respondToPuppet: (response: ReceivableEventWorker) => void
 ) => {
-  if (localState.page) {
+  if (localState.page && localState.browser) {
     // BEFORE PROCESSING
-    const startedPayload: ReceivableEventPayload_PuppetSelectTextStarted = {
+    const startedPayload: ReceivableEventPayload_SelectTextStarted = {
       inputText,
     };
 
-    const responseStarted: ReceivableEventPuppet = {
-      code: 'PUPPET_SELECT_TEXT_STARTED',
+    const responseStarted: ReceivableEventWorker = {
+      code: 'SELECT_TEXT_STARTED',
       payload: startedPayload,
     };
 
     respondToPuppet(responseStarted);
 
     // AFTER PROCESSING
-    const result = await puppeteer_select_text(inputText, localState.page);
-
-    const finishedPayload: ReceivableEventPayload_PuppetSelectTextCompleted = {
+    const result = await puppeteer_select_text(
       inputText,
-      rephrasingBase: result,
+      localState.page,
+      localState.browser
+    );
+
+    const finishedPayload: ReceivableEventPayload_SelectTextCompleted = {
+      inputText,
+      rephrasingBase: result || '',
     };
 
-    const responseFinished: ReceivableEventPuppet = {
-      code: 'PUPPET_SELECT_TEXT_COMPLETED',
+    const responseFinished: ReceivableEventWorker = {
+      code: 'SELECT_TEXT_COMPLETED',
       payload: finishedPayload,
     };
 

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable @typescript-eslint/ban-types */
 /********* IMPORTANT: The following types need to be kept synced between Front-End & Back-End *********/
 
 /* -------------------------------------------------------------------------- */
@@ -52,7 +51,7 @@ export interface ActiveWorkerStateData_ProcessingDeselectText {}
 interface ActiveWorkerStateData_ProcessingSelectWord {}
 interface ActiveWorkerStateData_ProcessingDeselectWord {}
 interface ActiveWorkerStateData_ProcessingSelectWordingAlternative {}
-interface ActiveWorkerStateData_ProcessingTerminate {}
+export interface ActiveWorkerStateData_ProcessingTerminate {}
 
 /* -------------------------------------------------------------------------- */
 /*                    Events that are triggered CLIENT SIDE                   */

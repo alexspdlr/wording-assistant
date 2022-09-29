@@ -1,17 +1,17 @@
 import { DispatchableEvent } from '../../../types';
 import { SocketClientEventPayload_DeselectWord } from '../../../types/socket';
-import { PuppetMaster } from '../../PuppetMaster/PuppetMaster';
+import { Puppet } from '../../Puppet/Puppet';
 
 const deselectWord = (
   payload: SocketClientEventPayload_DeselectWord,
-  targetPuppetMaster?: PuppetMaster
+  targetPuppet?: Puppet
 ) => {
   const event: DispatchableEvent = {
     command: 'DESELECT_WORD',
     payload,
   };
 
-  targetPuppetMaster?.dispatchEvent(event);
+  targetPuppet?.dispatchEvent(event);
 };
 
 export default deselectWord;

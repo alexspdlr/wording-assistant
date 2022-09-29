@@ -1,17 +1,17 @@
 import { DispatchableEvent } from '../../../types';
 import { SocketClientEventPayload_SelectText } from '../../../types/socket';
-import { PuppetMaster } from '../../PuppetMaster/PuppetMaster';
+import { Puppet } from '../../Puppet/Puppet';
 
 const selectText = (
   payload: SocketClientEventPayload_SelectText,
-  targetPuppetMaster?: PuppetMaster
+  targetPuppet?: Puppet
 ) => {
   const event: DispatchableEvent = {
     command: 'SELECT_TEXT',
     payload,
   };
 
-  targetPuppetMaster?.dispatchEvent(event);
+  targetPuppet?.dispatchEvent(event);
 };
 
 export default selectText;

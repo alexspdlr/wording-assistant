@@ -1,16 +1,13 @@
-import { Page } from 'puppeteer';
-import delay from '../utils/delay';
+import { Browser, Page } from 'puppeteer';
+import resetPage from './resetPage';
 
-const selectText = async (inputText: string, page: Page) => {
+const selectText = async (inputText: string, page: Page, browser: Browser) => {
   try {
     const clienSourceInput = inputText;
 
-    // Generate clean setup by reloading page
-    await page.goto('about:blank');
-    await page.goto('https://www.deepl.com/en/translator#en/de/');
-
-    // Wait until page is loaded
-    await page.waitForSelector('#source-dummydiv');
+    if (page.url() !== 'https://www.deepl.com/en/translator#en/de/') {
+      await resetPage(page, browser);
+    }
 
     // Paste client input into translator input
     await page.evaluate((clienSourceInput) => {
@@ -63,7 +60,7 @@ const selectText = async (inputText: string, page: Page) => {
       );
     } else {
       await page.waitForFunction(
-        (translationResult) => {
+        () => {
           const translatorSourceInputValue =
             document.querySelector('#target-dummydiv')?.innerHTML;
 
@@ -88,10 +85,9 @@ const selectText = async (inputText: string, page: Page) => {
 
     return result as string;
   } catch (error) {
-    console.error(
-      'An error occurred while generating the rephrasing base. It is possible that the action was executed one more time before the previous action was finished.'
-    );
-    return '';
+    console.log('ERROR :', error);
+    browser.close();
+    return;
   }
 };
 

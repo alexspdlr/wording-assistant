@@ -1,26 +1,23 @@
 import { ReceivableEvent } from '../../../types';
 import {
   ActiveWorkerState,
-  ActiveWorkerStateData_WaitingForSelectText,
+  ActiveWorkerStateData_ProcessingDeselectText,
 } from '../../../types/socket';
 
-const startCompleted = (
+const deselectTextStarted = (
   event: ReceivableEvent,
   setWorkerState: (newState: ActiveWorkerState) => void,
-  setWorkerStartedTrue: () => void,
   respondToSocket: (response: ReceivableEvent) => void
 ) => {
-  const startCompletedWorkerStateData: ActiveWorkerStateData_WaitingForSelectText =
+  const deselectTextStartedWorkerStateData: ActiveWorkerStateData_ProcessingDeselectText =
     {};
 
   const newWorkerState: ActiveWorkerState = {
-    stateName: 'waitingForSelectText',
-    data: startCompletedWorkerStateData,
+    stateName: 'processingDeselectText',
+    data: deselectTextStartedWorkerStateData,
   };
 
   setWorkerState(newWorkerState);
-
-  setWorkerStartedTrue();
 
   respondToSocket({
     code: event.code,
@@ -29,4 +26,4 @@ const startCompleted = (
   });
 };
 
-export default startCompleted;
+export default deselectTextStarted;

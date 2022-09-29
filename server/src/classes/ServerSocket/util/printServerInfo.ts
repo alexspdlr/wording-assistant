@@ -1,39 +1,27 @@
 import osu from 'node-os-utils';
-import { PuppetMaster } from '../../PuppetMaster/PuppetMaster';
+import { Puppet } from '../../Puppet/Puppet';
 
-const printServerInfo = (getPuppetMasters: () => PuppetMaster[]) => {
-  const updatedPuppetMasters = getPuppetMasters();
+const printServerInfo = (getPuppets: () => Puppet[]) => {
+  const updatedPuppets = getPuppets();
 
   setTimeout(async () => {
     const cpuUsage = await osu.cpu.usage();
     const memoryUsageMB =
       Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100;
-    const maxMemoryMB =
-      Math.round((process.memoryUsage().rss / 1024 / 1024) * 100) / 100;
+
     console.clear();
     process.stdout.cursorTo(0);
     process.stdout.write(
-      `Memory usage: ${memoryUsageMB} MB | CPU usage: ${cpuUsage} % \n\nPUPPET MASTERS: \n${updatedPuppetMasters
+      `Memory usage: ${memoryUsageMB} MB | CPU usage: ${cpuUsage} % \n\nPUPPETS: \n\n${updatedPuppets
         .map(
-          (pm, i) => `\n${i}. PuppetMaster(${pm.pmId})\n\n${
-            pm.puppetInfos.length > 0
-              ? pm.puppetInfos
-                  .map(
-                    (pi: { id: any; activeWorkerState: any }, j: number) =>
-                      `      Puppet (${pi.id}) - ${JSON.stringify(
-                        pi.activeWorkerState
-                      )}${j !== pm.puppetInfos.length - 1 ? '\n' : ''}`
-                  )
-                  .join('')
-              : '      No puppets spawned yet.'
-          } 
-`
+          (puppet) =>
+            `Puppet (${puppet.id}) - ${JSON.stringify(puppet.workerState)}\n`
         )
         .join('')}`
     );
 
-    printServerInfo(getPuppetMasters);
-  }, 50);
+    printServerInfo(getPuppets);
+  }, 1);
 };
 
 export default printServerInfo;

@@ -3,10 +3,11 @@ import { parentPort } from 'worker_threads';
 import {
   DispatchableEvent,
   DispatchableEventPayload_SelectText,
-  DispatchableEventPayload_StartPuppet,
+  DispatchableEventPayload_Start,
   PuppetWorkerState,
-  ReceivableEventPuppet,
+  ReceivableEventWorker,
 } from '../../types';
+import deselectText from './dispatchableEvents/deselectText';
 import exit from './dispatchableEvents/exit';
 import selectText from './dispatchableEvents/selectText';
 import start from './dispatchableEvents/start';
@@ -29,29 +30,42 @@ parentPort?.on('message', async (event: DispatchableEvent) =>
   processEvent(event)
 );
 
-const respondToPuppet = (response: ReceivableEventPuppet) =>
+const respondToPuppet = (response: ReceivableEventWorker) =>
   parentPort?.postMessage(response);
 
 /* ------------------------------ HANDLE EVENTS ----------------------------- */
 
 const processEvent = async (event: DispatchableEvent) => {
+  console.log('EVENT COMMAND: ', event.command);
+
   switch (event.command) {
-    case 'START_PUPPET':
+    case 'START':
       await start(
-        (event.payload as DispatchableEventPayload_StartPuppet).id,
+        (event.payload as DispatchableEventPayload_Start).id,
         updateLocalState,
         respondToPuppet
       );
 
       return;
     case 'SELECT_TEXT':
+      // if -->  await resetPage(page, browser);
       await selectText(
         (event.payload as DispatchableEventPayload_SelectText).inputText,
         localState,
         respondToPuppet
       );
+
       return;
-    case 'EXIT_PUPPET':
+    case 'DESELECT_TEXT':
+      // if -->  await resetPage(page, browser);
+      await deselectText(
+        (event.payload as DispatchableEventPayload_SelectText).inputText,
+        localState,
+        respondToPuppet
+      );
+
+      return;
+    case 'EXIT':
       await exit(localState, respondToPuppet);
       return;
     default:

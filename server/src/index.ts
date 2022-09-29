@@ -9,7 +9,7 @@ const httpServer = http.createServer(app);
 
 /** Start Socket */
 const server = new ServerSocket(httpServer);
-// server.printPuppetMasters();
+// server.printPuppets();
 /** Log the request */
 app.use((req, res, next) => {
   console.info(
@@ -52,7 +52,7 @@ app.get('/', (req, res, next) => {
 
 /** Socket Information */
 app.get('/status', (req, res, next) => {
-  return res.status(200).json({ sockets: ServerSocket.instance.puppetMasters });
+  return res.status(200).json({ sockets: ServerSocket.instance.puppets });
 });
 
 /** Error handling */

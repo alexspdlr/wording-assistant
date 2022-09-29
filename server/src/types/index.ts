@@ -4,7 +4,6 @@
 /* -------------------------------------------------------------------------- */
 
 import { Browser, Page } from 'puppeteer';
-import { Puppet } from '../classes/Puppet/Puppet';
 import { ActiveWorkerState } from './socket';
 
 /* ------------------------------ DISPATCHABLE ------------------------------ */
@@ -19,10 +18,8 @@ type DispatchableEventCommand =
   | 'SELECT_WORD'
   | 'DESELECT_WORD'
   | 'SELECT_WORDING_ALTERNATIVE'
-  | 'START_PUPPETMASTER'
-  | 'EXIT_PUPPETMASTER'
-  | 'START_PUPPET'
-  | 'EXIT_PUPPET';
+  | 'START'
+  | 'EXIT';
 
 type DispatchableEventPayload =
   | DispatchableEventPayload_SelectText
@@ -30,113 +27,88 @@ type DispatchableEventPayload =
   | DispatchableEventPayload_SelectWord
   | DispatchableEventPayload_DeselectWord
   | DispatchableEventPayload_SelectWordingAlternative
-  | DispatchableEventPayload_StartPuppetMaster
-  | DispatchableEventPayload_ExitPuppetMaster
-  | DispatchableEventPayload_StartPuppet
-  | DispatchableEventPayload_ExitPuppet;
+  | DispatchableEventPayload_Start
+  | DispatchableEventPayload_Exit;
 
 export interface DispatchableEventPayload_SelectText {
   inputText: string;
 }
 export interface DispatchableEventPayload_DeselectText {
   id: string;
-  numberOfMaintainedPuppets: number;
 }
+
 interface DispatchableEventPayload_SelectWord {}
 interface DispatchableEventPayload_DeselectWord {}
 interface DispatchableEventPayload_SelectWordingAlternative {}
-export interface DispatchableEventPayload_StartPuppetMaster {
+export interface DispatchableEventPayload_Start {
   id: string;
-  numberOfMaintainedPuppets: number;
 }
-interface DispatchableEventPayload_ExitPuppetMaster {}
-export interface DispatchableEventPayload_StartPuppet {
-  id: number;
-}
-export interface DispatchableEventPayload_ExitPuppet {}
+export interface DispatchableEventPayload_Exit {}
 
 /* ------------------------------- RECEIVABLE ------------------------------- */
-export interface ReceivableEvent {
+export interface ReceivableEventWorker {
   code: ReceivableEventCode;
   payload: ReceivableEventPayload;
-  puppetInfo: PuppetInfo[];
+}
+
+export interface ReceivableEvent extends ReceivableEventWorker {
+  workerState: ActiveWorkerState;
 }
 
 type ReceivableEventCode =
-  | 'PUPPET_START_COMPLETED'
-  | 'PUPPET_EXIT_COMPLETED'
-  | 'PUPPET_SELECT_TEXT_STARTED'
-  | 'PUPPET_SELECT_TEXT_COMPLETED'
-  | 'PUPPET_DESELECT_TEXT_STARTED'
-  | 'PUPPET_DESELECT_TEXT_COMPLETED'
-  | 'PUPPET_SELECT_WORD_STARTED'
-  | 'PUPPET_SELECT_WORD_COMPLETED'
-  | 'PUPPET_DESELECT_WORD_STARTED'
-  | 'PUPPET_DESELECT_WORD_COMPLETED'
-  | 'PUPPET_SELECT_WORDING_ALTERNATIVE_STARTED'
-  | 'PUPPET_SELECT_WORDING_ALTERNATIVE_COMPLETED'
-  | 'PUPPETMASTER_EXIT_COMPLETED'
-  | 'PUPPETMASTER_START_COMPLETED';
+  | 'START_COMPLETED'
+  | 'EXIT_COMPLETED'
+  | 'SELECT_TEXT_STARTED'
+  | 'SELECT_TEXT_COMPLETED'
+  | 'DESELECT_TEXT_STARTED'
+  | 'DESELECT_TEXT_COMPLETED'
+  | 'SELECT_WORD_STARTED'
+  | 'SELECT_WORD_COMPLETED'
+  | 'DESELECT_WORD_STARTED'
+  | 'DESELECT_WORD_COMPLETED'
+  | 'SELECT_WORDING_ALTERNATIVE_STARTED'
+  | 'SELECT_WORDING_ALTERNATIVE_COMPLETED';
 
 type ReceivableEventPayload =
-  | ReceivableEventPayload_PuppetStartCompleted
-  | ReceivableEventPayload_PuppetExitCompleted
-  | ReceivableEventPayload_PuppetSelectTextStarted
-  | ReceivableEventPayload_PuppetSelectTextCompleted
-  | ReceivableEventPayload_PuppetDeselectTextStarted
-  | ReceivableEventPayload_PuppetDeselectTextCompleted
-  | ReceivableEventPayload_PuppetSelectWordStarted
-  | ReceivableEventPayload_PuppetSelectWordCompleted
-  | ReceivableEventPayload_PuppetDeselectWordStarted
-  | ReceivableEventPayload_PuppetDeselectWordCompleted
-  | ReceivableEventPayload_PuppetSelectWordingAlternativeStarted
-  | ReceivableEventPayload_PuppetSelectWordingAlternativeCompleted
-  | ReceivableEventPayload_PuppetmasterStartCompleted
-  | ReceivableEventPayload_PuppetmasterExitCompleted;
+  | ReceivableEventPayload_StartCompleted
+  | ReceivableEventPayload_ExitCompleted
+  | ReceivableEventPayload_SelectTextStarted
+  | ReceivableEventPayload_SelectTextCompleted
+  | ReceivableEventPayload_DeselectTextStarted
+  | ReceivableEventPayload_DeselectTextCompleted
+  | ReceivableEventPayload_SelectWordStarted
+  | ReceivableEventPayload_SelectWordCompleted
+  | ReceivableEventPayload_DeselectWordStarted
+  | ReceivableEventPayload_DeselectWordCompleted
+  | ReceivableEventPayload_SelectWordingAlternativeStarted
+  | ReceivableEventPayload_SelectWordingAlternativeCompleted;
 
-export interface ReceivableEventPayload_PuppetStartCompleted {
-  id: number;
+export interface ReceivableEventPayload_StartCompleted {
+  id: string;
 }
-export interface ReceivableEventPayload_PuppetExitCompleted {}
-export interface ReceivableEventPayload_PuppetSelectTextStarted {
+export interface ReceivableEventPayload_ExitCompleted {}
+export interface ReceivableEventPayload_SelectTextStarted {
   inputText: string;
 }
-export interface ReceivableEventPayload_PuppetSelectTextCompleted {
+export interface ReceivableEventPayload_SelectTextCompleted {
   inputText: string;
   rephrasingBase: string;
 }
 
-export interface ReceivableEventPayload_PuppetDeselectTextStarted {}
-export interface ReceivableEventPayload_PuppetDeselectTextCompleted {}
-interface ReceivableEventPayload_PuppetSelectWordStarted {}
-interface ReceivableEventPayload_PuppetSelectWordCompleted {}
-interface ReceivableEventPayload_PuppetDeselectWordStarted {}
-interface ReceivableEventPayload_PuppetDeselectWordCompleted {}
-interface ReceivableEventPayload_PuppetSelectWordingAlternativeStarted {}
-interface ReceivableEventPayload_PuppetSelectWordingAlternativeCompleted {}
-interface ReceivableEventPayload_PuppetmasterStartCompleted {}
-interface ReceivableEventPayload_PuppetmasterExitCompleted {}
+export interface ReceivableEventPayload_DeselectTextStarted {}
+export interface ReceivableEventPayload_DeselectTextCompleted {}
+interface ReceivableEventPayload_SelectWordStarted {}
+interface ReceivableEventPayload_SelectWordCompleted {}
+interface ReceivableEventPayload_DeselectWordStarted {}
+interface ReceivableEventPayload_DeselectWordCompleted {}
+interface ReceivableEventPayload_SelectWordingAlternativeStarted {}
+interface ReceivableEventPayload_SelectWordingAlternativeCompleted {}
 
 /* -------------------------------------------------------------------------- */
 /*                                   PUPPET                                   */
 /* -------------------------------------------------------------------------- */
 
-export interface PuppetInfo {
-  id: number;
-  activeWorkerState: ActiveWorkerState;
-}
-
 export interface PuppetWorkerState {
   page: Page | null;
   browser: Browser | null;
-}
-
-export type ReceivableEventPuppet = Omit<ReceivableEvent, 'puppetInfo'>;
-
-/* -------------------------------------------------------------------------- */
-/*                                PUPPET MASTER                               */
-/* -------------------------------------------------------------------------- */
-
-export interface PuppetMasterWorkerState {
-  puppets: Puppet[];
 }

@@ -1,6 +1,6 @@
 import {
-  ReceivableEventPayload_PuppetSelectTextCompleted,
-  ReceivableEventPuppet,
+  ReceivableEventPayload_SelectTextCompleted,
+  ReceivableEvent,
 } from '../../../types';
 import {
   ActiveWorkerState,
@@ -8,26 +8,31 @@ import {
 } from '../../../types/socket';
 
 const selectTextCompleted = (
-  event: ReceivableEventPuppet,
+  event: ReceivableEvent,
   setWorkerState: (newState: ActiveWorkerState) => void,
-  respondToPuppetMaster: (response: ReceivableEventPuppet) => void
+  respondToSocket: (response: ReceivableEvent) => void
 ) => {
   const selectTextFinishedWorkerStateData: ActiveWorkerStateData_WaitingForSelectWord =
     {
-      inputText: (
-        event.payload as ReceivableEventPayload_PuppetSelectTextCompleted
-      ).inputText,
+      inputText: (event.payload as ReceivableEventPayload_SelectTextCompleted)
+        .inputText,
       rephrasingBase: (
-        event.payload as ReceivableEventPayload_PuppetSelectTextCompleted
+        event.payload as ReceivableEventPayload_SelectTextCompleted
       ).rephrasingBase,
     };
 
-  setWorkerState({
+  const newWorkerState: ActiveWorkerState = {
     stateName: 'waitingForSelectWord',
     data: selectTextFinishedWorkerStateData,
-  });
+  };
 
-  respondToPuppetMaster(event);
+  setWorkerState(newWorkerState);
+
+  respondToSocket({
+    code: event.code,
+    payload: event.payload,
+    workerState: newWorkerState,
+  });
 };
 
 export default selectTextCompleted;

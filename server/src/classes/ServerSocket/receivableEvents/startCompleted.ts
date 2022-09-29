@@ -8,7 +8,7 @@ const startCompleted = (
 ) => {
   const responseEvent: SocketServerEvent = {
     endpoint: 'setupCompleted',
-    payload: event.puppetInfo[0].activeWorkerState,
+    payload: event.workerState,
   };
 
   emitToSocket(socketId, responseEvent);
