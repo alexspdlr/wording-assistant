@@ -36,10 +36,8 @@ const RephrasePage = () => {
         <button
           onClick={() =>
             socketEmit({
-              endpoint: 'selectText',
-              payload: {
-                inputText: 'Test Text',
-              },
+              endpoint: 'deselectText',
+              payload: {},
             })
           }
         >

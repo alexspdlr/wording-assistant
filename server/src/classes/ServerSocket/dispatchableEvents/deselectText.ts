@@ -8,7 +8,10 @@ const deselectText = (
 ) => {
   const event: DispatchableEvent = {
     command: 'DESELECT_TEXT',
-    payload,
+    payload: {
+      id: targetPuppetMaster?.pmId,
+      numberOfMaintainedPuppets: targetPuppetMaster?.numberOfMaintainedPuppets,
+    },
   };
 
   targetPuppetMaster?.dispatchEvent(event);

@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Worker } from 'worker_threads';
-import { DispatchableEvent, PuppetInfo, ReceivableEvent } from '../../types';
+import {
+  DispatchableEvent,
+  DispatchableEventPayload_ExitPuppet,
+  DispatchableEventPayload_StartPuppetMaster,
+  PuppetInfo,
+  ReceivableEvent,
+} from '../../types';
 import { SocketServerEvent } from '../../types/socket';
 
 export class PuppetMaster {
   public static instance: PuppetMaster;
   public pmId: string;
   private worker: Worker;
-  private numberOfMaintainedPuppets = 2;
+  public numberOfMaintainedPuppets = 3;
   public puppetInfos: PuppetInfo[];
   private respondToClient: (event: ReceivableEvent) => void;
 
@@ -28,21 +34,25 @@ export class PuppetMaster {
 
     this.startWorkerListeners(this.worker);
 
+    const payload: DispatchableEventPayload_StartPuppetMaster = {
+      id: this.pmId,
+      numberOfMaintainedPuppets: this.numberOfMaintainedPuppets,
+    };
+
     this.dispatchEvent({
       command: 'START_PUPPETMASTER',
-      payload: {
-        id: this.pmId,
-        numberOfMaintainedPuppets: this.numberOfMaintainedPuppets,
-      },
+      payload,
     });
   }
 
   /* ----------------------------- PUBLIC METHODS ----------------------------- */
 
   public kill() {
+    const payload: DispatchableEventPayload_ExitPuppet = {};
+
     this.dispatchEvent({
       command: 'EXIT_PUPPETMASTER',
-      payload: {},
+      payload,
     });
   }
 

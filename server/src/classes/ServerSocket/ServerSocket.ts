@@ -2,14 +2,12 @@ import { Server as HttpServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import { ReceivableEvent } from '../../types/index';
 import {
-  ActiveWorkerState,
   SocketClientEventPayload_DeselectText,
   SocketClientEventPayload_DeselectWord,
   SocketClientEventPayload_SelectText,
   SocketClientEventPayload_SelectWord,
   SocketClientEventPayload_SelectWordingAlternative,
   SocketServerEvent,
-  SocketServerEventEndpoint,
 } from '../../types/socket';
 import { PuppetMaster } from '../PuppetMaster/PuppetMaster';
 import deselectText from './dispatchableEvents/deselectText';
@@ -17,6 +15,8 @@ import deselectWord from './dispatchableEvents/deselectWord';
 import selectText from './dispatchableEvents/selectText';
 import selectWord from './dispatchableEvents/selectWord';
 import selectWordingAlternative from './dispatchableEvents/selectWordingAlternative';
+import deselectTextCompleted from './receivableEvents/deselectTextCompleted';
+import deselectTextStarted from './receivableEvents/deselectTextStarted';
 import selectTextCompleted from './receivableEvents/selectTextCompleted';
 import selectTextStarted from './receivableEvents/selectTextStarted';
 import startCompleted from './receivableEvents/startCompleted';
@@ -106,6 +106,13 @@ export class ServerSocket {
         selectTextCompleted(event, socketId, this.emitToSocket);
         return;
 
+      case 'PUPPET_DESELECT_TEXT_STARTED':
+        deselectTextStarted(event, socketId, this.emitToSocket);
+        return;
+
+      case 'PUPPET_DESELECT_TEXT_COMPLETED':
+        deselectTextCompleted(event, socketId, this.emitToSocket);
+        return;
       default:
         return;
     }

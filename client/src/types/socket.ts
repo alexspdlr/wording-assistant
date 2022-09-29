@@ -37,12 +37,17 @@ type ActiveWorkerStateDataProcessing =
   | ActiveWorkerStateData_ProcessingSelectWordingAlternative
   | ActiveWorkerStateData_ProcessingTerminate;
 
-interface ActiveWorkerStateData_WaitingForSelectText {}
-interface ActiveWorkerStateData_WaitingForSelectWord {}
+export interface ActiveWorkerStateData_WaitingForSelectText {}
+export interface ActiveWorkerStateData_WaitingForSelectWord {
+  inputText: string;
+  rephrasingBase: string;
+}
 interface ActiveWorkerStateData_WaitingForSelectWordingAlternative {}
 
 interface ActiveWorkerStateData_ProcessingInitialize {}
-interface ActiveWorkerStateData_ProcessingSelectText {}
+export interface ActiveWorkerStateData_ProcessingSelectText {
+  inputText: string;
+}
 interface ActiveWorkerStateData_ProcessingDeselectText {}
 interface ActiveWorkerStateData_ProcessingSelectWord {}
 interface ActiveWorkerStateData_ProcessingDeselectWord {}
@@ -90,50 +95,18 @@ export interface SocketClientEventPayload_SelectWordingAlternative {}
 
 export interface SocketServerEvent {
   endpoint: SocketServerEventEndpoint;
-  payload: SocketServerEventPayload;
+  payload: ActiveWorkerState;
 }
 
-type SocketServerEventEndpoint =
-  | 'setupFinished'
-  | 'selectTextFinished'
-  | 'deselectTextFinished'
-  | 'selectWordFinished'
-  | 'deselectWordFinished'
-  | 'selectWordingAlternativeFinished';
-
-type SocketServerEventPayload =
-  | SocketServerEventPayload_SetupFinished
-  | SocketServerEventPayload_SelectTextFinished
-  | SocketServerEventPayload_DeselectTextFinished
-  | SocketServerEventPayload_SelectWordFinished
-  | SocketServerEventPayload_DeselectWordFinished
-  | SocketServerEventPayload_SelectWordingAlternativeFinished;
-
-export interface SocketServerEventPayload_SetupFinished {
-  serverState: string;
-  data: {};
-}
-export interface SocketServerEventPayload_SelectTextFinished {
-  serverState: string;
-  data: {};
-}
-
-export interface SocketServerEventPayload_DeselectTextFinished {
-  serverState: string;
-  data: {};
-}
-
-export interface SocketServerEventPayload_SelectWordFinished {
-  serverState: string;
-  data: {};
-}
-
-export interface SocketServerEventPayload_DeselectWordFinished {
-  serverState: string;
-  data: {};
-}
-
-export interface SocketServerEventPayload_SelectWordingAlternativeFinished {
-  serverState: string;
-  data: {};
-}
+export type SocketServerEventEndpoint =
+  | 'setupCompleted'
+  | 'selectTextStarted'
+  | 'selectTextCompleted'
+  | 'deselectTextStarted'
+  | 'deselectTextCompleted'
+  | 'selectWordStarted'
+  | 'selectWordCompleted'
+  | 'deselectWordStarted'
+  | 'deselectWordCompleted'
+  | 'selectWordingAlternativeStarted'
+  | 'selectWordingAlternativeCompleted';

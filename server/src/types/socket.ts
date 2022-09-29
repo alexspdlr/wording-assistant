@@ -99,12 +99,14 @@ export interface SocketServerEvent {
 }
 
 export type SocketServerEventEndpoint =
-  | 'setupFinished'
+  | 'setupCompleted'
   | 'selectTextStarted'
-  | 'selectTextFinished'
+  | 'selectTextCompleted'
+  | 'deselectTextStarted'
+  | 'deselectTextCompleted'
   | 'selectWordStarted'
-  | 'selectWordFinished'
+  | 'selectWordCompleted'
   | 'deselectWordStarted'
-  | 'deselectWordFinished'
+  | 'deselectWordCompleted'
   | 'selectWordingAlternativeStarted'
-  | 'selectWordingAlternativeFinished';
+  | 'selectWordingAlternativeCompleted';

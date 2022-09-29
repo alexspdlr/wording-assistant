@@ -1,12 +1,15 @@
 import { parentPort } from 'worker_threads';
 import {
   DispatchableEvent,
+  DispatchableEventPayload_DeselectText,
   PuppetInfo,
   PuppetMasterWorkerState,
   ReceivableEvent,
+  ReceivableEventPayload_PuppetDeselectTextCompleted,
   ReceivableEventPuppet,
 } from '../../types/index';
 import { Puppet } from '../Puppet/Puppet';
+import deselectText from './dispatchableEvents/deselectText';
 import exit from './dispatchableEvents/exit';
 import start from './dispatchableEvents/start';
 
@@ -58,6 +61,16 @@ const handleDispatchableEvent = async (event: DispatchableEvent) => {
       await exit(respondToPuppetMaster, localState);
       return;
 
+    case 'DESELECT_TEXT':
+      await deselectText(
+        event,
+        respondToPuppetMaster,
+        () => localState,
+        () => localState.puppets.shift(),
+        restockPuppetQueue
+      );
+      return;
+
     default:
       forwardEventToPuppet(targetPuppet, event);
       return;
@@ -66,4 +79,25 @@ const handleDispatchableEvent = async (event: DispatchableEvent) => {
 
 const forwardEventToPuppet = (puppet: Puppet, event: DispatchableEvent) => {
   puppet.dispatchEvent(event);
+};
+
+const restockPuppetQueue = (
+  pmId: string,
+  numberOfMaintainedPuppets: number
+) => {
+  console.log('UNO !!! :', localState.puppets.length);
+  console.log('DOS !!! :', numberOfMaintainedPuppets);
+
+  while (localState.puppets.length < numberOfMaintainedPuppets) {
+    const newlyQueuedPuppet = new Puppet(pmId, respondToPuppetMaster);
+    console.log(
+      '##   ###   ###   ###  localstate.puppets before: ',
+      localState.puppets
+    );
+    localState.puppets.push(newlyQueuedPuppet);
+    console.log(
+      '##   ###   ###   ###   localstste.puppets after: ',
+      localState.puppets
+    );
+  }
 };

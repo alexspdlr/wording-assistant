@@ -38,7 +38,10 @@ type DispatchableEventPayload =
 export interface DispatchableEventPayload_SelectText {
   inputText: string;
 }
-interface DispatchableEventPayload_DeselectText {}
+export interface DispatchableEventPayload_DeselectText {
+  id: string;
+  numberOfMaintainedPuppets: number;
+}
 interface DispatchableEventPayload_SelectWord {}
 interface DispatchableEventPayload_DeselectWord {}
 interface DispatchableEventPayload_SelectWordingAlternative {}
@@ -50,7 +53,7 @@ interface DispatchableEventPayload_ExitPuppetMaster {}
 export interface DispatchableEventPayload_StartPuppet {
   id: number;
 }
-interface DispatchableEventPayload_ExitPuppet {}
+export interface DispatchableEventPayload_ExitPuppet {}
 
 /* ------------------------------- RECEIVABLE ------------------------------- */
 export interface ReceivableEvent {
@@ -64,6 +67,8 @@ type ReceivableEventCode =
   | 'PUPPET_EXIT_COMPLETED'
   | 'PUPPET_SELECT_TEXT_STARTED'
   | 'PUPPET_SELECT_TEXT_COMPLETED'
+  | 'PUPPET_DESELECT_TEXT_STARTED'
+  | 'PUPPET_DESELECT_TEXT_COMPLETED'
   | 'PUPPET_SELECT_WORD_STARTED'
   | 'PUPPET_SELECT_WORD_COMPLETED'
   | 'PUPPET_DESELECT_WORD_STARTED'
@@ -78,6 +83,8 @@ type ReceivableEventPayload =
   | ReceivableEventPayload_PuppetExitCompleted
   | ReceivableEventPayload_PuppetSelectTextStarted
   | ReceivableEventPayload_PuppetSelectTextCompleted
+  | ReceivableEventPayload_PuppetDeselectTextStarted
+  | ReceivableEventPayload_PuppetDeselectTextCompleted
   | ReceivableEventPayload_PuppetSelectWordStarted
   | ReceivableEventPayload_PuppetSelectWordCompleted
   | ReceivableEventPayload_PuppetDeselectWordStarted
@@ -98,6 +105,9 @@ export interface ReceivableEventPayload_PuppetSelectTextCompleted {
   inputText: string;
   rephrasingBase: string;
 }
+
+export interface ReceivableEventPayload_PuppetDeselectTextStarted {}
+export interface ReceivableEventPayload_PuppetDeselectTextCompleted {}
 interface ReceivableEventPayload_PuppetSelectWordStarted {}
 interface ReceivableEventPayload_PuppetSelectWordCompleted {}
 interface ReceivableEventPayload_PuppetDeselectWordStarted {}

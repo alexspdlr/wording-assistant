@@ -59,7 +59,7 @@ const SocketContextComponent: React.FunctionComponent<
       updateActiveWorkerState('disconnected');
     });
 
-    socket.on('setupFinished', (payload: ActiveWorkerState) => {
+    socket.on('setupCompleted', (payload: ActiveWorkerState) => {
       updateActiveWorkerState(payload);
     });
 
@@ -67,7 +67,15 @@ const SocketContextComponent: React.FunctionComponent<
       updateActiveWorkerState(payload);
     });
 
-    socket.on('selectTextFinished', (payload: ActiveWorkerState) => {
+    socket.on('selectTextCompleted', (payload: ActiveWorkerState) => {
+      updateActiveWorkerState(payload);
+    });
+
+    socket.on('deselectTextStarted', (payload: ActiveWorkerState) => {
+      updateActiveWorkerState(payload);
+    });
+
+    socket.on('deselectTextCompleted', (payload: ActiveWorkerState) => {
       updateActiveWorkerState(payload);
     });
 
