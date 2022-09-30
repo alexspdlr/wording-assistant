@@ -25,12 +25,12 @@ const RephrasePage = () => {
             socketEmit({
               endpoint: 'selectText',
               payload: {
-                inputText: 'Test Text',
+                inputText: 'Test this insanely complicated input text',
               },
             })
           }
         >
-          select Text ("Test Text")
+          select Text ("Test this super complicated input text")
         </button>
 
         <button

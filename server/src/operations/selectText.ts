@@ -1,4 +1,5 @@
 import { Browser, Page } from 'puppeteer';
+import delay from '../utils/delay';
 import resetPage from './resetPage';
 
 const selectText = async (inputText: string, page: Page, browser: Browser) => {
@@ -9,7 +10,7 @@ const selectText = async (inputText: string, page: Page, browser: Browser) => {
       await resetPage(page, browser);
     }
 
-    // Paste client input into translator input
+    // Paste client input into translator source
     await page.evaluate((clienSourceInput) => {
       const translatorSourceInput = document.querySelector(
         '[dl-test=translator-source-input]'
@@ -20,7 +21,6 @@ const selectText = async (inputText: string, page: Page, browser: Browser) => {
 
     // Tab out and back into translator input field to trigger translation
     await page.keyboard.press('Tab');
-
     await page.keyboard.down('ShiftLeft');
     await page.keyboard.press('Tab');
     await page.keyboard.up('ShiftLeft');
@@ -71,14 +71,25 @@ const selectText = async (inputText: string, page: Page, browser: Browser) => {
       );
     }
 
-    // Store translation result
+    // Paste client input into translator target
+    await page.evaluate((clienSourceInput) => {
+      const translatorTargetInput = document.querySelector(
+        '[dl-test=translator-target-input]'
+      ) as HTMLTextAreaElement | null;
+
+      if (translatorTargetInput) translatorTargetInput.value = clienSourceInput;
+    }, clienSourceInput);
+
+    // Store rephrasing result
     const result = await page.$eval('#target-dummydiv', (div) => div.innerHTML);
 
     // Tab into text area of rephrasing base
     const textResultsDisplayed =
       (await page.$('[dl-test=translator-target-result-as-text-container]')) !==
       null;
-    const numberOfTabs = textResultsDisplayed ? 6 : 7;
+
+    //const numberOfTabs = textResultsDisplayed ? 5 : 6;
+    const numberOfTabs = 5;
     for (const i of [...Array(numberOfTabs).keys()]) {
       await page.keyboard.press('Tab');
     }

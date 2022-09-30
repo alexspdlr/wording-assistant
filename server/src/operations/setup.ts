@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer';
 const setup = async () => {
   /* Load broser & DeepL Page */
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
   });
   const page = await browser.newPage();
   page.setDefaultTimeout(8000);

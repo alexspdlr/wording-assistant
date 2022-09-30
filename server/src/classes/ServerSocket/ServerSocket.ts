@@ -28,7 +28,7 @@ export class ServerSocket {
   public io: Server;
   public activePuppets: Puppet[];
   public waitingPuppets: Queue<Puppet>;
-  private minNumberOfMaintainedPuppets = 5;
+  private minNumberOfMaintainedPuppets = 0;
 
   /* ------------------------------- CONSTRUCTOR ------------------------------ */
 
