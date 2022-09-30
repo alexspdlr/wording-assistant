@@ -31,6 +31,12 @@ const SocketContextComponent: React.FunctionComponent<
     autoConnect: false,
   });
 
+  /*
+      REMEMBER !!!: prevent every event from being dispatched except for move cursor :
+            move cursor can be called even if Previous Move_cursor command is not finished yet   
+            maybe update target text as well
+  */
+
   useEffect(() => {
     socket.connect();
     startListeners();
@@ -68,6 +74,14 @@ const SocketContextComponent: React.FunctionComponent<
     });
 
     socket.on('selectTextCompleted', (payload: ActiveWorkerState) => {
+      updateActiveWorkerState(payload);
+    });
+
+    socket.on('moveCursorStarted', (payload: ActiveWorkerState) => {
+      updateActiveWorkerState(payload);
+    });
+
+    socket.on('moveCursorCompleted', (payload: ActiveWorkerState) => {
       updateActiveWorkerState(payload);
     });
 

@@ -3,18 +3,18 @@ import { Server, Socket } from 'socket.io';
 import { ReceivableEvent } from '../../types/index';
 import {
   SocketClientEventPayload_DeselectText,
-  SocketClientEventPayload_DeselectWord,
+  SocketClientEventPayload_MoveCursor,
   SocketClientEventPayload_SelectText,
-  SocketClientEventPayload_SelectWord,
   SocketClientEventPayload_SelectWordingAlternative,
+  SocketClientEventPayload_UpdateTargetText,
   SocketServerEvent,
 } from '../../types/socket';
 import { Puppet } from '../Puppet/Puppet';
 import { Queue } from '../Queue/Queue';
 import deselectText from './dispatchableEvents/deselectText';
-import deselectWord from './dispatchableEvents/deselectWord';
+import updateTargetText from './dispatchableEvents/updateTargetText';
 import selectText from './dispatchableEvents/selectText';
-import selectWord from './dispatchableEvents/selectWord';
+import moveCursor from './dispatchableEvents/moveCursor';
 import selectWordingAlternative from './dispatchableEvents/selectWordingAlternative';
 import deselectTextCompleted from './receivableEvents/deselectTextCompleted';
 import deselectTextStarted from './receivableEvents/deselectTextStarted';
@@ -22,6 +22,8 @@ import selectTextCompleted from './receivableEvents/selectTextCompleted';
 import selectTextStarted from './receivableEvents/selectTextStarted';
 import startCompleted from './receivableEvents/startCompleted';
 import printServerInfo from './util/printServerInfo';
+import moveCursorStarted from './receivableEvents/moveCursorStarted';
+import moveCursorCompleted from './receivableEvents/moveCursorCompleted';
 
 export class ServerSocket {
   public static instance: ServerSocket;
@@ -91,14 +93,14 @@ export class ServerSocket {
       }
     );
 
-    socket.on('selectWord', (payload: SocketClientEventPayload_SelectWord) => {
-      selectWord(payload, this.findPuppetById(socket.id));
+    socket.on('moveCursor', (payload: SocketClientEventPayload_MoveCursor) => {
+      moveCursor(payload, this.findPuppetById(socket.id));
     });
 
     socket.on(
-      'deselectWord',
-      (payload: SocketClientEventPayload_DeselectWord) => {
-        deselectWord(payload, this.findPuppetById(socket.id));
+      'updateTargetText',
+      (payload: SocketClientEventPayload_UpdateTargetText) => {
+        updateTargetText(payload, this.findPuppetById(socket.id));
       }
     );
 
@@ -126,6 +128,14 @@ export class ServerSocket {
 
       case 'SELECT_TEXT_COMPLETED':
         selectTextCompleted(event, socketId, this.emitToSocket);
+        return;
+
+      case 'MOVE_CURSOR_STARTED':
+        moveCursorStarted(event, socketId, this.emitToSocket);
+        return;
+
+      case 'MOVE_CURSOR_COMPLETED':
+        moveCursorCompleted(event, socketId, this.emitToSocket);
         return;
 
       case 'DESELECT_TEXT_STARTED':

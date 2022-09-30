@@ -25,12 +25,12 @@ const RephrasePage = () => {
             socketEmit({
               endpoint: 'selectText',
               payload: {
-                inputText: 'Test this insanely complicated input text',
+                inputText: 'A cool input text is being tested',
               },
             })
           }
         >
-          select Text ("Test this super complicated input text")
+          select Text ("A cool input text is being tested")
         </button>
 
         <button
@@ -47,40 +47,54 @@ const RephrasePage = () => {
         <button
           onClick={() =>
             socketEmit({
-              endpoint: 'selectWord',
+              endpoint: 'moveCursor',
               payload: {
-                inputText: 'Test Text',
+                newCursorIndex: 7,
               },
             })
           }
         >
-          select First Word
+          move cursor to i = 7
         </button>
 
         <button
           onClick={() =>
             socketEmit({
-              endpoint: 'selectWord',
+              endpoint: 'moveCursor',
               payload: {
-                inputText: 'Test Text',
+                newCursorIndex: 0,
               },
             })
           }
         >
-          deselect word
+          move cursor to i = 0
         </button>
 
         <button
           onClick={() =>
             socketEmit({
-              endpoint: 'selectWord',
+              endpoint: 'moveCursor',
               payload: {
-                inputText: 'Test Text',
+                newCursorIndex: 2,
               },
             })
           }
         >
-          select wording alternative
+          move cursor to i = 2
+        </button>
+
+        <button
+          onClick={() =>
+            socketEmit({
+              endpoint: 'moveCursor',
+              payload: {
+                newTargetText: 'Test this super-duper complicated input text',
+                postChangeCursorIndex: 5,
+              },
+            })
+          }
+        >
+          update target text to "super-duper"
         </button>
       </div>
       <Section backgroundColor={theme.palette.background.main}>

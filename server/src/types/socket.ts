@@ -12,34 +12,35 @@ export interface ActiveWorkerState {
 
 type ActiveWorkerStateNameWaiting =
   | 'waitingForSelectText'
-  | 'waitingForSelectWord'
+  | 'waitingForMoveCursor'
   | 'waitingForSelectWordingAlternative';
 type ActiveWorkerStateNameProcessing =
   | 'processingInitialize'
   | 'processingSelectText'
   | 'processingDeselectText'
-  | 'processingSelectWord'
-  | 'processingDeselectWord'
+  | 'processingMoveCursor'
+  | 'processingUpdateTargetText'
   | 'processingSelectWordingAlternative'
   | 'processingTerminate';
 
 type ActiveWorkerStateDataWaiting =
   | ActiveWorkerStateData_WaitingForSelectText
-  | ActiveWorkerStateData_WaitingForSelectWord
+  | ActiveWorkerStateData_WaitingForMoveCursor
   | ActiveWorkerStateData_WaitingForSelectWordingAlternative;
 type ActiveWorkerStateDataProcessing =
   | ActiveWorkerStateData_ProcessingInitialize
   | ActiveWorkerStateData_ProcessingSelectText
   | ActiveWorkerStateData_ProcessingDeselectText
-  | ActiveWorkerStateData_ProcessingSelectWord
-  | ActiveWorkerStateData_ProcessingDeselectWord
+  | ActiveWorkerStateData_ProcessingMoveCursor
+  | ActiveWorkerStateData_ProcessingUpdateTargetText
   | ActiveWorkerStateData_ProcessingSelectWordingAlternative
   | ActiveWorkerStateData_ProcessingTerminate;
 
 export interface ActiveWorkerStateData_WaitingForSelectText {}
-export interface ActiveWorkerStateData_WaitingForSelectWord {
-  inputText: string;
-  rephrasingBase: string;
+export interface ActiveWorkerStateData_WaitingForMoveCursor {
+  inputText?: string;
+  rephrasingBase?: string;
+  rephrasingOptions?: string[];
 }
 interface ActiveWorkerStateData_WaitingForSelectWordingAlternative {}
 
@@ -48,9 +49,9 @@ export interface ActiveWorkerStateData_ProcessingSelectText {
   inputText: string;
 }
 export interface ActiveWorkerStateData_ProcessingDeselectText {}
-interface ActiveWorkerStateData_ProcessingSelectWord {}
-interface ActiveWorkerStateData_ProcessingDeselectWord {}
-interface ActiveWorkerStateData_ProcessingSelectWordingAlternative {}
+export interface ActiveWorkerStateData_ProcessingMoveCursor {}
+export interface ActiveWorkerStateData_ProcessingUpdateTargetText {}
+export interface ActiveWorkerStateData_ProcessingSelectWordingAlternative {}
 export interface ActiveWorkerStateData_ProcessingTerminate {}
 
 /* -------------------------------------------------------------------------- */
@@ -65,15 +66,15 @@ export interface SocketClientEvent {
 type SocketClientEventEndpoint =
   | 'selectText'
   | 'deselectText'
-  | 'selectWord'
-  | 'deselectWord'
+  | 'moveCursor'
+  | 'updateTargetText'
   | 'selectWordingAlternative';
 
 type SocketClientEventPayload =
   | SocketClientEventPayload_SelectText
   | SocketClientEventPayload_DeselectText
-  | SocketClientEventPayload_SelectWord
-  | SocketClientEventPayload_DeselectWord
+  | SocketClientEventPayload_MoveCursor
+  | SocketClientEventPayload_UpdateTargetText
   | SocketClientEventPayload_SelectWordingAlternative;
 
 export interface SocketClientEventPayload_SelectText {
@@ -82,9 +83,14 @@ export interface SocketClientEventPayload_SelectText {
 
 export interface SocketClientEventPayload_DeselectText {}
 
-export interface SocketClientEventPayload_SelectWord {}
+export interface SocketClientEventPayload_MoveCursor {
+  newCursorIndex: number;
+}
 
-export interface SocketClientEventPayload_DeselectWord {}
+export interface SocketClientEventPayload_UpdateTargetText {
+  newTargetText: string;
+  postChangeCursorIndex: number;
+}
 
 export interface SocketClientEventPayload_SelectWordingAlternative {}
 
@@ -103,9 +109,9 @@ export type SocketServerEventEndpoint =
   | 'selectTextCompleted'
   | 'deselectTextStarted'
   | 'deselectTextCompleted'
-  | 'selectWordStarted'
-  | 'selectWordCompleted'
-  | 'deselectWordStarted'
-  | 'deselectWordCompleted'
+  | 'moveCursorStarted'
+  | 'moveCursorCompleted'
+  | 'updateTargetTextStarted'
+  | 'updateTargetTextCompleted'
   | 'selectWordingAlternativeStarted'
   | 'selectWordingAlternativeCompleted';

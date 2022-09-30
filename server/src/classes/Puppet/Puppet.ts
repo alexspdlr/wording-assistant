@@ -10,6 +10,8 @@ import { ActiveWorkerState } from '../../types/socket';
 import deselectTextCompleted from './receivableEvents/deselectTextCompleted';
 import deselectTextStarted from './receivableEvents/deselectTextStarted';
 import exitCompleted from './receivableEvents/exitCompleted';
+import moveCursorCompleted from './receivableEvents/moveCursorCompleted';
+import moveCursorStarted from './receivableEvents/moveCursorStarted';
 import selectTextCompleted from './receivableEvents/selectTextCompleted';
 import selectTextStarted from './receivableEvents/selectTextStarted';
 import startCompleted from './receivableEvents/startCompleted';
@@ -123,6 +125,31 @@ export class Puppet {
           this.respondToSocket
         );
         return;
+
+      case 'MOVE_CURSOR_STARTED':
+        moveCursorStarted(
+          {
+            code: response.code,
+            payload: response.payload,
+            workerState: this.workerState,
+          },
+          this.updateWorkerState,
+          this.respondToSocket
+        );
+        return;
+
+      case 'MOVE_CURSOR_COMPLETED':
+        moveCursorCompleted(
+          {
+            code: response.code,
+            payload: response.payload,
+            workerState: this.workerState,
+          },
+          this.updateWorkerState,
+          this.respondToSocket
+        );
+        return;
+
       case 'DESELECT_TEXT_STARTED':
         deselectTextStarted(
           {

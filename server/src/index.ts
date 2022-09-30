@@ -9,7 +9,7 @@ const httpServer = http.createServer(app);
 
 /** Start Socket */
 const server = new ServerSocket(httpServer);
-server.printPuppets();
+// server.printPuppets();
 /** Log the request */
 app.use((req, res, next) => {
   console.info(

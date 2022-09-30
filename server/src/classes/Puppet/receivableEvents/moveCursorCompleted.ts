@@ -1,29 +1,28 @@
 import {
   ReceivableEventPayload_SelectTextCompleted,
   ReceivableEvent,
+  ReceivableEventPayload_MoveCursorCompleted,
 } from '../../../types';
 import {
   ActiveWorkerState,
   ActiveWorkerStateData_WaitingForMoveCursor,
 } from '../../../types/socket';
 
-const selectTextCompleted = (
+const moveCursorCompleted = (
   event: ReceivableEvent,
   setWorkerState: (newState: ActiveWorkerState) => void,
   respondToSocket: (response: ReceivableEvent) => void
 ) => {
-  const selectTextFinishedWorkerStateData: ActiveWorkerStateData_WaitingForMoveCursor =
+  const moveCursorCompletedWorkerStateData: ActiveWorkerStateData_WaitingForMoveCursor =
     {
-      inputText: (event.payload as ReceivableEventPayload_SelectTextCompleted)
-        .inputText,
-      rephrasingBase: (
-        event.payload as ReceivableEventPayload_SelectTextCompleted
-      ).rephrasingBase,
+      rephrasingOptions: (
+        event.payload as ReceivableEventPayload_MoveCursorCompleted
+      ).rephrasingOptions,
     };
 
   const newWorkerState: ActiveWorkerState = {
     stateName: 'waitingForMoveCursor',
-    data: selectTextFinishedWorkerStateData,
+    data: moveCursorCompletedWorkerStateData,
   };
 
   setWorkerState(newWorkerState);
@@ -35,4 +34,4 @@ const selectTextCompleted = (
   });
 };
 
-export default selectTextCompleted;
+export default moveCursorCompleted;

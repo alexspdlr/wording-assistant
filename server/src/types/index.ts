@@ -15,8 +15,8 @@ export interface DispatchableEvent {
 type DispatchableEventCommand =
   | 'SELECT_TEXT'
   | 'DESELECT_TEXT'
-  | 'SELECT_WORD'
-  | 'DESELECT_WORD'
+  | 'MOVE_CURSOR'
+  | 'UPDATE_TARGET_TEXT'
   | 'SELECT_WORDING_ALTERNATIVE'
   | 'START'
   | 'EXIT';
@@ -24,8 +24,8 @@ type DispatchableEventCommand =
 type DispatchableEventPayload =
   | DispatchableEventPayload_SelectText
   | DispatchableEventPayload_DeselectText
-  | DispatchableEventPayload_SelectWord
-  | DispatchableEventPayload_DeselectWord
+  | DispatchableEventPayload_MoveCursor
+  | DispatchableEventPayload_UpdateTargetText
   | DispatchableEventPayload_SelectWordingAlternative
   | DispatchableEventPayload_Start
   | DispatchableEventPayload_Exit;
@@ -33,13 +33,17 @@ type DispatchableEventPayload =
 export interface DispatchableEventPayload_SelectText {
   inputText: string;
 }
-export interface DispatchableEventPayload_DeselectText {
-  id: string;
+export interface DispatchableEventPayload_DeselectText {}
+
+export interface DispatchableEventPayload_MoveCursor {
+  newCursorIndex: number;
+}
+export interface DispatchableEventPayload_UpdateTargetText {
+  newTargetText: string;
+  postChangeCursorIndex: number;
 }
 
-interface DispatchableEventPayload_SelectWord {}
-interface DispatchableEventPayload_DeselectWord {}
-interface DispatchableEventPayload_SelectWordingAlternative {}
+export interface DispatchableEventPayload_SelectWordingAlternative {}
 export interface DispatchableEventPayload_Start {
   id: string;
 }
@@ -62,10 +66,10 @@ type ReceivableEventCode =
   | 'SELECT_TEXT_COMPLETED'
   | 'DESELECT_TEXT_STARTED'
   | 'DESELECT_TEXT_COMPLETED'
-  | 'SELECT_WORD_STARTED'
-  | 'SELECT_WORD_COMPLETED'
-  | 'DESELECT_WORD_STARTED'
-  | 'DESELECT_WORD_COMPLETED'
+  | 'MOVE_CURSOR_STARTED'
+  | 'MOVE_CURSOR_COMPLETED'
+  | 'UPDATE_TARGET_TEXT_STARTED'
+  | 'UPDATE_TARGET_TEXT_COMPLETED'
   | 'SELECT_WORDING_ALTERNATIVE_STARTED'
   | 'SELECT_WORDING_ALTERNATIVE_COMPLETED';
 
@@ -76,10 +80,10 @@ type ReceivableEventPayload =
   | ReceivableEventPayload_SelectTextCompleted
   | ReceivableEventPayload_DeselectTextStarted
   | ReceivableEventPayload_DeselectTextCompleted
-  | ReceivableEventPayload_SelectWordStarted
-  | ReceivableEventPayload_SelectWordCompleted
-  | ReceivableEventPayload_DeselectWordStarted
-  | ReceivableEventPayload_DeselectWordCompleted
+  | ReceivableEventPayload_MoveCursorStarted
+  | ReceivableEventPayload_MoveCursorCompleted
+  | ReceivableEventPayload_UpdateTargetTextStarted
+  | ReceivableEventPayload_UpdateTargetTextCompleted
   | ReceivableEventPayload_SelectWordingAlternativeStarted
   | ReceivableEventPayload_SelectWordingAlternativeCompleted;
 
@@ -97,12 +101,16 @@ export interface ReceivableEventPayload_SelectTextCompleted {
 
 export interface ReceivableEventPayload_DeselectTextStarted {}
 export interface ReceivableEventPayload_DeselectTextCompleted {}
-interface ReceivableEventPayload_SelectWordStarted {}
-interface ReceivableEventPayload_SelectWordCompleted {}
-interface ReceivableEventPayload_DeselectWordStarted {}
-interface ReceivableEventPayload_DeselectWordCompleted {}
-interface ReceivableEventPayload_SelectWordingAlternativeStarted {}
-interface ReceivableEventPayload_SelectWordingAlternativeCompleted {}
+export interface ReceivableEventPayload_MoveCursorStarted {
+  newCursorIndex: number;
+}
+export interface ReceivableEventPayload_MoveCursorCompleted {
+  rephrasingOptions: string[];
+}
+export interface ReceivableEventPayload_UpdateTargetTextStarted {}
+export interface ReceivableEventPayload_UpdateTargetTextCompleted {}
+export interface ReceivableEventPayload_SelectWordingAlternativeStarted {}
+export interface ReceivableEventPayload_SelectWordingAlternativeCompleted {}
 
 /* -------------------------------------------------------------------------- */
 /*                                   PUPPET                                   */

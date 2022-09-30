@@ -2,6 +2,7 @@ import { Browser, Page } from 'puppeteer';
 import { parentPort } from 'worker_threads';
 import {
   DispatchableEvent,
+  DispatchableEventPayload_MoveCursor,
   DispatchableEventPayload_SelectText,
   DispatchableEventPayload_Start,
   PuppetWorkerState,
@@ -9,6 +10,7 @@ import {
 } from '../../types';
 import deselectText from './dispatchableEvents/deselectText';
 import exit from './dispatchableEvents/exit';
+import moveCursor from './dispatchableEvents/moveCursor';
 import selectText from './dispatchableEvents/selectText';
 import start from './dispatchableEvents/start';
 
@@ -66,6 +68,16 @@ const processEvent = async (event: DispatchableEvent) => {
       );
 
       return;
+
+    case 'MOVE_CURSOR':
+      await moveCursor(
+        (event.payload as DispatchableEventPayload_MoveCursor).newCursorIndex,
+        localState,
+        respondToPuppet
+      );
+
+      return;
+
     case 'EXIT':
       await exit(localState, respondToPuppet);
       return;
