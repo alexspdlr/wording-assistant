@@ -47,6 +47,7 @@ const processEvent = async (event: DispatchableEvent) => {
       );
 
       return;
+
     case 'SELECT_TEXT':
       // if -->  await resetPage(page, browser);
       await selectText(

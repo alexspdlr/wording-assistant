@@ -1,9 +1,10 @@
 import osu from 'node-os-utils';
 import { Puppet } from '../../Puppet/Puppet';
 
-const printServerInfo = (getPuppets: () => Puppet[]) => {
-  const updatedPuppets = getPuppets();
-
+const printServerInfo = (
+  getPuppets: () => Puppet[],
+  getWaitingPuppets: () => Puppet[]
+) => {
   setTimeout(async () => {
     const cpuUsage = await osu.cpu.usage();
     const memoryUsageMB =
@@ -12,15 +13,26 @@ const printServerInfo = (getPuppets: () => Puppet[]) => {
     console.clear();
     process.stdout.cursorTo(0);
     process.stdout.write(
-      `Memory usage: ${memoryUsageMB} MB | CPU usage: ${cpuUsage} % \n\nPUPPETS: \n\n${updatedPuppets
+      `Memory usage: ${memoryUsageMB} MB | CPU usage: ${cpuUsage} % \n\nACTIVE PUPPETS: (${
+        getPuppets().length
+      })\n\n${getPuppets()
         .map(
           (puppet) =>
             `Puppet (${puppet.id}) - ${JSON.stringify(puppet.workerState)}\n`
         )
+        .join('')}
+        
+WAITING PUPPETS: (${getWaitingPuppets().length})\n\n${getWaitingPuppets()
+        .map(
+          (waitingPuppet) =>
+            `Puppet (${waitingPuppet.id}) - ${JSON.stringify(
+              waitingPuppet.workerState
+            )}\n`
+        )
         .join('')}`
     );
 
-    printServerInfo(getPuppets);
+    printServerInfo(getPuppets, getWaitingPuppets);
   }, 1);
 };
 

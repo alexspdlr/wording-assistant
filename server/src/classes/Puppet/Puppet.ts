@@ -1,3 +1,4 @@
+import waitUntil from 'async-wait-until';
 import { Worker } from 'worker_threads';
 import {
   DispatchableEvent,
@@ -64,6 +65,24 @@ export class Puppet {
 
   public dispatchEvent(event: DispatchableEvent) {
     this.worker.postMessage(event);
+  }
+
+  public async assignPuppet(
+    socketId: string,
+    respondToClient: (response: ReceivableEvent) => void
+  ) {
+    this.id = socketId;
+    this.respondToSocket = respondToClient;
+
+    await waitUntil(
+      () => this.workerState.stateName === 'waitingForSelectText'
+    );
+
+    this.respondToSocket({
+      code: 'START_COMPLETED',
+      payload: {},
+      workerState: this.workerState,
+    });
   }
 
   /* ----------------------------- PRIVATE METHODS ---------------------------- */

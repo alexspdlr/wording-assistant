@@ -10,6 +10,7 @@ import {
   SocketServerEvent,
 } from '../../types/socket';
 import { Puppet } from '../Puppet/Puppet';
+import { Queue } from '../Queue/Queue';
 import deselectText from './dispatchableEvents/deselectText';
 import deselectWord from './dispatchableEvents/deselectWord';
 import selectText from './dispatchableEvents/selectText';
@@ -25,13 +26,16 @@ import printServerInfo from './util/printServerInfo';
 export class ServerSocket {
   public static instance: ServerSocket;
   public io: Server;
-  public puppets: Puppet[];
+  public activePuppets: Puppet[];
+  public waitingPuppets: Queue<Puppet>;
+  private minNumberOfMaintainedPuppets = 5;
 
   /* ------------------------------- CONSTRUCTOR ------------------------------ */
 
   constructor(server: HttpServer) {
     ServerSocket.instance = this;
-    this.puppets = [];
+    this.activePuppets = [];
+    this.waitingPuppets = new Queue<Puppet>();
     this.io = new Server(server, {
       serveClient: false,
       pingInterval: 10000,
@@ -42,6 +46,15 @@ export class ServerSocket {
       },
     });
 
+    Array.from(Array(this.minNumberOfMaintainedPuppets)).forEach(() => {
+      const newPuppet: Puppet = new Puppet(
+        'unassigned',
+        (event: ReceivableEvent) => this.respondToClient('unassigned', event)
+      );
+
+      this.waitingPuppets.enqueue(newPuppet);
+    });
+
     this.io.on('connect', this.startSocketListeners);
   }
 
@@ -50,7 +63,16 @@ export class ServerSocket {
   /* -------------------------------------------------------------------------- */
 
   private startSocketListeners = (socket: Socket) => {
-    this.spawnPuppet(socket.id);
+    // spawn puppet if no puppet available in queue, else assign head of queue to socket
+    if (
+      this.waitingPuppets.length() === 0 ||
+      this.waitingPuppets.head()?.workerState.stateName !==
+        'waitingForSelectText'
+    ) {
+      this.spawnPuppet(socket.id);
+    } else {
+      this.assignPuppetToSocket(socket.id);
+    }
 
     console.time();
 
@@ -131,18 +153,41 @@ export class ServerSocket {
       this.respondToClient(socketId, event)
     );
 
-    this.puppets.push(newPuppet);
+    this.activePuppets.push(newPuppet);
+  };
+
+  private assignPuppetToSocket = (socketId: string) => {
+    const targetPuppet = this.waitingPuppets.dequeue();
+
+    if (targetPuppet) this.activePuppets.push(targetPuppet);
+
+    targetPuppet?.assignPuppet(socketId, (event: ReceivableEvent) =>
+      this.respondToClient(socketId, event)
+    );
+
+    const newPuppet: Puppet = new Puppet(
+      'unassigned',
+      (event: ReceivableEvent) => this.respondToClient('unassigned', event)
+    );
+
+    this.waitingPuppets.enqueue(newPuppet);
   };
 
   private killPuppet = (puppetID: string) => {
     const target = this.findPuppetById(puppetID);
-    this.puppets = this.puppets.filter((puppet) => puppet.id !== target?.id);
+    this.activePuppets = this.activePuppets.filter(
+      (activePuppets) => activePuppets.id !== target?.id
+    );
     target?.kill();
   };
 
   private findPuppetById = (id: string) => {
-    return this.puppets.find((puppet) => puppet.id === id);
+    return this.activePuppets.find((puppet) => puppet.id === id);
   };
 
-  public printPuppets = () => printServerInfo(() => this.puppets);
+  public printPuppets = () =>
+    printServerInfo(
+      () => this.activePuppets,
+      () => this.waitingPuppets.allItems()
+    );
 }
