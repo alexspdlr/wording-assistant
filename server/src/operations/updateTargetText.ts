@@ -11,8 +11,6 @@ const updateTargetText = async (
 ): Promise<string[]> => {
   await page.waitForSelector(textAreaSelector);
 
-  // insert new text
-
   // paste new text into target field
   await page.evaluate((newTargetText) => {
     const translatorTargetInput = document.querySelector(
@@ -24,18 +22,9 @@ const updateTargetText = async (
     }
   }, newTargetText);
 
-  // Store rephrasing result
-  const result1 = await page.$eval('#target-dummydiv', (div) => div.innerHTML);
-
-  console.log('1. ', result1);
-
   // move cursor to trigger dummy div update
   await page.keyboard.press('ArrowLeft');
   await page.keyboard.press('ArrowRight');
-
-  const result2 = await page.$eval('#target-dummydiv', (div) => div.innerHTML);
-
-  console.log('2. ', result2);
 
   // move cursor
   const rephrasingOptions = await puppeteer_move_cursor(
