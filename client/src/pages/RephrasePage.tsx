@@ -86,15 +86,15 @@ const RephrasePage = () => {
         <button
           onClick={() =>
             socketEmit({
-              endpoint: 'moveCursor',
+              endpoint: 'updateTargetText',
               payload: {
-                newTargetText: 'Test this super-duper complicated input text',
-                postChangeCursorIndex: 5,
+                newTargetText: 'An awesome input text is being tested',
+                postChangeCursorIndex: 0,
               },
             })
           }
         >
-          update target text to "super-duper"
+          update target text to "An awesome"
         </button>
       </div>
       <Section backgroundColor={theme.palette.background.main}>

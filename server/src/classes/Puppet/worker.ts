@@ -5,9 +5,11 @@ import {
   DispatchableEventPayload_MoveCursor,
   DispatchableEventPayload_SelectText,
   DispatchableEventPayload_Start,
+  DispatchableEventPayload_UpdateTargetText,
   PuppetWorkerState,
   ReceivableEventWorker,
 } from '../../types';
+import updateTargetText from './dispatchableEvents/updateTargetText';
 import deselectText from './dispatchableEvents/deselectText';
 import exit from './dispatchableEvents/exit';
 import moveCursor from './dispatchableEvents/moveCursor';
@@ -75,7 +77,17 @@ const processEvent = async (event: DispatchableEvent) => {
         localState,
         respondToPuppet
       );
+      return;
 
+    case 'UPDATE_TARGET_TEXT':
+      await updateTargetText(
+        (event.payload as DispatchableEventPayload_UpdateTargetText)
+          .postChangeCursorIndex,
+        (event.payload as DispatchableEventPayload_UpdateTargetText)
+          .newTargetText,
+        localState,
+        respondToPuppet
+      );
       return;
 
     case 'EXIT':

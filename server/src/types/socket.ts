@@ -50,7 +50,9 @@ export interface ActiveWorkerStateData_ProcessingSelectText {
 }
 export interface ActiveWorkerStateData_ProcessingDeselectText {}
 export interface ActiveWorkerStateData_ProcessingMoveCursor {}
-export interface ActiveWorkerStateData_ProcessingUpdateTargetText {}
+export interface ActiveWorkerStateData_ProcessingUpdateTargetText {
+  newTargetText: string;
+}
 export interface ActiveWorkerStateData_ProcessingSelectWordingAlternative {}
 export interface ActiveWorkerStateData_ProcessingTerminate {}
 

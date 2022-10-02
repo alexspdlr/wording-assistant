@@ -24,6 +24,8 @@ import startCompleted from './receivableEvents/startCompleted';
 import printServerInfo from './util/printServerInfo';
 import moveCursorStarted from './receivableEvents/moveCursorStarted';
 import moveCursorCompleted from './receivableEvents/moveCursorCompleted';
+import updateTargetTextStarted from './receivableEvents/updateTargetTextStarted';
+import updateTargetTextCompleted from './receivableEvents/updateTargetTextCompleted';
 
 export class ServerSocket {
   public static instance: ServerSocket;
@@ -136,6 +138,14 @@ export class ServerSocket {
 
       case 'MOVE_CURSOR_COMPLETED':
         moveCursorCompleted(event, socketId, this.emitToSocket);
+        return;
+
+      case 'UPDATE_TARGET_TEXT_STARTED':
+        updateTargetTextStarted(event, socketId, this.emitToSocket);
+        return;
+
+      case 'UPDATE_TARGET_TEXT_COMPLETED':
+        updateTargetTextCompleted(event, socketId, this.emitToSocket);
         return;
 
       case 'DESELECT_TEXT_STARTED':

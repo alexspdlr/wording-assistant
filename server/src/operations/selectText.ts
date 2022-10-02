@@ -82,6 +82,10 @@ const selectText = async (inputText: string, page: Page, browser: Browser) => {
       }
     }, clienSourceInput);
 
+    // move cursor to trigger dummy div update
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('ArrowRight');
+
     // Store rephrasing result
     const result = await page.$eval(
       '[dl-test=translator-target-input]',

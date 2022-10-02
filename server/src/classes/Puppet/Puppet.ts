@@ -15,6 +15,8 @@ import moveCursorStarted from './receivableEvents/moveCursorStarted';
 import selectTextCompleted from './receivableEvents/selectTextCompleted';
 import selectTextStarted from './receivableEvents/selectTextStarted';
 import startCompleted from './receivableEvents/startCompleted';
+import updateTargetTextCompleted from './receivableEvents/updateTargetTextCompleted';
+import updateTargetTextStarted from './receivableEvents/updateTargetTextStarted';
 
 export class Puppet {
   public static instance: Puppet;
@@ -140,6 +142,30 @@ export class Puppet {
 
       case 'MOVE_CURSOR_COMPLETED':
         moveCursorCompleted(
+          {
+            code: response.code,
+            payload: response.payload,
+            workerState: this.workerState,
+          },
+          this.updateWorkerState,
+          this.respondToSocket
+        );
+        return;
+
+      case 'UPDATE_TARGET_TEXT_STARTED':
+        updateTargetTextStarted(
+          {
+            code: response.code,
+            payload: response.payload,
+            workerState: this.workerState,
+          },
+          this.updateWorkerState,
+          this.respondToSocket
+        );
+        return;
+
+      case 'UPDATE_TARGET_TEXT_COMPLETED':
+        updateTargetTextCompleted(
           {
             code: response.code,
             payload: response.payload,

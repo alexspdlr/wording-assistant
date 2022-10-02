@@ -107,8 +107,13 @@ export interface ReceivableEventPayload_MoveCursorStarted {
 export interface ReceivableEventPayload_MoveCursorCompleted {
   rephrasingOptions: string[];
 }
-export interface ReceivableEventPayload_UpdateTargetTextStarted {}
-export interface ReceivableEventPayload_UpdateTargetTextCompleted {}
+export interface ReceivableEventPayload_UpdateTargetTextStarted {
+  newCursorIndex: number;
+  updatedText: string;
+}
+export interface ReceivableEventPayload_UpdateTargetTextCompleted {
+  rephrasingOptions: string[];
+}
 export interface ReceivableEventPayload_SelectWordingAlternativeStarted {}
 export interface ReceivableEventPayload_SelectWordingAlternativeCompleted {}
 
