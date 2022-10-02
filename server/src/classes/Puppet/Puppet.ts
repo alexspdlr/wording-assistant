@@ -17,6 +17,8 @@ import selectTextStarted from './receivableEvents/selectTextStarted';
 import startCompleted from './receivableEvents/startCompleted';
 import updateTargetTextCompleted from './receivableEvents/updateTargetTextCompleted';
 import updateTargetTextStarted from './receivableEvents/updateTargetTextStarted';
+import selectWordingAlternativeStarted from './receivableEvents/selectWordingAlternativeStarted';
+import selectWordingAlternativeCompleted from './receivableEvents/selectWordingAlternativeCompleted';
 
 export class Puppet {
   public static instance: Puppet;
@@ -166,6 +168,30 @@ export class Puppet {
 
       case 'UPDATE_TARGET_TEXT_COMPLETED':
         updateTargetTextCompleted(
+          {
+            code: response.code,
+            payload: response.payload,
+            workerState: this.workerState,
+          },
+          this.updateWorkerState,
+          this.respondToSocket
+        );
+        return;
+
+      case 'SELECT_WORDING_ALTERNATIVE_STARTED':
+        selectWordingAlternativeStarted(
+          {
+            code: response.code,
+            payload: response.payload,
+            workerState: this.workerState,
+          },
+          this.updateWorkerState,
+          this.respondToSocket
+        );
+        return;
+
+      case 'SELECT_WORDING_ALTERNATIVE_COMPLETED':
+        selectWordingAlternativeCompleted(
           {
             code: response.code,
             payload: response.payload,

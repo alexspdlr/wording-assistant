@@ -53,7 +53,9 @@ export interface ActiveWorkerStateData_ProcessingMoveCursor {}
 export interface ActiveWorkerStateData_ProcessingUpdateTargetText {
   newTargetText: string;
 }
-export interface ActiveWorkerStateData_ProcessingSelectWordingAlternative {}
+export interface ActiveWorkerStateData_ProcessingSelectWordingAlternative {
+  selectedAlternativeIndex: number;
+}
 export interface ActiveWorkerStateData_ProcessingTerminate {}
 
 /* -------------------------------------------------------------------------- */
@@ -94,7 +96,9 @@ export interface SocketClientEventPayload_UpdateTargetText {
   postChangeCursorIndex: number;
 }
 
-export interface SocketClientEventPayload_SelectWordingAlternative {}
+export interface SocketClientEventPayload_SelectWordingAlternative {
+  selectedAlternativeIndex: number;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                    Events that are triggered SERVER SIDE                   */

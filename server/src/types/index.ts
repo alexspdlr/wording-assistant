@@ -43,7 +43,9 @@ export interface DispatchableEventPayload_UpdateTargetText {
   postChangeCursorIndex: number;
 }
 
-export interface DispatchableEventPayload_SelectWordingAlternative {}
+export interface DispatchableEventPayload_SelectWordingAlternative {
+  selectedAlternativeIndex: number;
+}
 export interface DispatchableEventPayload_Start {
   id: string;
 }
@@ -114,8 +116,12 @@ export interface ReceivableEventPayload_UpdateTargetTextStarted {
 export interface ReceivableEventPayload_UpdateTargetTextCompleted {
   rephrasingOptions: string[];
 }
-export interface ReceivableEventPayload_SelectWordingAlternativeStarted {}
-export interface ReceivableEventPayload_SelectWordingAlternativeCompleted {}
+export interface ReceivableEventPayload_SelectWordingAlternativeStarted {
+  selectedAlternativeIndex: number;
+}
+export interface ReceivableEventPayload_SelectWordingAlternativeCompleted {
+  rephrasingResult: string;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                   PUPPET                                   */

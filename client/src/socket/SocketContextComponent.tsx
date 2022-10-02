@@ -93,6 +93,20 @@ const SocketContextComponent: React.FunctionComponent<
       updateActiveWorkerState(payload);
     });
 
+    socket.on(
+      'selectWordingAlternativeStarted',
+      (payload: ActiveWorkerState) => {
+        updateActiveWorkerState(payload);
+      }
+    );
+
+    socket.on(
+      'selectWordingAlternativeCompleted',
+      (payload: ActiveWorkerState) => {
+        updateActiveWorkerState(payload);
+      }
+    );
+
     socket.on('deselectTextStarted', (payload: ActiveWorkerState) => {
       updateActiveWorkerState(payload);
     });

@@ -26,6 +26,8 @@ import moveCursorStarted from './receivableEvents/moveCursorStarted';
 import moveCursorCompleted from './receivableEvents/moveCursorCompleted';
 import updateTargetTextStarted from './receivableEvents/updateTargetTextStarted';
 import updateTargetTextCompleted from './receivableEvents/updateTargetTextCompleted';
+import selectWordingAlternativeStarted from './receivableEvents/selectWordingAlternativeStarted';
+import selectWordingAlternativeCompleted from './receivableEvents/selectWordingAlternativeCompleted';
 
 export class ServerSocket {
   public static instance: ServerSocket;
@@ -146,6 +148,14 @@ export class ServerSocket {
 
       case 'UPDATE_TARGET_TEXT_COMPLETED':
         updateTargetTextCompleted(event, socketId, this.emitToSocket);
+        return;
+
+      case 'SELECT_WORDING_ALTERNATIVE_STARTED':
+        selectWordingAlternativeStarted(event, socketId, this.emitToSocket);
+        return;
+
+      case 'SELECT_WORDING_ALTERNATIVE_COMPLETED':
+        selectWordingAlternativeCompleted(event, socketId, this.emitToSocket);
         return;
 
       case 'DESELECT_TEXT_STARTED':

@@ -96,6 +96,32 @@ const RephrasePage = () => {
         >
           update target text to "An awesome"
         </button>
+
+        <button
+          onClick={() =>
+            socketEmit({
+              endpoint: 'selectWordingAlternative',
+              payload: {
+                selectedAlternativeIndex: 0,
+              },
+            })
+          }
+        >
+          Select Alternative at index 0
+        </button>
+
+        <button
+          onClick={() =>
+            socketEmit({
+              endpoint: 'selectWordingAlternative',
+              payload: {
+                selectedAlternativeIndex: 1,
+              },
+            })
+          }
+        >
+          Select Alternative at index 1
+        </button>
       </div>
       <Section backgroundColor={theme.palette.background.main}>
         <InfoSection />

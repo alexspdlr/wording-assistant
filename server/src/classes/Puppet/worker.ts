@@ -4,6 +4,7 @@ import {
   DispatchableEvent,
   DispatchableEventPayload_MoveCursor,
   DispatchableEventPayload_SelectText,
+  DispatchableEventPayload_SelectWordingAlternative,
   DispatchableEventPayload_Start,
   DispatchableEventPayload_UpdateTargetText,
   PuppetWorkerState,
@@ -15,6 +16,7 @@ import exit from './dispatchableEvents/exit';
 import moveCursor from './dispatchableEvents/moveCursor';
 import selectText from './dispatchableEvents/selectText';
 import start from './dispatchableEvents/start';
+import selectWordingAlternative from './dispatchableEvents/selectWordingAlternative';
 
 /* ---------------------------------- STATE --------------------------------- */
 
@@ -85,6 +87,15 @@ const processEvent = async (event: DispatchableEvent) => {
           .postChangeCursorIndex,
         (event.payload as DispatchableEventPayload_UpdateTargetText)
           .newTargetText,
+        localState,
+        respondToPuppet
+      );
+      return;
+
+    case 'SELECT_WORDING_ALTERNATIVE':
+      await selectWordingAlternative(
+        (event.payload as DispatchableEventPayload_SelectWordingAlternative)
+          .selectedAlternativeIndex,
         localState,
         respondToPuppet
       );
