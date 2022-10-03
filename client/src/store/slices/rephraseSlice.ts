@@ -1,11 +1,6 @@
 import { Socket } from 'socket.io-client';
-import {
-  ActiveWorkerState,
-  SocketClientEvent,
-  SocketClientEventEndpoint,
-} from 'src/types/socket';
+import { ActiveWorkerState, SocketClientEvent } from 'src/types/socket';
 import { RephraseSlice, RephraseState } from 'src/types/store';
-import serverRequest from 'src/utils/serverRequest';
 import { StateCreator } from 'zustand';
 
 const ininitalState: RephraseState = {
@@ -84,6 +79,11 @@ const createRephraseSlice: StateCreator<
 
   // tool actions
   selectText: async (text: string) => {
+    // if text is only whitespace
+    if (text.trim().length === 0) {
+      return;
+    }
+
     const socket = get().socket;
 
     if (!socket) {

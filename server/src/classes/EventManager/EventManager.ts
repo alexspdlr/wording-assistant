@@ -92,11 +92,8 @@ export class EventManager {
     // retry if none of the above conditions were fulfilled
 
     setTimeout(() => {
-      console.log(
-        `${targetEvent?.event.command} (${targetEvent?.id}) - No exit, start RECURSION-ITERATION`
-      );
       this.processEventWhenPreconditionFulfilled(targetEventId, startTime);
-    }, 2000);
+    }, 50);
 
     return;
   }
