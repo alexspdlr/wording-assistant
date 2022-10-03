@@ -82,11 +82,11 @@ const SourceSelect = (props: SourceSelectProps) => {
 
   const sentenceRef = useRef<HTMLDivElement>(null);
 
-  const reset = useBoundStore((state) => state.reset);
+  const deselectText = useBoundStore((state) => state.deselectText);
 
   const onClose = () => {
     setSelectedSentence(null);
-    reset();
+    deselectText();
   };
 
   useClickAway(sentenceRef, onClose);
@@ -95,13 +95,8 @@ const SourceSelect = (props: SourceSelectProps) => {
     document.getElementById('source-select-container')?.focus();
   }, [containerRef]);
 
-  const generateRephrasingBase = useBoundStore(
-    (state) => state.generateRephrasingBase
-  );
-
   const selectSentence = (value: string, index: number) => {
     setSelectedSentence(`token_${index}`);
-    generateRephrasingBase(value);
   };
 
   return (

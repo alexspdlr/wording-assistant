@@ -19,6 +19,7 @@ import updateTargetTextCompleted from './receivableEvents/updateTargetTextComple
 import updateTargetTextStarted from './receivableEvents/updateTargetTextStarted';
 import selectWordingAlternativeStarted from './receivableEvents/selectWordingAlternativeStarted';
 import selectWordingAlternativeCompleted from './receivableEvents/selectWordingAlternativeCompleted';
+import { EventManager } from '../EventManager/EventManager';
 
 export class Puppet {
   public static instance: Puppet;
@@ -26,6 +27,7 @@ export class Puppet {
   public workerTerminated: boolean;
   public workerStarted: boolean;
   public workerState: ActiveWorkerState;
+  private eventManager: EventManager;
   private worker: Worker;
   private respondToSocket: (response: ReceivableEvent) => void;
 
@@ -48,9 +50,14 @@ export class Puppet {
       stateName: 'processingInitialize',
       data: {},
     };
+    this.eventManager = new EventManager(
+      (event: DispatchableEvent) => this.worker.postMessage(event),
+      () => this.workerState
+    );
 
     const eventPayload: DispatchableEventPayload_Start = { id: this.id };
-    this.dispatchEvent({
+
+    this.worker.postMessage({
       command: 'START',
       payload: eventPayload,
     });
@@ -63,14 +70,14 @@ export class Puppet {
       stateName: 'processingTerminate',
       data: {},
     };
-    this.dispatchEvent({
+    this.worker.postMessage({
       command: 'EXIT',
       payload: {},
     });
   }
 
   public dispatchEvent(event: DispatchableEvent) {
-    this.worker.postMessage(event);
+    this.eventManager.handleNewEvent(event);
   }
 
   public async assignPuppet(

@@ -33,6 +33,14 @@ const updateLocalState = (page?: Page, browser?: Browser) => {
 /* ----------------------- CROSS THREAD COMMUNICATION ----------------------- */
 
 parentPort?.on('message', async (event: DispatchableEvent) =>
+  /* -------------------------------------------------------------------------- */
+  /*                                EVENT MANAGER                               */
+  /* -------------------------------------------------------------------------- */
+
+  /* -------------------------------------------------------------------------- */
+  /*                              EVENT MANAGER END                             */
+  /* -------------------------------------------------------------------------- */
+
   processEvent(event)
 );
 
@@ -42,8 +50,6 @@ const respondToPuppet = (response: ReceivableEventWorker) =>
 /* ------------------------------ HANDLE EVENTS ----------------------------- */
 
 const processEvent = async (event: DispatchableEvent) => {
-  console.log('EVENT COMMAND: ', event.command);
-
   switch (event.command) {
     case 'START':
       await start(
@@ -55,7 +61,6 @@ const processEvent = async (event: DispatchableEvent) => {
       return;
 
     case 'SELECT_TEXT':
-      // if -->  await resetPage(page, browser);
       await selectText(
         (event.payload as DispatchableEventPayload_SelectText).inputText,
         localState,
@@ -64,7 +69,6 @@ const processEvent = async (event: DispatchableEvent) => {
 
       return;
     case 'DESELECT_TEXT':
-      // if -->  await resetPage(page, browser);
       await deselectText(
         (event.payload as DispatchableEventPayload_SelectText).inputText,
         localState,

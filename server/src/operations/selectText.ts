@@ -92,10 +92,6 @@ const selectText = async (inputText: string, page: Page, browser: Browser) => {
       (textArea) => (textArea as HTMLTextAreaElement).value
     );
 
-    console.log('client input: ', clienSourceInput);
-
-    console.log('rephrasing result: ', result);
-
     // Tab into text area of rephrasing base
     const textResultsDisplayed =
       (await page.$('[dl-test=translator-target-result-as-text-container]')) !==

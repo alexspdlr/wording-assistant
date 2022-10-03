@@ -71,10 +71,10 @@ const TargetSelect = (props: TargetSelectProps) => {
   useRephraseToolTextboxSize(value, containerRef);
   const [hoveredWord, setHoveredWord] = useState<string | null>(null);
 
-  const resetSelection = useBoundStore((state) => state.reset);
+  const deselectText = useBoundStore((state) => state.deselectText);
 
   const onClickAway = (event: any) => {
-    resetSelection();
+    deselectText();
   };
 
   useClickAway(containerRef, onClickAway);

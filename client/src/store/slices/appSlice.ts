@@ -1,6 +1,4 @@
-import { Socket } from 'socket.io-client';
-import { SocketClientEvent, ActiveWorkerState } from 'src/types/socket';
-import { AppState, AppActions } from 'src/types/store';
+import { AppActions, AppState } from 'src/types/store';
 import { StateCreator } from 'zustand';
 
 const locallyStoredColorMode = () => {
@@ -21,9 +19,6 @@ const ininitalState: AppState = {
       ? 'dark'
       : 'light') ||
     'light',
-  isConnectedToServer: true,
-  socket: null,
-  activeWorkerState: 'disconnected',
 };
 
 export interface AppSlice extends AppState, AppActions {}
@@ -43,31 +38,6 @@ export const createAppSlice: StateCreator<AppSlice, [], [], AppSlice> = (
     localStorage.setItem('color-mode', JSON.stringify('dark'));
     set(() => ({
       colorMode: 'dark',
-    }));
-  },
-  setIsConnectedToServer: (isConnectedToServer: boolean) => {
-    set(() => ({
-      isConnectedToServer,
-    }));
-  },
-  setSocket: (socket: Socket) => {
-    set(() => ({
-      socket,
-    }));
-  },
-  socketEmit: (event: SocketClientEvent) => {
-    const { endpoint, payload } = event;
-
-    const socket = get().socket;
-    if (socket) {
-      socket.emit(endpoint, payload, async (callback: any) => {
-        console.info(`Callback for ${endpoint}: `, callback);
-      });
-    }
-  },
-  updateActiveWorkerState: (newState: ActiveWorkerState | 'disconnected') => {
-    set(() => ({
-      activeWorkerState: newState,
     }));
   },
 });

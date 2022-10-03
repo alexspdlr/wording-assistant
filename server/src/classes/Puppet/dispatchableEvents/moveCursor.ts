@@ -26,8 +26,6 @@ const moveCursor = async (
 
     respondToPuppet(responseStarted);
 
-    console.log('worker moving cursor ...');
-
     // AFTER PROCESSING
     const rephrasingOptions = await puppeteer_move_cursor(
       localState.page,

@@ -1,26 +1,19 @@
 import styled from '@emotion/styled';
-import { ReactComponent as RephraseTextIcon } from 'src/assets/RephraseTextIcon.svg';
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ReactComponent as RephraseFilesIcon } from 'src/assets/RephraseFilesIcon.svg';
+import { ReactComponent as RephraseTextIcon } from 'src/assets/RephraseTextIcon.svg';
+import Card from 'src/components/general/card';
 import ActiveToolButton from 'src/components/rephrase/subcomponents/RephraseActiveToolButton';
-import ToggleButton from 'src/components/general/toggle-button';
+import RephraseToolCard from 'src/components/rephrase/subcomponents/RephraseToolCard';
+import useBoundStore from 'src/store';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import Card from 'src/components/general/card';
-import RephraseToolCard from 'src/components/rephrase/subcomponents/RephraseToolCard';
-import RephraseSource from './subcomponents/source';
-import { useState } from 'react';
-import useBoundStore from 'src/store';
-import LoadingSpinner from '../general/loading-spinner';
-import TargetSelect from './subcomponents/target/subcomponents/TargetSelect';
-import RephraseTarget from './subcomponents/target/RephraseTarget';
-import Snackbar from '../general/snackbar';
 import Dialog from '../general/dialog';
-import theme from 'src/constants/theme';
-import useLocalStorage from 'src/utils/hooks/useLocalStorage';
-import Tooltip from '../general/tooltip';
-import { useSearchParams } from 'react-router-dom';
-import SourceTextArea from './subcomponents/source/subcomponents/SourceTextArea';
+import Snackbar from '../general/snackbar';
 import RephraseToolLayout from './subcomponents/RephraseToolLayout';
+import RephraseSource from './subcomponents/source';
+import RephraseTarget from './subcomponents/target/RephraseTarget';
 
 /* ------------------------------- GridLayout ------------------------------- */
 interface GridLayoutProps {

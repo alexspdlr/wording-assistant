@@ -67,7 +67,7 @@ export interface SocketClientEvent {
   payload: SocketClientEventPayload;
 }
 
-type SocketClientEventEndpoint =
+export type SocketClientEventEndpoint =
   | 'selectText'
   | 'deselectText'
   | 'moveCursor'

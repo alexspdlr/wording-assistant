@@ -33,8 +33,6 @@ const updateTargetText = async (
     targetIndex
   );
 
-  console.log('REPHRASING OPTIONS: ', rephrasingOptions);
-
   return rephrasingOptions;
 };
 

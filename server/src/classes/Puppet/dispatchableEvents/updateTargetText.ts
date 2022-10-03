@@ -13,13 +13,6 @@ const updateTargetText = async (
   respondToPuppet: (response: ReceivableEventWorker) => void
 ) => {
   if (localState.page && localState.browser) {
-    console.log(
-      'BEFORE UPDATE TARGET TEXT: ',
-      newCursorIndex,
-      updatedText,
-      localState
-    );
-
     // BEFORE PROCESSING
     const startedPayload: ReceivableEventPayload_UpdateTargetTextStarted = {
       newCursorIndex,

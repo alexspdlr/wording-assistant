@@ -5,10 +5,10 @@ import InfoSection from 'src/components/info/InfoSection';
 import { useTheme } from '@emotion/react';
 import useBoundStore from 'src/store';
 import { useEffect } from 'react';
+import CustomPopover from 'src/components/Popover';
 const RephrasePage = () => {
   const theme = useTheme();
 
-  const socketEmit = useBoundStore((state) => state.socketEmit);
   const activeWorkerState = useBoundStore((state) => state.activeWorkerState);
 
   return (
@@ -18,111 +18,12 @@ const RephrasePage = () => {
       </Section>
       STATE:
       <div>{JSON.stringify(activeWorkerState)}</div>
-      ACTIONS:
-      <div>
-        <button
-          onClick={() =>
-            socketEmit({
-              endpoint: 'selectText',
-              payload: {
-                inputText: 'A cool input text is being tested',
-              },
-            })
-          }
-        >
-          select Text ("A cool input text is being tested")
-        </button>
-
-        <button
-          onClick={() =>
-            socketEmit({
-              endpoint: 'deselectText',
-              payload: {},
-            })
-          }
-        >
-          deselect Text
-        </button>
-
-        <button
-          onClick={() =>
-            socketEmit({
-              endpoint: 'moveCursor',
-              payload: {
-                newCursorIndex: 7,
-              },
-            })
-          }
-        >
-          move cursor to i = 7
-        </button>
-
-        <button
-          onClick={() =>
-            socketEmit({
-              endpoint: 'moveCursor',
-              payload: {
-                newCursorIndex: 0,
-              },
-            })
-          }
-        >
-          move cursor to i = 0
-        </button>
-
-        <button
-          onClick={() =>
-            socketEmit({
-              endpoint: 'moveCursor',
-              payload: {
-                newCursorIndex: 2,
-              },
-            })
-          }
-        >
-          move cursor to i = 2
-        </button>
-
-        <button
-          onClick={() =>
-            socketEmit({
-              endpoint: 'updateTargetText',
-              payload: {
-                newTargetText: 'An awesome input text is being tested',
-                postChangeCursorIndex: 0,
-              },
-            })
-          }
-        >
-          update target text to "An awesome"
-        </button>
-
-        <button
-          onClick={() =>
-            socketEmit({
-              endpoint: 'selectWordingAlternative',
-              payload: {
-                selectedAlternativeIndex: 0,
-              },
-            })
-          }
-        >
-          Select Alternative at index 0
-        </button>
-
-        <button
-          onClick={() =>
-            socketEmit({
-              endpoint: 'selectWordingAlternative',
-              payload: {
-                selectedAlternativeIndex: 1,
-              },
-            })
-          }
-        >
-          Select Alternative at index 1
-        </button>
-      </div>
+      <CustomPopover
+        alternatives={['Test ...', 'Bla ...']}
+        rephrase={(alternative: string) => console.log(alternative)}
+      >
+        <div>test</div>
+      </CustomPopover>
       <Section backgroundColor={theme.palette.background.main}>
         <InfoSection />
       </Section>

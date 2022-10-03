@@ -12,7 +12,7 @@ export interface DispatchableEvent {
   payload: DispatchableEventPayload;
 }
 
-type DispatchableEventCommand =
+export type DispatchableEventCommand =
   | 'SELECT_TEXT'
   | 'DESELECT_TEXT'
   | 'MOVE_CURSOR'

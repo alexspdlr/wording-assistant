@@ -4,7 +4,11 @@ import React, {
   useReducer,
   useState,
 } from 'react';
-import { ActiveWorkerState } from 'src/types/socket';
+import {
+  ActiveWorkerState,
+  ActiveWorkerStateData_WaitingForMoveCursor,
+  ActiveWorkerStateData_WaitingForSelectText,
+} from 'src/types/socket';
 
 import useBoundStore from '../store';
 import { useSocket } from '../utils/hooks/useSocket';
@@ -19,10 +23,15 @@ const SocketContextComponent: React.FunctionComponent<
   const setIsConnectedToServer = useBoundStore(
     (state) => state.setIsConnectedToServer
   );
-
+  const setWaitingForServer = useBoundStore(
+    (state) => state.setWaitingForServer
+  );
   const setSocket = useBoundStore((state) => state.setSocket);
   const updateActiveWorkerState = useBoundStore(
     (state) => state.updateActiveWorkerState
+  );
+  const updateRephrasingState = useBoundStore(
+    (state) => state.updateRephrasingState
   );
 
   const socket = useSocket('ws://localhost:3001', {
@@ -74,7 +83,14 @@ const SocketContextComponent: React.FunctionComponent<
     });
 
     socket.on('selectTextCompleted', (payload: ActiveWorkerState) => {
+      updateRephrasingState(
+        undefined,
+        (payload.data as ActiveWorkerStateData_WaitingForMoveCursor)
+          .rephrasingBase,
+        undefined
+      );
       updateActiveWorkerState(payload);
+      setWaitingForServer(false);
     });
 
     socket.on('moveCursorStarted', (payload: ActiveWorkerState) => {
@@ -113,6 +129,9 @@ const SocketContextComponent: React.FunctionComponent<
 
     socket.on('deselectTextCompleted', (payload: ActiveWorkerState) => {
       updateActiveWorkerState(payload);
+      updateRephrasingState(null, null, null);
+      updateActiveWorkerState(payload);
+      setWaitingForServer(false);
     });
 
     // HANDLE RECONNECTION

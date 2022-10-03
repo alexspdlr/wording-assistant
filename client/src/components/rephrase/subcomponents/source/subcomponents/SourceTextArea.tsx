@@ -65,7 +65,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
   const [range, setRange] = useState<SelectionRange | null>(null);
   useRephraseToolTextboxSize(value, textareaRef);
 
-  const resetSelection = useBoundStore((state) => state.reset);
+  const deselectText = useBoundStore((state) => state.deselectText);
 
   const onClickAway = (event: any) => {
     const targetNode = event.target;
@@ -75,7 +75,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       parentNode.id !== 'target-select-container' &&
       targetNode.id !== 'target-select-container'
     ) {
-      resetSelection();
+      deselectText();
       setRange(null);
       textareaRef.current?.focus();
     } else {
@@ -105,9 +105,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const generateRephrasingBase = useBoundStore(
-    (state) => state.generateRephrasingBase
-  );
+  const selectText = useBoundStore((state) => state.selectText);
 
   const onSelectText = (event: SyntheticEvent<HTMLTextAreaElement, Event>) => {
     if (event.isTrusted) {
@@ -118,7 +116,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       const selectionString = selection?.toString();
 
       if (selectionString && selection) {
-        generateRephrasingBase(selectionString);
+        selectText(selectionString);
       }
     }
   };
