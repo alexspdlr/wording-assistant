@@ -16,6 +16,6 @@
   "include": [
     "src",
     "node_modules/@types/puppeteer/index.d.ts"
-  ]
+, "src/classes/Puppet/clientActionEvents/.ts"  ]
 } 
  

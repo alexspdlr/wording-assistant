@@ -1,114 +1,123 @@
 import { Browser, Page } from 'puppeteer';
 import { parentPort } from 'worker_threads';
 import {
-  DispatchableEvent,
-  DispatchableEventPayload_MoveCursor,
-  DispatchableEventPayload_SelectText,
-  DispatchableEventPayload_SelectWordingAlternative,
-  DispatchableEventPayload_Start,
-  DispatchableEventPayload_UpdateTargetText,
-  PuppetWorkerState,
-  ReceivableEventWorker,
+  ClientActionEvent_Extended,
+  ClientActionPayload_StartWorker,
+  PuppeteerError,
+  PuppetState,
+  ServerResponseEvent_Extended,
 } from '../../types';
-import updateTargetText from './dispatchableEvents/updateTargetText';
-import deselectText from './dispatchableEvents/deselectText';
-import exit from './dispatchableEvents/exit';
-import moveCursor from './dispatchableEvents/moveCursor';
-import selectText from './dispatchableEvents/selectText';
-import start from './dispatchableEvents/start';
-import selectWordingAlternative from './dispatchableEvents/selectWordingAlternative';
-
-/* ---------------------------------- STATE --------------------------------- */
-
-const localState: PuppetWorkerState = {
-  page: null,
-  browser: null,
-};
-
-const updateLocalState = (page?: Page, browser?: Browser) => {
-  if (page) localState.page = page;
-  if (browser) localState.browser = browser;
-};
+import updateTargetText from './clientActionEvents/updateTargetText';
+import deselectText from './clientActionEvents/deselectText';
+import exit from './otherEvents/exit';
+import moveCursor from './clientActionEvents/moveCursor';
+import selectText from './clientActionEvents/selectText';
+import start from './otherEvents/start';
+import selectWordingAlternative from './clientActionEvents/selectWordingAlternative';
+import { EventManager } from '../EventManager/EventManager';
+import {
+  ActiveWorkerState,
+  ClientActionPayload_MoveCursor,
+  ClientActionPayload_SelectText,
+  ClientActionPayload_SelectWordingAlternative,
+  ClientActionPayload_UpdateTargetText,
+} from '../../types/socket';
+import generateDefaultWorkerState from '../ServerSocket/util/generateDefaultWorkerState';
+import handleError from './otherEvents/handleError';
 
 /* ----------------------- CROSS THREAD COMMUNICATION ----------------------- */
 
-parentPort?.on('message', async (event: DispatchableEvent) =>
-  /* -------------------------------------------------------------------------- */
-  /*                                EVENT MANAGER                               */
-  /* -------------------------------------------------------------------------- */
-
-  /* -------------------------------------------------------------------------- */
-  /*                              EVENT MANAGER END                             */
-  /* -------------------------------------------------------------------------- */
-
-  processEvent(event)
+parentPort?.on('message', async (event: ClientActionEvent_Extended) =>
+  localState.eventManager.handleNewEvent(event)
 );
 
-const respondToPuppet = (response: ReceivableEventWorker) =>
+const respondToPuppet = (response: ServerResponseEvent_Extended) =>
   parentPort?.postMessage(response);
 
 /* ------------------------------ HANDLE EVENTS ----------------------------- */
 
-const processEvent = async (event: DispatchableEvent) => {
-  switch (event.command) {
-    case 'START':
+const processEvent = async (event: ClientActionEvent_Extended) => {
+  switch (event.endpoint) {
+    case 'startWorker':
       await start(
-        (event.payload as DispatchableEventPayload_Start).id,
+        localState,
         updateLocalState,
-        respondToPuppet
+        respondToPuppet,
+        (event.payload as ClientActionPayload_StartWorker).id
       );
 
       return;
 
-    case 'SELECT_TEXT':
+    case 'selectText':
       await selectText(
-        (event.payload as DispatchableEventPayload_SelectText).inputText,
         localState,
-        respondToPuppet
+        updateLocalState,
+        respondToPuppet,
+        (event.payload as ClientActionPayload_SelectText).inputText
       );
 
       return;
-    case 'DESELECT_TEXT':
-      await deselectText(
-        (event.payload as DispatchableEventPayload_SelectText).inputText,
-        localState,
-        respondToPuppet
-      );
+    case 'deselectText':
+      await deselectText(localState, updateLocalState, respondToPuppet);
 
       return;
 
-    case 'MOVE_CURSOR':
+    case 'moveCursor':
       await moveCursor(
-        (event.payload as DispatchableEventPayload_MoveCursor).newCursorIndex,
         localState,
-        respondToPuppet
+        updateLocalState,
+        respondToPuppet,
+        (event.payload as ClientActionPayload_MoveCursor).newCursorIndex
       );
       return;
 
-    case 'UPDATE_TARGET_TEXT':
+    case 'updateTargetText':
       await updateTargetText(
-        (event.payload as DispatchableEventPayload_UpdateTargetText)
+        localState,
+        updateLocalState,
+        respondToPuppet,
+        (event.payload as ClientActionPayload_UpdateTargetText)
           .postChangeCursorIndex,
-        (event.payload as DispatchableEventPayload_UpdateTargetText)
-          .newTargetText,
-        localState,
-        respondToPuppet
+        (event.payload as ClientActionPayload_UpdateTargetText).newTargetText
       );
       return;
 
-    case 'SELECT_WORDING_ALTERNATIVE':
+    case 'selectWordingAlternative':
       await selectWordingAlternative(
-        (event.payload as DispatchableEventPayload_SelectWordingAlternative)
-          .selectedAlternativeIndex,
         localState,
-        respondToPuppet
+        updateLocalState,
+        respondToPuppet,
+        (event.payload as ClientActionPayload_SelectWordingAlternative)
+          .selectedAlternativeIndex
       );
       return;
 
-    case 'EXIT':
-      await exit(localState, respondToPuppet);
+    case 'terminateWorker':
+      await exit(localState, updateLocalState, respondToPuppet);
       return;
     default:
       return;
   }
+};
+
+/* ---------------------------------- STATE --------------------------------- */
+
+// TODO: ADD EVENT MANAGER, CONVERT COMMUNICATION TO PARENT WITH _Extended Types & update rest
+
+const localState: PuppetState = {
+  page: null,
+  browser: null,
+  eventManager: new EventManager(processEvent, () => localState.workerState),
+  workerState: generateDefaultWorkerState('start'),
+};
+
+const updateLocalState = (
+  workerState: ActiveWorkerState,
+  page?: Page,
+  browser?: Browser
+) => {
+  if (page) localState.page = page;
+  if (browser) localState.browser = browser;
+  localState.workerState = workerState;
+  return;
 };

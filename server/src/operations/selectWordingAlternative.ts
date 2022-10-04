@@ -1,29 +1,31 @@
 import { Page } from 'puppeteer';
+import { PuppeteerResponse } from '../types';
 import isJSON from '../utils/isJSON';
 
 const selectWordingAlternative = async (
   selectedAlternativeIndex: number,
   page: Page
-) => {
-  /* Focus selected option & press enter */
-  for (const i of [...Array(selectedAlternativeIndex + 1).keys()]) {
-    await page.keyboard.press('ArrowDown');
-  }
-  await page.keyboard.press('Enter');
-
-  /* Wait until popover closed */
-  await page.waitForFunction(() => {
-    return (
-      document.querySelector(
-        '[dl-test=translator-target-alternatives-popup]'
-      ) === null
-    );
-  });
-
-  /* Wait for preflight */
-
-  /* Wait until the request for rewording is followed by a response (from DeepL) */
+): Promise<PuppeteerResponse> => {
   try {
+    /* Focus selected option & press enter */
+    for (const i of [...Array(selectedAlternativeIndex + 1).keys()]) {
+      await page.keyboard.press('ArrowDown');
+    }
+    await page.keyboard.press('Enter');
+
+    /* Wait until popover closed */
+    await page.waitForFunction(() => {
+      return (
+        document.querySelector(
+          '[dl-test=translator-target-alternatives-popup]'
+        ) === null
+      );
+    });
+
+    /* Wait for preflight */
+
+    /* Wait until the request for rewording is followed by a response (from DeepL) */
+
     await page.waitForResponse(
       async (response) => {
         return (
@@ -42,18 +44,28 @@ const selectWordingAlternative = async (
       },
       { timeout: 5000 }
     );
-  } catch (e) {
-    /* Result did not change after 5 seconds */
-    console.log('Timeout: Rephrasing result not available after 5 seconds');
+
+    /* Store rephrasing result */
+    const rephrasingResult = await page.$eval(
+      '#target-dummydiv',
+      (div) => div.innerHTML
+    );
+
+    return {
+      type: 'response',
+      data: {
+        rephrasingResult,
+      },
+    };
+  } catch (error) {
+    return {
+      type: 'error',
+      data: {
+        location: 'selectWordingAlternative',
+        message: String(error),
+      },
+    };
   }
-
-  /* Store rephrasing result */
-  const rephrasingResult = await page.$eval(
-    '#target-dummydiv',
-    (div) => div.innerHTML
-  );
-
-  return rephrasingResult;
 };
 
 export default selectWordingAlternative;

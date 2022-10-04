@@ -4,11 +4,8 @@ import React, {
   useReducer,
   useState,
 } from 'react';
-import {
-  ActiveWorkerState,
-  ActiveWorkerStateData_WaitingForMoveCursor,
-  ActiveWorkerStateData_WaitingForSelectText,
-} from 'src/types/socket';
+import { ActiveWorkerState } from 'src/types/socket';
+import generateDefaultWorkerState from 'src/utils/generateDefaultWorkerState';
 
 import useBoundStore from '../store';
 import { useSocket } from '../utils/hooks/useSocket';
@@ -40,12 +37,6 @@ const SocketContextComponent: React.FunctionComponent<
     autoConnect: false,
   });
 
-  /*
-      REMEMBER !!!: prevent every event from being dispatched except for move cursor :
-            move cursor can be called even if Previous Move_cursor command is not finished yet   
-            maybe update target text as well
-  */
-
   useEffect(() => {
     socket.connect();
     startListeners();
@@ -64,10 +55,7 @@ const SocketContextComponent: React.FunctionComponent<
     /** Connection / reconnection listeners */
     socket.on('connect', () => {
       setIsConnectedToServer(true);
-      updateActiveWorkerState({
-        stateName: 'processingInitialize',
-        data: {},
-      });
+      updateActiveWorkerState(generateDefaultWorkerState('start'));
     });
 
     socket.on('disconnect', () => {
@@ -83,14 +71,7 @@ const SocketContextComponent: React.FunctionComponent<
     });
 
     socket.on('selectTextCompleted', (payload: ActiveWorkerState) => {
-      updateRephrasingState(
-        undefined,
-        (payload.data as ActiveWorkerStateData_WaitingForMoveCursor)
-          .rephrasingBase,
-        undefined
-      );
       updateActiveWorkerState(payload);
-      setWaitingForServer(false);
     });
 
     socket.on('moveCursorStarted', (payload: ActiveWorkerState) => {
@@ -134,12 +115,18 @@ const SocketContextComponent: React.FunctionComponent<
       setWaitingForServer(false);
     });
 
+    socket.on('processingErrorStarted', (payload: ActiveWorkerState) => {
+      updateActiveWorkerState(payload);
+    });
+
+    socket.on('processingErrorCompleted', (payload: ActiveWorkerState) => {
+      updateActiveWorkerState(payload);
+    });
+
     // HANDLE RECONNECTION
     socket.io.on('reconnect', (attempt) => {
-      updateActiveWorkerState({
-        stateName: 'processingInitialize',
-        data: {},
-      });
+      updateActiveWorkerState(generateDefaultWorkerState('start'));
+
       console.info('Reconnected on attempt: ' + attempt);
       setIsConnectedToServer(true);
     });

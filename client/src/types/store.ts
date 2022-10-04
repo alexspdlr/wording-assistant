@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import { ActiveWorkerState, SocketClientEvent } from './socket';
+import { ActiveWorkerState } from './socket';
 
 export interface RephraseState {
   originalText: string | null;

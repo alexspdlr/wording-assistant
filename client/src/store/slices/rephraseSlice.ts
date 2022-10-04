@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import { ActiveWorkerState, SocketClientEvent } from 'src/types/socket';
+import { ActiveWorkerState, ClientActionEvent } from 'src/types/socket';
 import { RephraseSlice, RephraseState } from 'src/types/store';
 import { StateCreator } from 'zustand';
 
@@ -14,7 +14,7 @@ const ininitalState: RephraseState = {
   activeWorkerState: 'disconnected',
 };
 
-const socketEmit = (socket: Socket | null, event: SocketClientEvent) => {
+const socketEmit = (socket: Socket | null, event: ClientActionEvent) => {
   const { endpoint, payload } = event;
   if (socket) {
     socket.emit(endpoint, payload, async (callback: any) => {
@@ -104,7 +104,7 @@ const createRephraseSlice: StateCreator<
       waitingForServer: true,
     }));
 
-    const event: SocketClientEvent = {
+    const event: ClientActionEvent = {
       endpoint: 'selectText',
       payload: {
         inputText: text,
@@ -131,7 +131,7 @@ const createRephraseSlice: StateCreator<
       waitingForServer: true,
     }));
 
-    const event: SocketClientEvent = {
+    const event: ClientActionEvent = {
       endpoint: 'deselectText',
       payload: {},
     };

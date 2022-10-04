@@ -1,11 +1,10 @@
 import { randomUUID } from 'crypto';
-import { DispatchableEvent, DispatchableEventCommand } from '../../types';
-import { ActiveWorkerState } from '../../types/socket';
+import { ClientActionEvent_Extended } from '../../types';
+import { ActiveWorkerState, ClientActionEndpoint } from '../../types/socket';
 
 interface QueueEvent {
-  event: DispatchableEvent;
+  event: ClientActionEvent_Extended;
   id: string;
-
   priority: 1 | 2 | 3 | 4;
   retryTimeout: number;
   preconditionFulfilled: () => boolean;
@@ -14,13 +13,13 @@ interface QueueEvent {
 export class EventManager {
   public static instance: EventManager;
   public pendingEvent: QueueEvent | null;
-  private processEvent: (event: DispatchableEvent) => void;
+  private processEvent: (event: ClientActionEvent_Extended) => void;
   private getActiveWorkerState: () => ActiveWorkerState;
 
   /* ------------------------------- CONSTRUCTOR ------------------------------ */
 
   constructor(
-    processEvent: (event: DispatchableEvent) => void,
+    processEvent: (event: ClientActionEvent_Extended) => void,
     getActiveWorkerState: () => ActiveWorkerState
   ) {
     this.pendingEvent = null;
@@ -30,14 +29,14 @@ export class EventManager {
 
   /* ----------------------------- PUBLIC METHODS ----------------------------- */
 
-  public handleNewEvent(event: DispatchableEvent) {
+  public handleNewEvent(event: ClientActionEvent_Extended) {
     const queueEvent: QueueEvent = {
-      priority: determineEventPriority(event.command),
+      priority: determineEventPriority(event.endpoint),
       event: event,
-      retryTimeout: determineRetryTimeout(event.command),
+      retryTimeout: determineRetryTimeout(event.endpoint),
       id: randomUUID(),
       preconditionFulfilled: detemineIfPreconditionFulfilled(
-        event.command,
+        event.endpoint,
         this.getActiveWorkerState
       ),
     };
@@ -45,7 +44,7 @@ export class EventManager {
     // if event queue already contains event with higher priority
     if (this.pendingEvent && this.pendingEvent.priority > queueEvent.priority) {
       console.log(
-        `'${queueEvent.event.command}' not queued, because an other pending event had a higher priority`
+        `'${queueEvent.event.endpoint}' not queued, because an other pending event had a higher priority`
       );
       return;
     }
@@ -70,7 +69,7 @@ export class EventManager {
     // stop if timed out
     if (Date.now() - startTime >= targetEvent.retryTimeout) {
       console.log(
-        `${targetEvent?.event.command} (${targetEvent?.id}) - Exit due to TIMEOUT`
+        `${targetEvent?.event.endpoint} (${targetEvent?.id}) - Exit due to TIMEOUT`
       );
       return;
     }
@@ -78,7 +77,7 @@ export class EventManager {
     // stop (process) if precondition fulfilled
     if (targetEvent.preconditionFulfilled()) {
       console.log(
-        `${targetEvent?.event.command} (${targetEvent?.id}) - Exit due to SUCCESS`
+        `${targetEvent?.event.endpoint} (${targetEvent?.id}) - Exit due to SUCCESS`
       );
       this.processEvent(targetEvent.event);
 
@@ -102,33 +101,28 @@ export class EventManager {
 /* ---------------------------------- utils --------------------------------- */
 
 const detemineIfPreconditionFulfilled = (
-  eventCommand: DispatchableEventCommand,
+  endpoint: ClientActionEndpoint | 'startWorker' | 'terminateWorker',
   currentActiveWorkerState: () => ActiveWorkerState
 ): (() => boolean) => {
-  switch (eventCommand) {
-    case 'SELECT_TEXT':
+  switch (endpoint) {
+    case 'selectText':
       return () => currentActiveWorkerState().stateName.startsWith('waiting');
-    case 'DESELECT_TEXT':
+    case 'deselectText':
       return () => currentActiveWorkerState().stateName.startsWith('waiting');
-    case 'MOVE_CURSOR':
+    case 'moveCursor':
       return () =>
-        currentActiveWorkerState().stateName === 'waitingForMoveCursor' ||
-        currentActiveWorkerState().stateName ===
-          'waitingForSelectWordingAlternative';
-    case 'UPDATE_TARGET_TEXT':
+        currentActiveWorkerState().stateName === 'waitingForTargetTextAction';
+    case 'updateTargetText':
       return () =>
-        currentActiveWorkerState().stateName === 'waitingForMoveCursor' ||
-        currentActiveWorkerState().stateName ===
-          'waitingForSelectWordingAlternative';
+        currentActiveWorkerState().stateName === 'waitingForTargetTextAction';
 
-    case 'SELECT_WORDING_ALTERNATIVE':
+    case 'selectWordingAlternative':
       return () =>
-        currentActiveWorkerState().stateName ===
-        'waitingForSelectWordingAlternative';
+        currentActiveWorkerState().stateName === 'waitingForTargetTextAction';
 
-    case 'START':
+    case 'startWorker':
       return () => true;
-    case 'EXIT':
+    case 'terminateWorker':
       return () => true;
 
     default:
@@ -137,19 +131,19 @@ const detemineIfPreconditionFulfilled = (
 };
 
 const determineEventPriority = (
-  eventCommand: DispatchableEventCommand
+  endpoint: ClientActionEndpoint | 'startWorker' | 'terminateWorker'
 ): 1 | 2 | 3 | 4 => {
-  if (eventCommand === 'MOVE_CURSOR') {
+  if (endpoint === 'moveCursor') {
     return 1;
   }
   if (
-    eventCommand === 'UPDATE_TARGET_TEXT' ||
-    eventCommand === 'SELECT_WORDING_ALTERNATIVE'
+    endpoint === 'updateTargetText' ||
+    endpoint === 'selectWordingAlternative'
   ) {
     return 2;
   }
 
-  if (eventCommand === 'SELECT_TEXT' || eventCommand === 'DESELECT_TEXT') {
+  if (endpoint === 'selectText' || endpoint === 'deselectText') {
     return 3;
   }
 
@@ -157,21 +151,21 @@ const determineEventPriority = (
 };
 
 const determineRetryTimeout = (
-  eventCommand: DispatchableEventCommand
+  endpoint: ClientActionEndpoint | 'startWorker' | 'terminateWorker'
 ): number => {
-  switch (eventCommand) {
-    case 'SELECT_TEXT':
+  switch (endpoint) {
+    case 'selectText':
       return 8000;
-    case 'DESELECT_TEXT':
+    case 'deselectText':
       return 3000;
 
-    case 'MOVE_CURSOR':
+    case 'moveCursor':
       return 3000;
 
-    case 'UPDATE_TARGET_TEXT':
+    case 'updateTargetText':
       return 5000;
 
-    case 'SELECT_WORDING_ALTERNATIVE':
+    case 'selectWordingAlternative':
       return 5000;
 
     default:

@@ -1,33 +1,16 @@
 import { Server as HttpServer } from 'http';
 import { Server, Socket } from 'socket.io';
-import { ReceivableEvent } from '../../types/index';
 import {
-  SocketClientEventPayload_DeselectText,
-  SocketClientEventPayload_MoveCursor,
-  SocketClientEventPayload_SelectText,
-  SocketClientEventPayload_SelectWordingAlternative,
-  SocketClientEventPayload_UpdateTargetText,
-  SocketServerEvent,
+  ClientActionPayload_DeselectText,
+  ClientActionPayload_MoveCursor,
+  ClientActionPayload_SelectText,
+  ClientActionPayload_SelectWordingAlternative,
+  ClientActionPayload_UpdateTargetText,
+  ServerResponseEvent,
 } from '../../types/socket';
 import { Puppet } from '../Puppet/Puppet';
 import { Queue } from '../Queue/Queue';
-import deselectText from './dispatchableEvents/deselectText';
-import updateTargetText from './dispatchableEvents/updateTargetText';
-import selectText from './dispatchableEvents/selectText';
-import moveCursor from './dispatchableEvents/moveCursor';
-import selectWordingAlternative from './dispatchableEvents/selectWordingAlternative';
-import deselectTextCompleted from './receivableEvents/deselectTextCompleted';
-import deselectTextStarted from './receivableEvents/deselectTextStarted';
-import selectTextCompleted from './receivableEvents/selectTextCompleted';
-import selectTextStarted from './receivableEvents/selectTextStarted';
-import startCompleted from './receivableEvents/startCompleted';
 import printServerInfo from './util/printServerInfo';
-import moveCursorStarted from './receivableEvents/moveCursorStarted';
-import moveCursorCompleted from './receivableEvents/moveCursorCompleted';
-import updateTargetTextStarted from './receivableEvents/updateTargetTextStarted';
-import updateTargetTextCompleted from './receivableEvents/updateTargetTextCompleted';
-import selectWordingAlternativeStarted from './receivableEvents/selectWordingAlternativeStarted';
-import selectWordingAlternativeCompleted from './receivableEvents/selectWordingAlternativeCompleted';
 
 export class ServerSocket {
   public static instance: ServerSocket;
@@ -55,7 +38,8 @@ export class ServerSocket {
     Array.from(Array(this.minNumberOfMaintainedPuppets)).forEach(() => {
       const newPuppet: Puppet = new Puppet(
         'unassigned',
-        (event: ReceivableEvent) => this.respondToClient('unassigned', event)
+        (event: ServerResponseEvent) =>
+          this.respondToClient('unassigned', event)
       );
 
       this.waitingPuppets.enqueue(newPuppet);
@@ -86,32 +70,44 @@ export class ServerSocket {
       this.killPuppet(socket.id);
     });
 
-    socket.on('selectText', (payload: SocketClientEventPayload_SelectText) => {
-      selectText(payload, this.findPuppetById(socket.id));
+    socket.on('selectText', (payload: ClientActionPayload_SelectText) => {
+      this.findPuppetById(socket.id)?.dispatchEvent({
+        endpoint: 'selectText',
+        payload,
+      });
     });
 
-    socket.on(
-      'deselectText',
-      (payload: SocketClientEventPayload_DeselectText) => {
-        deselectText(payload, this.findPuppetById(socket.id));
-      }
-    );
+    socket.on('deselectText', (payload: ClientActionPayload_DeselectText) => {
+      this.findPuppetById(socket.id)?.dispatchEvent({
+        endpoint: 'deselectText',
+        payload,
+      });
+    });
 
-    socket.on('moveCursor', (payload: SocketClientEventPayload_MoveCursor) => {
-      moveCursor(payload, this.findPuppetById(socket.id));
+    socket.on('moveCursor', (payload: ClientActionPayload_MoveCursor) => {
+      this.findPuppetById(socket.id)?.dispatchEvent({
+        endpoint: 'moveCursor',
+        payload,
+      });
     });
 
     socket.on(
       'updateTargetText',
-      (payload: SocketClientEventPayload_UpdateTargetText) => {
-        updateTargetText(payload, this.findPuppetById(socket.id));
+      (payload: ClientActionPayload_UpdateTargetText) => {
+        this.findPuppetById(socket.id)?.dispatchEvent({
+          endpoint: 'updateTargetText',
+          payload,
+        });
       }
     );
 
     socket.on(
       'selectWordingAlternative',
-      (payload: SocketClientEventPayload_SelectWordingAlternative) => {
-        selectWordingAlternative(payload, this.findPuppetById(socket.id));
+      (payload: ClientActionPayload_SelectWordingAlternative) => {
+        this.findPuppetById(socket.id)?.dispatchEvent({
+          endpoint: 'selectWordingAlternative',
+          payload,
+        });
       }
     );
   };
@@ -120,67 +116,18 @@ export class ServerSocket {
   /*                              RESPOND TO CLIENT                             */
   /* -------------------------------------------------------------------------- */
 
-  private respondToClient = (socketId: string, event: ReceivableEvent) => {
-    switch (event.code) {
-      case 'START_COMPLETED':
-        startCompleted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'SELECT_TEXT_STARTED':
-        selectTextStarted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'SELECT_TEXT_COMPLETED':
-        selectTextCompleted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'MOVE_CURSOR_STARTED':
-        moveCursorStarted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'MOVE_CURSOR_COMPLETED':
-        moveCursorCompleted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'UPDATE_TARGET_TEXT_STARTED':
-        updateTargetTextStarted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'UPDATE_TARGET_TEXT_COMPLETED':
-        updateTargetTextCompleted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'SELECT_WORDING_ALTERNATIVE_STARTED':
-        selectWordingAlternativeStarted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'SELECT_WORDING_ALTERNATIVE_COMPLETED':
-        selectWordingAlternativeCompleted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'DESELECT_TEXT_STARTED':
-        deselectTextStarted(event, socketId, this.emitToSocket);
-        return;
-
-      case 'DESELECT_TEXT_COMPLETED':
-        deselectTextCompleted(event, socketId, this.emitToSocket);
-        return;
-      default:
-        return;
-    }
+  private respondToClient = (socketId: string, event: ServerResponseEvent) => {
+    this.io.to(socketId).emit(event.endpoint, event.workerState);
   };
 
   /* -------------------------------------------------------------------------- */
   /*                                    UTILS                                   */
   /* -------------------------------------------------------------------------- */
 
-  private emitToSocket = (socketId: string, event: SocketServerEvent) => {
-    this.io.to(socketId).emit(event.endpoint, event.payload);
-  };
-
   private spawnPuppet = (socketId: string) => {
-    const newPuppet: Puppet = new Puppet(socketId, (event: ReceivableEvent) =>
-      this.respondToClient(socketId, event)
+    const newPuppet: Puppet = new Puppet(
+      socketId,
+      (event: ServerResponseEvent) => this.respondToClient(socketId, event)
     );
 
     this.activePuppets.push(newPuppet);
@@ -191,13 +138,13 @@ export class ServerSocket {
 
     if (targetPuppet) this.activePuppets.push(targetPuppet);
 
-    targetPuppet?.assignPuppet(socketId, (event: ReceivableEvent) =>
+    targetPuppet?.assignPuppet(socketId, (event: ServerResponseEvent) =>
       this.respondToClient(socketId, event)
     );
 
     const newPuppet: Puppet = new Puppet(
       'unassigned',
-      (event: ReceivableEvent) => this.respondToClient('unassigned', event)
+      (event: ServerResponseEvent) => this.respondToClient('unassigned', event)
     );
 
     this.waitingPuppets.enqueue(newPuppet);
