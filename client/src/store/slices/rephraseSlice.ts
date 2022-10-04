@@ -31,34 +31,6 @@ const createRephraseSlice: StateCreator<
 > = (set, get) => ({
   ...ininitalState,
 
-  /*
-  
-  selectText: async (selectedText: string) => {
-    set(() => ({
-      waitingForServer: true,
-    }));
-    const response = await serverRequest({
-      endpoint: '/setup-rephrasing',
-      method: 'POST',
-      inputBody: { input: selectedText },
-    });
-
-    if (!response) {
-      set(() => ({
-        waitingForServer: false,
-        isErrorActive: true,
-      }));
-    } else {
-      set(() => ({
-        waitingForServer: false,
-        originalText: selectedText,
-        rephrasedText: `processID: ${response.processID}, result: ${response.rephrasingResult}`,
-        isErrorActive: false,
-      }));
-    }
-  },
-  */
-
   setSocket: (socket: Socket) => {
     set(() => ({
       socket,
@@ -98,8 +70,6 @@ const createRephraseSlice: StateCreator<
       originalText: text,
     }));
 
-    // TODO: check precondition (write reusableFunction), if !fulfilled -> retry for n seconds, then setError = true
-
     set(() => ({
       waitingForServer: true,
     }));
@@ -116,6 +86,13 @@ const createRephraseSlice: StateCreator<
 
   deselectText: async () => {
     const socket = get().socket;
+    const workerState = get().activeWorkerState;
+    if (
+      workerState !== 'disconnected' &&
+      workerState.stateName === 'waitingForSelectText'
+    ) {
+      return;
+    }
 
     if (!socket) {
       set(() => ({
@@ -124,8 +101,6 @@ const createRephraseSlice: StateCreator<
       }));
       return;
     }
-
-    // TODO: check precondition (write reusableFunction), if !fulfilled -> retry for n seconds, then setError = true
 
     set(() => ({
       waitingForServer: true,

@@ -39,9 +39,7 @@ const TextArea = styled('textarea')(
     color: ${addAlphaToHexColor(
       defaultProps.theme.palette.text.main,
       props.textSelected ? 0.5 : 1
-    )};
-
-    transition: color 200ms linear;
+    )}; 
 
     ::selection{
       color: ${addAlphaToHexColor(defaultProps.theme.palette.text.main, 1)};
@@ -111,11 +109,10 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     if (event.isTrusted) {
       const selection = window.getSelection();
 
-      console.log(selection?.toString());
-
       const selectionString = selection?.toString();
 
       if (selectionString && selection) {
+        console.log('SELECTION', selectionString);
         selectText(selectionString);
       }
     }
@@ -124,9 +121,8 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
   // highlight selected text
 
   useEffect(() => {
-    const listener = (event: Event) => {
+    const selectionChangeListener = (event: Event) => {
       const selection = window.getSelection();
-
       const selectionString = selection?.toString();
       const anchorNode = selection?.anchorNode as HTMLElement;
 
@@ -146,8 +142,22 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       }
     };
 
-    document.addEventListener('selectionchange', listener);
-    return () => document.removeEventListener('selectionchange', listener);
+    document.addEventListener('selectionchange', selectionChangeListener);
+
+    const dragStartListener = (event: Event) => {
+      event.preventDefault();
+    };
+
+    document
+      .getElementById('source-value-input')
+      ?.addEventListener('dragstart', dragStartListener);
+
+    return () => {
+      document.removeEventListener('selectionchange', selectionChangeListener);
+      document
+        .getElementById('source-value-input')
+        ?.removeEventListener('dragstart', dragStartListener);
+    };
   }, []);
 
   useEffect(() => {

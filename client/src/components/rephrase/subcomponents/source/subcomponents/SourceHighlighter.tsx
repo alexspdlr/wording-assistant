@@ -29,8 +29,7 @@ const Container = styled('div')(
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;  
-  transition: all 1s linear; 
+  user-select: none;   
       `
 );
 

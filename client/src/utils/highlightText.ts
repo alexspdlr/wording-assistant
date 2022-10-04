@@ -16,10 +16,10 @@ const highlightText = (
       `${resultingString.slice(
         0,
         range.startIndex
-      )}<mark style="padding:3px 0px 4px 0px; background-color: ${addAlphaToHexColor(
+      )}<mark style="padding:3px 0px 4px 0px; color: transparent; background-color: ${addAlphaToHexColor(
         color,
         opacity || 1
-      )}}; transition: inherit;">${resultingString.slice(
+      )}};">${resultingString.slice(
         range.startIndex,
         range.endIndex
       )}</mark>${resultingString.slice(range.endIndex)}`,

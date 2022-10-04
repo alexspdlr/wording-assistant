@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useSearchParams } from 'react-router-dom';
 import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
+import { ActiveWorkerState } from 'src/types/socket';
 import RephraseHint from '../RephraseHint';
 import TargetSelect from './subcomponents/TargetSelect';
 
@@ -31,20 +32,27 @@ interface RephraseTargetProps {}
 const RephraseTarget = (props: RephraseTargetProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
-  const rephrasedText = useBoundStore((state) => state.rephrasedText);
-  const waitingForServer = useBoundStore((state) => state.waitingForServer);
+  const targetText = useBoundStore(
+    (state) =>
+      state.activeWorkerState !== 'disconnected' &&
+      state.activeWorkerState.data.targetText
+  );
+  const activeWorkerState: ActiveWorkerState | 'disconnected' = useBoundStore(
+    (state) => state.activeWorkerState
+  );
 
   return (
     <Wrapper>
       <Container>
-        {waitingForServer ? (
+        {activeWorkerState !== 'disconnected' &&
+        activeWorkerState.stateName === 'processingSelectText' ? (
           <div style={{ padding: '24px 32px' }}>
             <LoadingSpinner />
           </div>
         ) : (
           <>
-            {rephrasedText ? (
-              <TargetSelect value={rephrasedText} />
+            {targetText ? (
+              <TargetSelect value={targetText} />
             ) : (
               <>
                 {value && value.length > 0 && (
