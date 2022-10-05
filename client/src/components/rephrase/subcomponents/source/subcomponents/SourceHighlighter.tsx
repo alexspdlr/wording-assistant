@@ -39,19 +39,54 @@ interface SourceHighlighterProps {
   endIndex: number;
 }
 
+interface Highlight {
+  startIndex: number;
+  endIndex: number;
+  type: 'appear' | 'disappear';
+}
+
 const SourceHighlighter = (props: SourceHighlighterProps) => {
   const { value, startIndex, endIndex } = props;
   const highlighterRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
   useRephraseToolTextboxSize(value, highlighterRef);
+
+  const [currentHighlight, setCurrentHighlight] = useState<Highlight>({
+    startIndex,
+    endIndex,
+    type: 'appear',
+  });
+
+  useEffect(() => {
+    if (startIndex === 0 && endIndex === 0) {
+      setCurrentHighlight({
+        startIndex: currentHighlight.startIndex,
+        endIndex: currentHighlight.endIndex,
+        type: 'disappear',
+      });
+    } else {
+      setCurrentHighlight({
+        startIndex: startIndex,
+        endIndex: endIndex,
+        type: 'appear',
+      });
+    }
+  }, [startIndex, endIndex, currentHighlight]);
+
   return (
     <Container ref={highlighterRef}>
       {parse(
         highlightText(
+          currentHighlight.type,
           value,
-          [{ startIndex, endIndex }],
-          theme.palette.primary.light,
-          0.175
+          [
+            {
+              startIndex: currentHighlight.startIndex,
+              endIndex: currentHighlight.endIndex,
+            },
+          ],
+          '#FEC857',
+          0.4
         )
       )}
     </Container>

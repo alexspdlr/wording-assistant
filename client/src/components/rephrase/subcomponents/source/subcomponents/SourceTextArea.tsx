@@ -38,9 +38,9 @@ const TextArea = styled('textarea')(
     line-height: 0;
     color: ${addAlphaToHexColor(
       defaultProps.theme.palette.text.main,
-      props.textSelected ? 0.5 : 1
+      props.textSelected ? 0.6 : 1
     )}; 
-
+    transition: color 300ms ease-in-out;
     ::selection{
       color: ${addAlphaToHexColor(defaultProps.theme.palette.text.main, 1)};
     }
@@ -59,7 +59,7 @@ interface SourceTextAreaProps {
 const SourceTextArea = (props: SourceTextAreaProps) => {
   const { value, setValue } = props;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const selectedText = useBoundStore((state) => state.originalText);
+  const selectedText = useBoundStore((state) => state.uiState.originalText);
   const [range, setRange] = useState<SelectionRange | null>(null);
   useRephraseToolTextboxSize(value, textareaRef);
 
