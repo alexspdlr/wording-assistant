@@ -27,7 +27,7 @@ const Container = styled('div')(
 );
 
 interface HintHeadingProps {
-  fontSize: number;
+  fontSize: number | string;
   lineHeight: number;
 }
 

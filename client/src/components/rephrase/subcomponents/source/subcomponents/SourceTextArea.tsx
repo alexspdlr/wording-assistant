@@ -32,20 +32,23 @@ const TextArea = styled('textarea')(
     display: block; 
     resize: none; 
     background-color: transparent;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-weight: 400; 
     overflow: visible;
     margin: 0px 60px 60px 0px;  
-    padding: 24px 0px 0px 36px; 
+    padding: 24px 0px 0px 36px;  
+    -webkit-font-smoothing: antialiased; 
     line-height: 0;
     color: ${addAlphaToHexColor(
-      defaultProps.theme.palette.text.main,
-      props.textSelected ? 0.6 : 1
+      defaultProps.theme.palette.text.light,
+      props.textSelected ? 0.7 : 1
     )}; 
-    transition: color 300ms ease-in-out;
+
     ::selection{
-      color: transparent;  
+      color: transparent;
     } 
+
+    transition: color 300ms ease-in-out;
     `
 );
 
@@ -75,7 +78,6 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
   const resetInput = () => {
     deselectText();
     setValue('');
-    setRange(null);
     if (textareaRef && textareaRef.current) {
       textareaRef.current.value = '';
     }
@@ -118,12 +120,11 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
               startIndex: textareaRef.current?.selectionStart,
               endIndex: textareaRef.current?.selectionEnd,
             };
-            console.log('1');
             setRange(newRange);
           }
         } else {
-          console.log('2');
           setRange(null);
+          deselectText();
         }
       }
     };
@@ -167,6 +168,27 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     return `${targetHeight}px`;
   };
 
+  const updateRangeOnSelectTextChange = useCallback(
+    (selectedText: string) => {
+      const newRange = {
+        startIndex: value.indexOf(selectedText),
+        endIndex: value.indexOf(selectedText) + selectedText.length,
+      };
+      console.log('UPDATE FROM ABOVE, newRange: ', newRange);
+
+      setRange(newRange);
+    },
+    [value]
+  );
+
+  useEffect(() => {
+    if (!selectedText || selectedText.length === 0) {
+      setRange(null);
+    } else {
+      updateRangeOnSelectTextChange(selectedText);
+    }
+  }, [selectedText, updateRangeOnSelectTextChange]);
+
   return (
     <>
       <SourceHighlighter
@@ -179,17 +201,6 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
         ref={textareaRef}
         onChange={textAreaChange}
         onSelect={onSelectText}
-        onClick={() => {
-          // handle deselect text in container
-          const selection = window.getSelection();
-          const selectionString = selection?.toString();
-          if (!(selection && selectionString) || !range) {
-            console.log('DESELECT TEXT ');
-            setRange(null);
-            deselectText();
-          }
-        }}
-        onMouseDown={() => setRange(null)}
         autoFocus
         value={value}
         spellCheck={false}

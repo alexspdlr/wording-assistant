@@ -18,12 +18,13 @@ const Container = styled('div')(
   outline: none; 
   display: block;   
   z-index: 0;
-  line-height: 0;
+  line-height: 0;  
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
   font-weight: 400;
   white-space: pre-wrap; 
   overflow: visible;
   color: transparent; 
+  -webkit-font-smoothing: antialiased; 
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -102,7 +103,8 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
               endIndex: currentHighlight.endIndex,
             },
           ],
-          '#FFE6B6'
+          '#FFE6B6',
+          theme.palette.text.light
         )
       )}
     </Container>

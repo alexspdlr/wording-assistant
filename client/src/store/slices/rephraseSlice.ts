@@ -191,6 +191,7 @@ const createRephraseSlice: StateCreator<
     // UPDATE UI STATE
     set(
       produce((state: RephraseState) => {
+        state.uiState.originalText = text;
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'selectText',
@@ -216,6 +217,14 @@ const createRephraseSlice: StateCreator<
     const socket = get().socket;
     const eventId = prepareClientAction(socket, set);
     if (!eventId) {
+      return;
+    }
+
+    // block deselect if deselectCompleted is already expected
+    if (
+      get().uiState.expectedResponse !== null &&
+      get().uiState.expectedResponse?.endpoint === 'deselectText'
+    ) {
       return;
     }
 

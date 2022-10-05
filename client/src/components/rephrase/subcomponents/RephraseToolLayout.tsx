@@ -91,6 +91,7 @@ const RephraseToolLayout = (props: RephraseToolLayoutProps) => {
   const deselectText = useBoundStore((state) => state.deselectText);
   // handle deselect text outside toolcard container
   const onClickAway = (event: any) => {
+    console.log('OUTER CLICK AWAY');
     deselectText();
   };
 

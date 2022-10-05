@@ -10,14 +10,15 @@ const highlightText = (
   type: 'appear' | 'disappear',
   text: string,
   highlightRanges: Range[],
-  color: string
+  color: string,
+  textColor: string
 ) => {
   return highlightRanges.reduceRight(
     (resultingString, range) =>
       `${resultingString.slice(
         0,
         range.startIndex
-      )}<mark style="padding:3px 0px 4px 0px; color:#000; ${
+      )}<mark style="padding:3px 0px 4px 0px; color:${textColor}; ${
         type === 'appear'
           ? 'opacity: 1;'
           : 'transition: opacity 150ms ease-out; opacity: 0;'

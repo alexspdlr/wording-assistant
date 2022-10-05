@@ -6,11 +6,13 @@ import { useTheme } from '@emotion/react';
 import useBoundStore from 'src/store';
 import { useEffect } from 'react';
 import CustomPopover from 'src/components/Popover';
+import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 const RephrasePage = () => {
   const theme = useTheme();
 
   const uiState = useBoundStore((state) => state.uiState);
   const serverState = useBoundStore((state) => state.serverState);
+  const activeBreakpoint = useBreakpoint();
 
   return (
     <>
@@ -18,6 +20,7 @@ const RephrasePage = () => {
         <RephraseTool />
       </Section>
       <div style={{ display: 'flex' }}>
+        BREAKPOINT: {activeBreakpoint}
         <div style={{ width: '50%', backgroundColor: 'yellow' }}>
           UI STATE:
           <div>{JSON.stringify(uiState)}</div>
