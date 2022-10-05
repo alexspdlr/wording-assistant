@@ -71,14 +71,6 @@ const TargetSelect = (props: TargetSelectProps) => {
   useRephraseToolTextboxSize(value, containerRef);
   const [hoveredWord, setHoveredWord] = useState<string | null>(null);
 
-  const deselectText = useBoundStore((state) => state.deselectText);
-
-  const onClickAway = (event: any) => {
-    deselectText();
-  };
-
-  useClickAway(containerRef, onClickAway);
-
   return (
     <Container ref={containerRef} tabIndex={0} id='target-select-container'>
       <div style={{ padding: '24px 56px 72px 36px' }}>

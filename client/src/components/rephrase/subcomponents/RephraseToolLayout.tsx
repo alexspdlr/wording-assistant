@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
 import { relative } from 'path/posix';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Card from 'src/components/general/card';
+import useBoundStore from 'src/store';
 import copyToClipboard from 'src/utils/copyToClipboard';
+import useClickAway from 'src/utils/hooks/useClickAway';
 import isMobileDevice from 'src/utils/isMobileDevice';
 import { isMap } from 'util/types';
 import RephraseHint from './RephraseHint';
@@ -84,9 +86,19 @@ const RephraseToolLayout = (props: RephraseToolLayoutProps) => {
   const {} = props;
   const [searchParams, setSearchParams] = useSearchParams();
   const sourceValue = searchParams.get('source-value');
+  const containerRef = useRef(null);
+  const deselectText = useBoundStore((state) => state.deselectText);
+
+  // handle deselect text outside toolcard container
+  const onClickAway = (event: any) => {
+    deselectText();
+  };
+
+  useClickAway(containerRef, onClickAway);
 
   return (
     <ToolCardContainer
+      ref={containerRef}
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(2, 1fr)',

@@ -71,7 +71,7 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
         type: 'appear',
       });
     }
-  }, [startIndex, endIndex, currentHighlight]);
+  }, [startIndex, endIndex]);
 
   return (
     <Container ref={highlighterRef}>
@@ -85,8 +85,7 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
               endIndex: currentHighlight.endIndex,
             },
           ],
-          '#FEC857',
-          0.4
+          '#FFE6B6'
         )
       )}
     </Container>

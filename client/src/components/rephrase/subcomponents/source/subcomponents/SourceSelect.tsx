@@ -82,15 +82,6 @@ const SourceSelect = (props: SourceSelectProps) => {
 
   const sentenceRef = useRef<HTMLDivElement>(null);
 
-  const deselectText = useBoundStore((state) => state.deselectText);
-
-  const onClose = () => {
-    setSelectedSentence(null);
-    deselectText();
-  };
-
-  useClickAway(sentenceRef, onClose);
-
   useEffect(() => {
     document.getElementById('source-select-container')?.focus();
   }, [containerRef]);

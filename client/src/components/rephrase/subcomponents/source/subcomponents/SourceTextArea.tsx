@@ -38,12 +38,13 @@ const TextArea = styled('textarea')(
     line-height: 0;
     color: ${addAlphaToHexColor(
       defaultProps.theme.palette.text.main,
-      props.textSelected ? 0.6 : 1
+      props.textSelected ? 0.65 : 1
     )}; 
     transition: color 300ms ease-in-out;
     ::selection{
       color: ${addAlphaToHexColor(defaultProps.theme.palette.text.main, 1)};
-    }
+      text-decoration: underline red;
+    } 
     `
 );
 
@@ -62,7 +63,6 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
   const selectedText = useBoundStore((state) => state.uiState.originalText);
   const [range, setRange] = useState<SelectionRange | null>(null);
   useRephraseToolTextboxSize(value, textareaRef);
-
   const deselectText = useBoundStore((state) => state.deselectText);
 
   const onClickAway = (event: any) => {
@@ -73,9 +73,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       parentNode.id !== 'target-select-container' &&
       targetNode.id !== 'target-select-container'
     ) {
-      deselectText();
       setRange(null);
-      textareaRef.current?.focus();
     } else {
       console.log(' select word or click parent   ');
     }
@@ -112,7 +110,6 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       const selectionString = selection?.toString();
 
       if (selectionString && selection) {
-        console.log('SELECTION', selectionString);
         selectText(selectionString);
       }
     }
@@ -126,18 +123,18 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       const selectionString = selection?.toString();
       const anchorNode = selection?.anchorNode as HTMLElement;
 
-      if (
-        selection &&
-        selectionString &&
-        anchorNode?.id === 'source-container' &&
-        event
-      ) {
-        if (event && textareaRef.current) {
-          const newRange = {
-            startIndex: textareaRef.current?.selectionStart,
-            endIndex: textareaRef.current?.selectionEnd,
-          };
-          setRange(newRange);
+      if (anchorNode?.id === 'source-container') {
+        if (selection && selectionString) {
+          if (textareaRef.current) {
+            const newRange = {
+              startIndex: textareaRef.current?.selectionStart,
+              endIndex: textareaRef.current?.selectionEnd,
+            };
+
+            setRange(newRange);
+          }
+        } else {
+          setRange(null);
         }
       }
     };
@@ -199,6 +196,13 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
         ref={textareaRef}
         onChange={textAreaChange}
         onSelect={onSelectText}
+        onClick={() => {
+          // handle deselect text in container
+          const selection = window.getSelection();
+          const selectionString = selection?.toString();
+          if (!(selection && selectionString) || !range) deselectText();
+        }}
+        onMouseDown={() => setRange(null)}
         autoFocus
         value={value}
         spellCheck={false}
