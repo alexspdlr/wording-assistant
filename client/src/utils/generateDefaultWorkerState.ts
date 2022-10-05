@@ -9,7 +9,7 @@ const generateDefaultWorkerState = (
       variant === 'start' ? 'processingInitialize' : 'processingTerminate',
     data: {
       id: id || '',
-      inputText: null,
+      originalText: null,
       targetText: null,
       cursorIndex: 0,
       rephrasingOptions: [],

@@ -49,7 +49,7 @@ const handleError = async (
       stateName: 'waitingForSelectText',
       data: {
         id: localState.workerState.data.id,
-        inputText: null,
+        originalText: null,
         targetText: null,
         cursorIndex: 0,
         rephrasingOptions: [],

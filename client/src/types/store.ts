@@ -1,35 +1,40 @@
 import { Socket } from 'socket.io-client';
-import { ActiveWorkerState } from './socket';
+import {
+  ActiveWorkerState,
+  ActiveWorkerStateData,
+  ActiveWorkerStateName,
+} from './socket';
+
+export interface ClientWorkerState {
+  stateName: ActiveWorkerStateName | 'disconnected';
+  data: ActiveWorkerStateData;
+}
+
+type UiState = Omit<ActiveWorkerStateData, 'id' | 'cursorIndex'>;
 
 export interface RephraseState {
-  originalText: string | null;
-  rephrasedText: string | null;
-  alternatives: string[] | null;
+  // worker state in server
+  serverState: ClientWorkerState;
 
-  // could be useful
-  waitingForServer: boolean;
-  isErrorActive: boolean;
+  // rendered state (UI)
+  uiState: UiState;
 
   // server communication
   isConnectedToServer: boolean;
+  isErrorActive: boolean;
   socket: Socket | null;
-  activeWorkerState: ActiveWorkerState | 'disconnected';
 }
 
 export interface RephraseActions {
+  // setter
   setSocket: (socket: Socket) => void;
-  updateActiveWorkerState: (
-    newState: ActiveWorkerState | 'disconnected'
-  ) => void;
   setIsConnectedToServer: (isConnectedToServer: boolean) => void;
-  updateRephrasingState: (
-    originalText: string | undefined | null,
-    rephrasedText: string | undefined | null,
-    alternatives: string[] | undefined | null
-  ) => void;
-  setWaitingForServer: (waitingForServer: boolean) => void;
+  setIsErrorActive: (isErrorActive: boolean) => void;
 
-  // tool actions
+  // handle incoming server event
+  handleNewWorkerState: (newState: ClientWorkerState) => void;
+
+  // client actions
   selectText: (text: string) => void;
   deselectText: () => void;
   moveCursor: (newCursorIndex: number) => void;

@@ -100,7 +100,7 @@ export class Puppet {
 
     const eventData = event.workerState.data;
     this.updateWorkerState(event.workerState.stateName, {
-      inputText: eventData.inputText ? eventData.inputText : undefined,
+      originalText: eventData.originalText ? eventData.originalText : undefined,
       targetText: eventData.targetText ? eventData.targetText : undefined,
       cursorIndex: eventData.cursorIndex ? eventData.cursorIndex : undefined,
       rephrasingOptions: eventData.rephrasingOptions
@@ -114,7 +114,7 @@ export class Puppet {
   private updateWorkerState = (
     stateName: ActiveWorkerStateName,
     updateObject: {
-      inputText?: string;
+      originalText?: string;
       targetText?: string;
       cursorIndex?: number;
       rephrasingOptions?: string[];
@@ -122,8 +122,8 @@ export class Puppet {
   ) => {
     this.workerState.stateName = stateName;
 
-    if (updateObject.inputText) {
-      this.workerState.data.inputText = updateObject.inputText;
+    if (updateObject.originalText) {
+      this.workerState.data.originalText = updateObject.originalText;
     }
 
     if (updateObject.targetText) {

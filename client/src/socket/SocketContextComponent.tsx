@@ -20,15 +20,11 @@ const SocketContextComponent: React.FunctionComponent<
   const setIsConnectedToServer = useBoundStore(
     (state) => state.setIsConnectedToServer
   );
-  const setWaitingForServer = useBoundStore(
-    (state) => state.setWaitingForServer
-  );
+
   const setSocket = useBoundStore((state) => state.setSocket);
-  const updateActiveWorkerState = useBoundStore(
-    (state) => state.updateActiveWorkerState
-  );
-  const updateRephrasingState = useBoundStore(
-    (state) => state.updateRephrasingState
+
+  const handleNewWorkerState = useBoundStore(
+    (state) => state.handleNewWorkerState
   );
 
   const socket = useSocket('ws://localhost:3001', {
@@ -55,77 +51,75 @@ const SocketContextComponent: React.FunctionComponent<
     /** Connection / reconnection listeners */
     socket.on('connect', () => {
       setIsConnectedToServer(true);
-      updateActiveWorkerState(generateDefaultWorkerState('start'));
+      handleNewWorkerState(generateDefaultWorkerState('start'));
     });
 
     socket.on('disconnect', () => {
-      updateActiveWorkerState('disconnected');
+      handleNewWorkerState(generateDefaultWorkerState('exit'));
     });
 
     socket.on('setupCompleted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on('selectTextStarted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on('selectTextCompleted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on('moveCursorStarted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on('moveCursorCompleted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on('updateTargetTextStarted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on('updateTargetTextCompleted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on(
       'selectWordingAlternativeStarted',
       (payload: ActiveWorkerState) => {
-        updateActiveWorkerState(payload);
+        handleNewWorkerState(payload);
       }
     );
 
     socket.on(
       'selectWordingAlternativeCompleted',
       (payload: ActiveWorkerState) => {
-        updateActiveWorkerState(payload);
+        handleNewWorkerState(payload);
       }
     );
 
     socket.on('deselectTextStarted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on('deselectTextCompleted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
-      updateRephrasingState(null, null, null);
-      updateActiveWorkerState(payload);
-      setWaitingForServer(false);
+      handleNewWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on('processingErrorStarted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     socket.on('processingErrorCompleted', (payload: ActiveWorkerState) => {
-      updateActiveWorkerState(payload);
+      handleNewWorkerState(payload);
     });
 
     // HANDLE RECONNECTION
     socket.io.on('reconnect', (attempt) => {
-      updateActiveWorkerState(generateDefaultWorkerState('start'));
+      handleNewWorkerState(generateDefaultWorkerState('start'));
 
       console.info('Reconnected on attempt: ' + attempt);
       setIsConnectedToServer(true);

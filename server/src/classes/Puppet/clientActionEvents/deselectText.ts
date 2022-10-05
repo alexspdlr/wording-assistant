@@ -17,7 +17,11 @@ const deselectText = async (
     const newWorkerState_Start: ActiveWorkerState = {
       stateName: 'processingDeselectText',
       data: {
-        ...localState.workerState.data,
+        id: localState.workerState.data.id,
+        originalText: null,
+        targetText: null,
+        cursorIndex: 0,
+        rephrasingOptions: [],
       },
     };
 
@@ -43,7 +47,7 @@ const deselectText = async (
       stateName: 'waitingForSelectText',
       data: {
         id: localState.workerState.data.id,
-        inputText: null,
+        originalText: null,
         targetText: null,
         cursorIndex: 0,
         rephrasingOptions: [],

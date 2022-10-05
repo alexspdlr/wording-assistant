@@ -7,7 +7,7 @@ const selectText = async (
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void,
-  inputText: string
+  originalText: string
 ) => {
   if (localState.page && localState.browser) {
     /* -------------------------------------------------------------------------- */
@@ -19,7 +19,7 @@ const selectText = async (
       stateName: 'processingSelectText',
       data: {
         ...localState.workerState.data,
-        inputText,
+        originalText,
       },
     };
 
@@ -39,7 +39,7 @@ const selectText = async (
 
     // ACTION
     const response = await puppeteer_select_text(
-      inputText,
+      originalText,
       localState.page,
       localState.browser
     );
@@ -58,7 +58,7 @@ const selectText = async (
         stateName: 'waitingForTargetTextAction',
         data: {
           ...localState.workerState.data,
-          inputText,
+          originalText,
           targetText:
             response.data.result || localState.workerState.data.targetText,
         },

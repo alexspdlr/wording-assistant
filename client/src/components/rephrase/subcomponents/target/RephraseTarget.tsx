@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
 import { ActiveWorkerState } from 'src/types/socket';
+import { ClientWorkerState } from 'src/types/store';
 import RephraseHint from '../RephraseHint';
 import TargetSelect from './subcomponents/TargetSelect';
 
@@ -32,20 +33,15 @@ interface RephraseTargetProps {}
 const RephraseTarget = (props: RephraseTargetProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
-  const targetText = useBoundStore(
-    (state) =>
-      state.activeWorkerState !== 'disconnected' &&
-      state.activeWorkerState.data.targetText
-  );
-  const activeWorkerState: ActiveWorkerState | 'disconnected' = useBoundStore(
-    (state) => state.activeWorkerState
+  const targetText = useBoundStore((state) => state.uiState.targetText);
+  const serverState: ClientWorkerState = useBoundStore(
+    (state) => state.serverState
   );
 
   return (
     <Wrapper>
       <Container>
-        {activeWorkerState !== 'disconnected' &&
-        activeWorkerState.stateName === 'processingSelectText' ? (
+        {serverState.stateName === 'processingSelectText' ? (
           <div style={{ padding: '24px 32px' }}>
             <LoadingSpinner />
           </div>

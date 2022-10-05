@@ -3,11 +3,11 @@ import { PuppeteerError, PuppeteerResponse } from '../types';
 import resetPage from './resetPage';
 
 const selectText = async (
-  inputText: string,
+  originalText: string,
   page: Page,
   browser: Browser
 ): Promise<PuppeteerResponse> => {
-  const clienSourceInput = inputText;
+  const clienSourceInput = originalText;
   try {
     if (page.url() !== 'https://www.deepl.com/en/translator#en/de/') {
       await resetPage(page, browser);
@@ -46,8 +46,6 @@ const selectText = async (
       buttonTyped?.click();
     });
 
-    console.log(1);
-
     // Wait until languages are swapped
 
     await page.waitForFunction(() => {
@@ -61,8 +59,6 @@ const selectText = async (
       );
     }, {});
 
-    console.log(2);
-
     // Paste client input into translator target
     await page.evaluate((clienSourceInput) => {
       const translatorTargetInput = document.querySelector(
@@ -73,8 +69,6 @@ const selectText = async (
         translatorTargetInput.value = clienSourceInput;
       }
     }, clienSourceInput);
-
-    console.log(3);
 
     // move cursor to trigger dummy div update
     await page.keyboard.press('ArrowLeft');

@@ -64,8 +64,6 @@ export class ServerSocket {
       this.assignPuppetToSocket(socket.id);
     }
 
-    console.time();
-
     socket.on('disconnect', () => {
       this.killPuppet(socket.id);
     });

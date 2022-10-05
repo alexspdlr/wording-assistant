@@ -9,15 +9,25 @@ import CustomPopover from 'src/components/Popover';
 const RephrasePage = () => {
   const theme = useTheme();
 
-  const activeWorkerState = useBoundStore((state) => state.activeWorkerState);
+  const uiState = useBoundStore((state) => state.uiState);
+  const serverState = useBoundStore((state) => state.serverState);
 
   return (
     <>
       <Section backgroundColor={theme.palette.background.dark}>
         <RephraseTool />
       </Section>
-      STATE:
-      <div>{JSON.stringify(activeWorkerState)}</div>
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '50%', backgroundColor: 'yellow' }}>
+          UI STATE:
+          <div>{JSON.stringify(uiState)}</div>
+        </div>
+        <div style={{ width: '50%' }}>
+          SERVER STATE:
+          <div>{JSON.stringify(serverState)}</div>
+        </div>
+      </div>
+
       <CustomPopover
         alternatives={['Test ...', 'Bla ...']}
         rephrase={(alternative: string) => console.log(alternative)}

@@ -1,19 +1,37 @@
 import { Socket } from 'socket.io-client';
 import { ActiveWorkerState, ClientActionEvent } from 'src/types/socket';
-import { RephraseSlice, RephraseState } from 'src/types/store';
+import {
+  ClientWorkerState,
+  RephraseSlice,
+  RephraseState,
+} from 'src/types/store';
 import { StateCreator } from 'zustand';
+import produce from 'immer';
 
 const ininitalState: RephraseState = {
-  originalText: null,
-  rephrasedText: null,
-  alternatives: null,
-  waitingForServer: false,
+  serverState: {
+    stateName: 'disconnected',
+    data: {
+      id: '',
+      originalText: null,
+      targetText: null,
+      cursorIndex: 0,
+      rephrasingOptions: [],
+    },
+  },
+
+  uiState: {
+    originalText: null,
+    targetText: null,
+    rephrasingOptions: [],
+  },
+
   isErrorActive: false,
-  isConnectedToServer: true,
+  isConnectedToServer: false,
   socket: null,
-  activeWorkerState: 'disconnected',
 };
 
+/* ----------------------------- UTIL FUNCTIONS ----------------------------- */
 const socketEmit = (socket: Socket | null, event: ClientActionEvent) => {
   const { endpoint, payload } = event;
   if (socket) {
@@ -31,80 +49,132 @@ const createRephraseSlice: StateCreator<
 > = (set, get) => ({
   ...ininitalState,
 
-  setSocket: (socket: Socket) => {
-    set(() => ({
-      socket,
-    }));
-  },
+  /* -------------------------------------------------------------------------- */
+  /*                                   SETTER                                   */
+  /* -------------------------------------------------------------------------- */
 
-  updateActiveWorkerState: (newState: ActiveWorkerState | 'disconnected') => {
-    set(() => ({
-      activeWorkerState: newState,
-    }));
+  setSocket: (socket: Socket) => {
+    set(
+      produce((state: RephraseState) => {
+        state.socket = socket;
+      })
+    );
   },
 
   setIsConnectedToServer: (isConnectedToServer: boolean) => {
-    set(() => ({
-      isConnectedToServer,
-    }));
+    set(
+      produce((state: RephraseState) => {
+        state.isConnectedToServer = isConnectedToServer;
+      })
+    );
   },
 
-  // tool actions
+  setIsErrorActive: (isErrorActive: boolean) => {
+    set(
+      produce((state: RephraseState) => {
+        state.isErrorActive = isErrorActive;
+      })
+    );
+  },
+
+  /* -------------------------------------------------------------------------- */
+  /*                        HANDLE INCOMING SERVER EVENT                        */
+  /* -------------------------------------------------------------------------- */
+
+  handleNewWorkerState: (newState: ClientWorkerState) => {
+    // update differences in ui state
+    const currentUiState = get().uiState;
+    if (newState.data.originalText !== currentUiState.originalText) {
+      set(
+        produce((state: RephraseState) => {
+          state.uiState.originalText = newState.data.originalText;
+        })
+      );
+    }
+
+    if (newState.data.targetText !== currentUiState.targetText) {
+      set(
+        produce((state: RephraseState) => {
+          state.uiState.targetText = newState.data.targetText;
+        })
+      );
+    }
+
+    if (newState.data.rephrasingOptions !== currentUiState.rephrasingOptions) {
+      set(
+        produce((state: RephraseState) => {
+          state.uiState.rephrasingOptions = newState.data.rephrasingOptions;
+        })
+      );
+    }
+
+    // update server state
+    set(
+      produce((state: RephraseState) => {
+        state.serverState = newState;
+      })
+    );
+  },
+
+  /* -------------------------------------------------------------------------- */
+  /*                               CLIENT ACTIONS                               */
+  /* -------------------------------------------------------------------------- */
+
+  /* ------------------------------- SELECT TEXT ------------------------------ */
+
   selectText: async (text: string) => {
-    // if text is only whitespace
+    // HANDLE DECLINE SITUATIONS
     if (text.trim().length === 0) {
       return;
     }
 
     const socket = get().socket;
-
     if (!socket) {
-      set(() => ({
-        waitingForServer: false,
-        isErrorActive: true,
-      }));
+      set(
+        produce((state: RephraseState) => {
+          state.isErrorActive = true;
+        })
+      );
       return;
     }
 
-    set(() => ({
-      originalText: text,
-    }));
-
-    set(() => ({
-      waitingForServer: true,
-    }));
-
+    // EMIT TO SOCKET
     const event: ClientActionEvent = {
       endpoint: 'selectText',
       payload: {
-        inputText: text,
+        originalText: text,
       },
     };
 
     socketEmit(socket, event);
   },
 
+  /* ------------------------------ DESELECT TEXT ----------------------------- */
   deselectText: async () => {
+    // HANDLE DECLINE SITUATIONS
+    const workerState = get().serverState;
+    if (workerState.stateName === 'waitingForSelectText') {
+      return;
+    }
+
     const socket = get().socket;
-    const workerState = get().activeWorkerState;
-    if (
-      workerState !== 'disconnected' &&
-      workerState.stateName === 'waitingForSelectText'
-    ) {
-      return;
-    }
-
     if (!socket) {
-      set(() => ({
-        waitingForServer: false,
-        isErrorActive: true,
-      }));
+      set(
+        produce((state: RephraseState) => {
+          state.isErrorActive = true;
+        })
+      );
       return;
     }
 
-    set(() => ({
-      waitingForServer: true,
-    }));
+    // UPDATE UI STATE
+    set(
+      produce((state: RephraseState) => {
+        state.uiState.originalText = null;
+        state.uiState.targetText = null;
+        state.uiState.rephrasingOptions = [];
+      })
+    );
 
     const event: ClientActionEvent = {
       endpoint: 'deselectText',
@@ -113,33 +183,10 @@ const createRephraseSlice: StateCreator<
 
     socketEmit(socket, event);
   },
+
   moveCursor: (newCursorIndex: number) => null,
   updateTargetText: (newTargetText: string, newCursorIndex: number) => null,
   selectWordingAlternative: (selectedAlternativeIndex: number) => null,
-
-  updateRephrasingState: (
-    originalText: string | undefined | null,
-    rephrasedText: string | undefined | null,
-    alternatives: string[] | undefined | null
-  ) => {
-    if (originalText !== undefined)
-      set(() => ({
-        originalText,
-      }));
-    if (rephrasedText !== undefined)
-      set(() => ({
-        rephrasedText,
-      }));
-    if (alternatives !== undefined)
-      set(() => ({
-        alternatives,
-      }));
-  },
-  setWaitingForServer: (waitingForServer: boolean) => {
-    set(() => ({
-      waitingForServer,
-    }));
-  },
 });
 
 export default createRephraseSlice;

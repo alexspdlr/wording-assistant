@@ -22,9 +22,9 @@ export type ActiveWorkerStateName =
   | 'processingTerminate'
   | 'processingError';
 
-interface ActiveWorkerStateData {
+export interface ActiveWorkerStateData {
   id: string;
-  inputText: string | null;
+  originalText: string | null;
   targetText: string | null;
   cursorIndex: number;
   rephrasingOptions: string[];
@@ -54,7 +54,7 @@ export type ClientActionPayload =
   | ClientActionPayload_SelectWordingAlternative;
 
 export interface ClientActionPayload_SelectText {
-  inputText: string;
+  originalText: string;
 }
 
 export interface ClientActionPayload_DeselectText {}
