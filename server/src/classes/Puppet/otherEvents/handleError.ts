@@ -7,6 +7,7 @@ import {
 import { ActiveWorkerState } from '../../../types/socket';
 
 const handleError = async (
+  eventId: string,
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void,
@@ -29,7 +30,10 @@ const handleError = async (
 
     const response_Start: ServerResponseEvent_Extended = {
       endpoint: 'processingErrorStarted',
-      workerState: newWorkerState_Start,
+      payload: {
+        eventId,
+        workerState: newWorkerState_Start,
+      },
     };
 
     // UPDATE LOCAL STATE & RESPOND
@@ -58,7 +62,10 @@ const handleError = async (
 
     const response_Finish: ServerResponseEvent_Extended = {
       endpoint: 'processingErrorCompleted',
-      workerState: newWorkerState_Finish,
+      payload: {
+        eventId,
+        workerState: newWorkerState_Finish,
+      },
     };
 
     // UPDATE LOCAL STATE & RESPOND

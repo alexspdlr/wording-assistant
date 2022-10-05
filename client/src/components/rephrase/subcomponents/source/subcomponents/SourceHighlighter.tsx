@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useBoundStore from 'src/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import highlightText from 'src/utils/highlightText';
@@ -57,21 +57,38 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
     type: 'appear',
   });
 
+  const getStartIndex = useCallback(() => startIndex, [startIndex]);
+  const getEndIndex = useCallback(() => endIndex, [endIndex]);
+  const getCurrentHighlightStartIndex = useCallback(
+    () => currentHighlight.startIndex,
+    [currentHighlight.startIndex]
+  );
+
+  const getCurrentHighlightEndIndex = useCallback(
+    () => currentHighlight.endIndex,
+    [currentHighlight.endIndex]
+  );
+
   useEffect(() => {
-    if (startIndex === 0 && endIndex === 0) {
+    if (getStartIndex() === 0 && getEndIndex() === 0) {
       setCurrentHighlight({
-        startIndex: currentHighlight.startIndex,
-        endIndex: currentHighlight.endIndex,
+        startIndex: getCurrentHighlightStartIndex(),
+        endIndex: getCurrentHighlightEndIndex(),
         type: 'disappear',
       });
     } else {
       setCurrentHighlight({
-        startIndex: startIndex,
-        endIndex: endIndex,
+        startIndex: getStartIndex(),
+        endIndex: getEndIndex(),
         type: 'appear',
       });
     }
-  }, [startIndex, endIndex]);
+  }, [
+    getStartIndex,
+    getEndIndex,
+    getCurrentHighlightEndIndex,
+    getCurrentHighlightStartIndex,
+  ]);
 
   return (
     <Container ref={highlighterRef}>

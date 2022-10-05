@@ -28,7 +28,10 @@ const start = async (
 
   const response: ServerResponseEvent_Extended = {
     endpoint: 'setupCompleted',
-    workerState: newWorkerState,
+    payload: {
+      eventId: '',
+      workerState: newWorkerState,
+    },
   };
 
   // UPDATE LOCAL STATE & RESPOND

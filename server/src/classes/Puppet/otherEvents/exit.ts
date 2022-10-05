@@ -19,7 +19,10 @@ const exit = async (
 
   const response: ServerResponseEvent_Extended = {
     endpoint: 'exitCompleted',
-    workerState: newWorkerState,
+    payload: {
+      eventId: '',
+      workerState: newWorkerState,
+    },
   };
 
   // UPDATE LOCAL STATE & RESPOND

@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import Card from 'src/components/general/card';
 import useBoundStore from 'src/store';
 import copyToClipboard from 'src/utils/copyToClipboard';
+import generateDefaultWorkerState from 'src/utils/generateDefaultWorkerState';
 import useClickAway from 'src/utils/hooks/useClickAway';
 import isMobileDevice from 'src/utils/isMobileDevice';
 import { isMap } from 'util/types';
@@ -88,7 +89,6 @@ const RephraseToolLayout = (props: RephraseToolLayoutProps) => {
   const sourceValue = searchParams.get('source-value');
   const containerRef = useRef(null);
   const deselectText = useBoundStore((state) => state.deselectText);
-
   // handle deselect text outside toolcard container
   const onClickAway = (event: any) => {
     deselectText();

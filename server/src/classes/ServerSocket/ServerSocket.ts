@@ -115,7 +115,7 @@ export class ServerSocket {
   /* -------------------------------------------------------------------------- */
 
   private respondToClient = (socketId: string, event: ServerResponseEvent) => {
-    this.io.to(socketId).emit(event.endpoint, event.workerState);
+    this.io.to(socketId).emit(event.endpoint, event.payload);
   };
 
   /* -------------------------------------------------------------------------- */

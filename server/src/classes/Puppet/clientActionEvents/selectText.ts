@@ -4,6 +4,7 @@ import { ActiveWorkerState } from '../../../types/socket';
 import handleError from '../otherEvents/handleError';
 
 const selectText = async (
+  eventId: string,
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void,
@@ -25,7 +26,10 @@ const selectText = async (
 
     const response_Start: ServerResponseEvent_Extended = {
       endpoint: 'selectTextStarted',
-      workerState: newWorkerState_Start,
+      payload: {
+        eventId,
+        workerState: newWorkerState_Start,
+      },
     };
 
     // UPDATE LOCAL STATE & RESPOND
@@ -47,6 +51,7 @@ const selectText = async (
     // HANDLE ERROR
     if (response.type === 'error') {
       await handleError(
+        eventId,
         localState,
         updateLocalState,
         respondToPuppet,
@@ -66,7 +71,10 @@ const selectText = async (
 
       const response_Finish: ServerResponseEvent_Extended = {
         endpoint: 'selectTextCompleted',
-        workerState: newWorkerState_Finish,
+        payload: {
+          eventId,
+          workerState: newWorkerState_Finish,
+        },
       };
 
       // UPDATE LOCAL STATE & RESPOND

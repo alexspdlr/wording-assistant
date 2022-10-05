@@ -21,6 +21,14 @@ const Container = styled('div')(
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+
+  animation: fade 300ms;
+  @keyframes fade {
+    0% { opacity: 0; } 
+    50% {opacity: 0.8;}
+    100% { opacity: 1; }
+  }
+
       `
 );
 

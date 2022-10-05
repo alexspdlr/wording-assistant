@@ -4,6 +4,7 @@ import { ActiveWorkerState } from '../../../types/socket';
 import generateDefaultWorkerState from '../../ServerSocket/util/generateDefaultWorkerState';
 
 const deselectText = async (
+  eventId: string,
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void
@@ -27,7 +28,10 @@ const deselectText = async (
 
     const response_Start: ServerResponseEvent_Extended = {
       endpoint: 'deselectTextStarted',
-      workerState: newWorkerState_Start,
+      payload: {
+        eventId,
+        workerState: newWorkerState_Start,
+      },
     };
 
     // UPDATE LOCAL STATE & RESPOND
@@ -56,7 +60,10 @@ const deselectText = async (
 
     const response_Finish: ServerResponseEvent_Extended = {
       endpoint: 'deselectTextCompleted',
-      workerState: newWorkerState_Finish,
+      payload: {
+        eventId,
+        workerState: newWorkerState_Finish,
+      },
     };
 
     // UPDATE LOCAL STATE & RESPOND

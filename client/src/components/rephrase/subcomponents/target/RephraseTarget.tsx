@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
 import { ActiveWorkerState } from 'src/types/socket';
-import { ClientWorkerState } from 'src/types/store';
+import { ClientWorkerState, UiExpectedResponse } from 'src/types/store';
 import RephraseHint from '../RephraseHint';
 import TargetSelect from './subcomponents/TargetSelect';
 
@@ -34,22 +34,26 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
   const targetText = useBoundStore((state) => state.uiState.targetText);
-  const serverState: ClientWorkerState = useBoundStore(
-    (state) => state.serverState
+  const expectedResponse: UiExpectedResponse | null = useBoundStore(
+    (state) => state.uiState.expectedResponse
   );
+
+  const showLoadingSpinner = () =>
+    expectedResponse && expectedResponse.endpoint === 'selectText';
+  const showHint = () =>
+    (expectedResponse && expectedResponse.endpoint === 'deselectText') ||
+    !targetText;
 
   return (
     <Wrapper>
       <Container>
-        {serverState.stateName === 'processingSelectText' ? (
+        {showLoadingSpinner() ? (
           <div style={{ padding: '24px 32px' }}>
             <LoadingSpinner />
           </div>
         ) : (
           <>
-            {targetText ? (
-              <TargetSelect value={targetText} />
-            ) : (
+            {showHint() ? (
               <>
                 {value && value.length > 0 && (
                   <RephraseHint
@@ -59,6 +63,8 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                   />
                 )}
               </>
+            ) : (
+              <TargetSelect value={targetText || ''} />
             )}
           </>
         )}

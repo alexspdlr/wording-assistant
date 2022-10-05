@@ -1,6 +1,10 @@
 import { randomUUID } from 'crypto';
 import { ClientActionEvent_Extended } from '../../types';
-import { ActiveWorkerState, ClientActionEndpoint } from '../../types/socket';
+import {
+  ActiveWorkerState,
+  ClientActionEndpoint,
+  ClientActionPayload,
+} from '../../types/socket';
 
 interface QueueEvent {
   event: ClientActionEvent_Extended;
@@ -34,7 +38,9 @@ export class EventManager {
       priority: determineEventPriority(event.endpoint),
       event: event,
       retryTimeout: determineRetryTimeout(event.endpoint),
-      id: randomUUID(),
+      id: ['startWorker', 'terminateWorker'].includes(event.endpoint)
+        ? randomUUID()
+        : (event.payload as ClientActionPayload).eventId,
       preconditionFulfilled: detemineIfPreconditionFulfilled(
         event.endpoint,
         this.getActiveWorkerState

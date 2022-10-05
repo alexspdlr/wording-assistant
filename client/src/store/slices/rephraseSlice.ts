@@ -1,12 +1,13 @@
-import { Socket } from 'socket.io-client';
-import { ActiveWorkerState, ClientActionEvent } from 'src/types/socket';
-import {
-  ClientWorkerState,
-  RephraseSlice,
-  RephraseState,
-} from 'src/types/store';
-import { StateCreator } from 'zustand';
 import produce from 'immer';
+import { Socket } from 'socket.io-client';
+import {
+  ClientActionEvent,
+  ServerResponseEndpoint,
+  ServerResponsePayload,
+} from 'src/types/socket';
+import { RephraseSlice, RephraseState } from 'src/types/store';
+import { v4 as uuidv4 } from 'uuid';
+import { StateCreator } from 'zustand';
 
 const ininitalState: RephraseState = {
   serverState: {
@@ -24,6 +25,7 @@ const ininitalState: RephraseState = {
     originalText: null,
     targetText: null,
     rephrasingOptions: [],
+    expectedResponse: null,
   },
 
   isErrorActive: false,
@@ -35,10 +37,23 @@ const ininitalState: RephraseState = {
 const socketEmit = (socket: Socket | null, event: ClientActionEvent) => {
   const { endpoint, payload } = event;
   if (socket) {
-    socket.emit(endpoint, payload, async (callback: any) => {
-      console.info(`Callback for ${endpoint}: `, callback);
-    });
+    socket.emit(endpoint, payload, async (callback: any) => {});
   }
+};
+
+const prepareClientAction = (
+  socket: Socket | null,
+  set: Function
+): string | false => {
+  if (!socket) {
+    set(
+      produce((state: RephraseState) => {
+        state.isErrorActive = true;
+      })
+    );
+    return false;
+  }
+  return uuidv4();
 };
 
 const createRephraseSlice: StateCreator<
@@ -81,8 +96,46 @@ const createRephraseSlice: StateCreator<
   /*                        HANDLE INCOMING SERVER EVENT                        */
   /* -------------------------------------------------------------------------- */
 
-  handleNewWorkerState: (newState: ClientWorkerState) => {
-    // update differences in ui state
+  handleServerResponse: (
+    payload: ServerResponsePayload,
+    endpoint: ServerResponseEndpoint | 'connect' | 'reconnect' | 'disconnect'
+  ) => {
+    const newState = payload.workerState;
+    const eventId = payload.eventId;
+
+    /* --------------------------- HANDLE EXPECT EVENT -------------------------- */
+
+    const expectedResponse = get().uiState.expectedResponse;
+
+    if (expectedResponse) {
+      const resolvingEndpoints: Array<
+        ServerResponseEndpoint | 'connect' | 'reconnect' | 'disconnect'
+      > = [
+        'connect',
+        'disconnect',
+        'reconnect',
+        'processingErrorCompleted',
+        'setupCompleted',
+      ];
+
+      if (
+        (endpoint.endsWith('Completed') &&
+          eventId === expectedResponse.eventId) ||
+        resolvingEndpoints.includes(endpoint)
+      ) {
+        // resolve expectation
+        set(
+          produce((state: RephraseState) => {
+            state.uiState.expectedResponse = null;
+          })
+        );
+      } else {
+        // block ui update
+        return;
+      }
+    }
+
+    /* ------------------------ UPDATE DIFFERENCES IN UI ------------------------ */
     const currentUiState = get().uiState;
     if (newState.data.originalText !== currentUiState.originalText) {
       set(
@@ -123,25 +176,33 @@ const createRephraseSlice: StateCreator<
   /* ------------------------------- SELECT TEXT ------------------------------ */
 
   selectText: async (text: string) => {
-    // HANDLE DECLINE SITUATIONS
+    // PREPARE
+    const socket = get().socket;
+    const eventId = prepareClientAction(socket, set);
+    if (!eventId) {
+      return;
+    }
+
+    // HANDLE CUSTOM DECLINE SITUATIONS
     if (text.trim().length === 0) {
       return;
     }
 
-    const socket = get().socket;
-    if (!socket) {
-      set(
-        produce((state: RephraseState) => {
-          state.isErrorActive = true;
-        })
-      );
-      return;
-    }
+    // UPDATE UI STATE
+    set(
+      produce((state: RephraseState) => {
+        state.uiState.expectedResponse = {
+          eventId,
+          endpoint: 'selectText',
+        };
+      })
+    );
 
     // EMIT TO SOCKET
     const event: ClientActionEvent = {
       endpoint: 'selectText',
       payload: {
+        eventId,
         originalText: text,
       },
     };
@@ -151,19 +212,10 @@ const createRephraseSlice: StateCreator<
 
   /* ------------------------------ DESELECT TEXT ----------------------------- */
   deselectText: async () => {
-    // HANDLE DECLINE SITUATIONS
-    const workerState = get().serverState;
-    if (workerState.stateName === 'waitingForSelectText') {
-      return;
-    }
-
+    // PREPARE
     const socket = get().socket;
-    if (!socket) {
-      set(
-        produce((state: RephraseState) => {
-          state.isErrorActive = true;
-        })
-      );
+    const eventId = prepareClientAction(socket, set);
+    if (!eventId) {
       return;
     }
 
@@ -173,12 +225,18 @@ const createRephraseSlice: StateCreator<
         state.uiState.originalText = null;
         state.uiState.targetText = null;
         state.uiState.rephrasingOptions = [];
+        state.uiState.expectedResponse = {
+          eventId,
+          endpoint: 'deselectText',
+        };
       })
     );
 
     const event: ClientActionEvent = {
       endpoint: 'deselectText',
-      payload: {},
+      payload: {
+        eventId,
+      },
     };
 
     socketEmit(socket, event);

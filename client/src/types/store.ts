@@ -3,6 +3,9 @@ import {
   ActiveWorkerState,
   ActiveWorkerStateData,
   ActiveWorkerStateName,
+  ClientActionEndpoint,
+  ServerResponseEndpoint,
+  ServerResponsePayload,
 } from './socket';
 
 export interface ClientWorkerState {
@@ -10,7 +13,13 @@ export interface ClientWorkerState {
   data: ActiveWorkerStateData;
 }
 
-type UiState = Omit<ActiveWorkerStateData, 'id' | 'cursorIndex'>;
+export interface UiExpectedResponse {
+  eventId: string;
+  endpoint: ClientActionEndpoint;
+}
+interface UiState extends Omit<ActiveWorkerStateData, 'id' | 'cursorIndex'> {
+  expectedResponse: UiExpectedResponse | null;
+}
 
 export interface RephraseState {
   // worker state in server
@@ -32,7 +41,10 @@ export interface RephraseActions {
   setIsErrorActive: (isErrorActive: boolean) => void;
 
   // handle incoming server event
-  handleNewWorkerState: (newState: ClientWorkerState) => void;
+  handleServerResponse: (
+    payload: ServerResponsePayload,
+    endpoint: ServerResponseEndpoint | 'connect' | 'reconnect' | 'disconnect'
+  ) => void;
 
   // client actions
   selectText: (text: string) => void;

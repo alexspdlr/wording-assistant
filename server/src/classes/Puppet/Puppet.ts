@@ -42,7 +42,7 @@ export class Puppet {
     // send start event to client
     const startEvent: ClientActionEvent_Extended = {
       endpoint: 'startWorker',
-      payload: { id: this.id },
+      payload: { workerId: this.id },
     };
     this.worker.postMessage(startEvent);
   }
@@ -75,7 +75,11 @@ export class Puppet {
 
     this.respondToSocket({
       endpoint: 'setupCompleted',
-      workerState: this.workerState,
+
+      payload: {
+        eventId: '',
+        workerState: this.workerState,
+      },
     });
   }
 
@@ -98,8 +102,8 @@ export class Puppet {
       return;
     }
 
-    const eventData = event.workerState.data;
-    this.updateWorkerState(event.workerState.stateName, {
+    const eventData = event.payload.workerState.data;
+    this.updateWorkerState(event.payload.workerState.stateName, {
       originalText: eventData.originalText ? eventData.originalText : undefined,
       targetText: eventData.targetText ? eventData.targetText : undefined,
       cursorIndex: eventData.cursorIndex ? eventData.cursorIndex : undefined,

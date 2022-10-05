@@ -54,21 +54,27 @@ export type ClientActionPayload =
   | ClientActionPayload_SelectWordingAlternative;
 
 export interface ClientActionPayload_SelectText {
+  eventId: string;
   originalText: string;
 }
 
-export interface ClientActionPayload_DeselectText {}
+export interface ClientActionPayload_DeselectText {
+  eventId: string;
+}
 
 export interface ClientActionPayload_MoveCursor {
+  eventId: string;
   newCursorIndex: number;
 }
 
 export interface ClientActionPayload_UpdateTargetText {
+  eventId: string;
   newTargetText: string;
   postChangeCursorIndex: number;
 }
 
 export interface ClientActionPayload_SelectWordingAlternative {
+  eventId: string;
   selectedAlternativeIndex: number;
 }
 
@@ -78,7 +84,12 @@ export interface ClientActionPayload_SelectWordingAlternative {
 
 export interface ServerResponseEvent {
   endpoint: ServerResponseEndpoint;
+  payload: ServerResponsePayload;
+}
+
+export interface ServerResponsePayload {
   workerState: ActiveWorkerState;
+  eventId: string;
 }
 
 export type ServerResponseEndpoint =

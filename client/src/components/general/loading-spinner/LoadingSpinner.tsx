@@ -6,6 +6,14 @@ const Container = styled('div')(
   position: relative;
   width: 22px;
   height: 22px;
+  animation: fadeIn 200ms;
+
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    5% { opacity: 0.1; }
+    100% { opacity: 1; }
+  }
+
   `
 );
 

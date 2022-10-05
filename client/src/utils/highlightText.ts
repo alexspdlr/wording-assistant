@@ -17,7 +17,7 @@ const highlightText = (
       `${resultingString.slice(
         0,
         range.startIndex
-      )}<mark style="padding:3px 0px 4px 0px; color:transparent; ${
+      )}<mark style="padding:3px 0px 4px 0px; color:#000; ${
         type === 'appear'
           ? 'opacity: 1;'
           : 'transition: opacity 150ms ease-out; opacity: 0;'

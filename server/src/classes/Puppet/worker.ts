@@ -17,6 +17,7 @@ import selectWordingAlternative from './clientActionEvents/selectWordingAlternat
 import { EventManager } from '../EventManager/EventManager';
 import {
   ActiveWorkerState,
+  ClientActionPayload,
   ClientActionPayload_MoveCursor,
   ClientActionPayload_SelectText,
   ClientActionPayload_SelectWordingAlternative,
@@ -43,13 +44,13 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
         localState,
         updateLocalState,
         respondToPuppet,
-        (event.payload as ClientActionPayload_StartWorker).id
+        (event.payload as ClientActionPayload_StartWorker).workerId
       );
-
       return;
 
     case 'selectText':
       await selectText(
+        (event.payload as ClientActionPayload).eventId,
         localState,
         updateLocalState,
         respondToPuppet,
@@ -58,12 +59,18 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
 
       return;
     case 'deselectText':
-      await deselectText(localState, updateLocalState, respondToPuppet);
+      await deselectText(
+        (event.payload as ClientActionPayload).eventId,
+        localState,
+        updateLocalState,
+        respondToPuppet
+      );
 
       return;
 
     case 'moveCursor':
       await moveCursor(
+        (event.payload as ClientActionPayload).eventId,
         localState,
         updateLocalState,
         respondToPuppet,
@@ -73,6 +80,7 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
 
     case 'updateTargetText':
       await updateTargetText(
+        (event.payload as ClientActionPayload).eventId,
         localState,
         updateLocalState,
         respondToPuppet,
@@ -84,6 +92,7 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
 
     case 'selectWordingAlternative':
       await selectWordingAlternative(
+        (event.payload as ClientActionPayload).eventId,
         localState,
         updateLocalState,
         respondToPuppet,

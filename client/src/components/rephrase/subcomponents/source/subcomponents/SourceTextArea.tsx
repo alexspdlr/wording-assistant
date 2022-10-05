@@ -2,11 +2,13 @@ import styled from '@emotion/styled';
 import React, {
   ReactEventHandler,
   SyntheticEvent,
+  useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react';
 import useBoundStore from 'src/store';
+import { UiExpectedResponse } from 'src/types/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import useClickAway from 'src/utils/hooks/useClickAway';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
@@ -38,12 +40,11 @@ const TextArea = styled('textarea')(
     line-height: 0;
     color: ${addAlphaToHexColor(
       defaultProps.theme.palette.text.main,
-      props.textSelected ? 0.65 : 1
+      props.textSelected ? 0.6 : 1
     )}; 
     transition: color 300ms ease-in-out;
     ::selection{
-      color: ${addAlphaToHexColor(defaultProps.theme.palette.text.main, 1)};
-      text-decoration: underline red;
+      color: transparent;  
     } 
     `
 );
@@ -61,31 +62,18 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
   const { value, setValue } = props;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const selectedText = useBoundStore((state) => state.uiState.originalText);
+  const expectedResponse: UiExpectedResponse | null = useBoundStore(
+    (state) => state.uiState.expectedResponse
+  );
   const [range, setRange] = useState<SelectionRange | null>(null);
   useRephraseToolTextboxSize(value, textareaRef);
   const deselectText = useBoundStore((state) => state.deselectText);
-
-  const onClickAway = (event: any) => {
-    const targetNode = event.target;
-    const parentNode = event.target.parentNode;
-
-    if (
-      parentNode.id !== 'target-select-container' &&
-      targetNode.id !== 'target-select-container'
-    ) {
-      setRange(null);
-    } else {
-      console.log(' select word or click parent   ');
-    }
-  };
-
-  useClickAway(textareaRef, onClickAway);
-
   const textAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(event.target.value);
   };
 
   const resetInput = () => {
+    deselectText();
     setValue('');
     setRange(null);
     if (textareaRef && textareaRef.current) {
@@ -130,10 +118,11 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
               startIndex: textareaRef.current?.selectionStart,
               endIndex: textareaRef.current?.selectionEnd,
             };
-
+            console.log('1');
             setRange(newRange);
           }
         } else {
+          console.log('2');
           setRange(null);
         }
       }
@@ -156,12 +145,6 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
         ?.removeEventListener('dragstart', dragStartListener);
     };
   }, []);
-
-  useEffect(() => {
-    if (!selectedText || selectedText.length === 0) {
-      setRange(null);
-    }
-  }, [selectedText]);
 
   const calculateMinHeight = () => {
     const viewportHeight = window.innerHeight;
@@ -200,7 +183,11 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
           // handle deselect text in container
           const selection = window.getSelection();
           const selectionString = selection?.toString();
-          if (!(selection && selectionString) || !range) deselectText();
+          if (!(selection && selectionString) || !range) {
+            console.log('DESELECT TEXT ');
+            setRange(null);
+            deselectText();
+          }
         }}
         onMouseDown={() => setRange(null)}
         autoFocus

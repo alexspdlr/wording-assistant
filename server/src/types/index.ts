@@ -6,6 +6,7 @@ import {
   ClientActionEndpoint,
   ClientActionPayload,
   ServerResponseEndpoint,
+  ServerResponsePayload,
 } from './socket';
 
 export interface PuppetState {
@@ -16,7 +17,7 @@ export interface PuppetState {
 }
 
 export interface ClientActionPayload_StartWorker {
-  id: string;
+  workerId: string;
 }
 
 export type ClientActionPayload_TerminateWorker = Record<string, never>;
@@ -30,7 +31,7 @@ export interface ClientActionEvent_Extended {
 
 export interface ServerResponseEvent_Extended {
   endpoint: ServerResponseEndpoint | 'exitCompleted';
-  workerState: ActiveWorkerState;
+  payload: ServerResponsePayload;
 }
 
 export interface PuppeteerError {
