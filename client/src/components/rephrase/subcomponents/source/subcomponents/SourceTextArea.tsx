@@ -11,6 +11,7 @@ import useBoundStore from 'src/store';
 import { UiExpectedResponse } from 'src/types/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import useClickAway from 'src/utils/hooks/useClickAway';
+import useMouseIsDown from 'src/utils/hooks/useMouseIsDown';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import wait from 'src/utils/wait';
 import SourceClearButton from './SourceClearButton';
@@ -45,7 +46,11 @@ const TextArea = styled('textarea')(
     )}; 
 
     ::selection{
-      color: transparent;
+      color: ${
+        props.textSelected
+          ? 'transparent'
+          : defaultProps.theme.palette.text.light
+      }; 
     } 
 
     transition: color 300ms ease-in-out;
@@ -65,9 +70,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
   const { value, setValue } = props;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const selectedText = useBoundStore((state) => state.uiState.originalText);
-  const expectedResponse: UiExpectedResponse | null = useBoundStore(
-    (state) => state.uiState.expectedResponse
-  );
+  const mouseIsPressed = useMouseIsDown();
   const [range, setRange] = useState<SelectionRange | null>(null);
   useRephraseToolTextboxSize(value, textareaRef);
   const deselectText = useBoundStore((state) => state.deselectText);
@@ -120,10 +123,13 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
               startIndex: textareaRef.current?.selectionStart,
               endIndex: textareaRef.current?.selectionEnd,
             };
-            setRange(newRange);
+            if (newRange !== range) {
+              setRange(newRange);
+            }
           }
         } else {
           setRange(null);
+
           deselectText();
         }
       }
@@ -170,24 +176,23 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
 
   const updateRangeOnSelectTextChange = useCallback(
     (selectedText: string) => {
-      const newRange = {
-        startIndex: value.indexOf(selectedText),
-        endIndex: value.indexOf(selectedText) + selectedText.length,
-      };
-      console.log('UPDATE FROM ABOVE, newRange: ', newRange);
-
-      setRange(newRange);
+      if (!selectedText || selectedText === '') {
+        setRange(null);
+      }
     },
-    [value]
+    [selectedText]
   );
 
   useEffect(() => {
     if (!selectedText || selectedText.length === 0) {
-      setRange(null);
+      if (!mouseIsPressed) {
+        console.log('4');
+        setRange(null);
+      }
     } else {
       updateRangeOnSelectTextChange(selectedText);
     }
-  }, [selectedText, updateRangeOnSelectTextChange]);
+  }, [mouseIsPressed, selectedText, updateRangeOnSelectTextChange]);
 
   return (
     <>
@@ -195,6 +200,21 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
         value={value || ''}
         startIndex={range?.startIndex || 0}
         endIndex={range?.endIndex || 0}
+        updateTextAreaSelection={(
+          newStartIndex: number,
+          newEndIndex: number
+        ) => {
+          /*
+          if (!mouseIsPressed && textareaRef.current) {
+            if (textareaRef.current.selectionStart !== newStartIndex) {
+              textareaRef.current.selectionStart = newStartIndex;
+            }
+            if (textareaRef.current.selectionEnd !== newEndIndex) {
+              textareaRef.current.selectionEnd = newEndIndex;
+            }
+          }
+          */
+        }}
       />
       <TextArea
         id='source-value-input'

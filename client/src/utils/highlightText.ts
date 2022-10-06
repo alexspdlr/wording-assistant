@@ -20,9 +20,9 @@ const highlightText = (
         range.startIndex
       )}<mark style="padding:3px 0px 4px 0px; color:${textColor}; ${
         type === 'appear'
-          ? 'opacity: 1;'
+          ? 'ransition: width 400ms ease-out; width: 0%;'
           : 'transition: opacity 150ms ease-out; opacity: 0;'
-      } background-color: ${color}};">${resultingString.slice(
+      } background-color: ${color};};">${resultingString.slice(
         range.startIndex,
         range.endIndex
       )}</mark>${resultingString.slice(range.endIndex)}`,

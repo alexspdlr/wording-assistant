@@ -7,11 +7,16 @@ import useBoundStore from 'src/store';
 import { useEffect } from 'react';
 import CustomPopover from 'src/components/Popover';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
+import useMouseIsDown from 'src/utils/hooks/useMouseIsDown';
 const RephrasePage = () => {
   const theme = useTheme();
 
   const uiState = useBoundStore((state) => state.uiState);
   const serverState = useBoundStore((state) => state.serverState);
+
+  const handleServerResponse = useBoundStore(
+    (state) => state.handleServerResponse
+  );
   const activeBreakpoint = useBreakpoint();
 
   return (
@@ -19,6 +24,29 @@ const RephrasePage = () => {
       <Section backgroundColor={theme.palette.background.dark}>
         <RephraseTool />
       </Section>
+      <button
+        onClick={() =>
+          handleServerResponse(
+            {
+              workerState: {
+                stateName: 'waitingForTargetTextAction',
+                data: {
+                  id: 'some_worker_id',
+                  originalText: 'Bombshell text',
+                  targetText: 'Bombshell text',
+                  cursorIndex: 0,
+                  rephrasingOptions: [],
+                },
+              },
+              eventId: 'TEST',
+            },
+            'selectTextCompleted'
+          )
+        }
+      >
+        {' '}
+        sendSelect text completed{' '}
+      </button>
       <div style={{ display: 'flex' }}>
         BREAKPOINT: {activeBreakpoint}
         <div style={{ width: '50%', backgroundColor: 'yellow' }}>

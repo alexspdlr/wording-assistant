@@ -135,6 +135,8 @@ const createRephraseSlice: StateCreator<
       }
     }
 
+    console.log('here');
+
     /* ------------------------ UPDATE DIFFERENCES IN UI ------------------------ */
     const currentUiState = get().uiState;
     if (newState.data.originalText !== currentUiState.originalText) {

@@ -1,13 +1,9 @@
-import styled from '@emotion/styled';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import useBoundStore from 'src/store';
-import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
-import highlightText from 'src/utils/highlightText';
-import useClickAway from 'src/utils/hooks/useClickAway';
-import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
-import splitIntoSentences from 'src/utils/splitIntoSentences';
-import parse from 'html-react-parser';
 import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
+import parse from 'html-react-parser';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import highlightText from 'src/utils/highlightText';
+import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 
 const Container = styled('div')(
   (defaultProps) => ` 
@@ -38,6 +34,7 @@ interface SourceHighlighterProps {
   value: string;
   startIndex: number;
   endIndex: number;
+  updateTextAreaSelection: (newStartIndex: number, newEndIndex: number) => void;
 }
 
 interface Highlight {
@@ -47,7 +44,7 @@ interface Highlight {
 }
 
 const SourceHighlighter = (props: SourceHighlighterProps) => {
-  const { value, startIndex, endIndex } = props;
+  const { value, startIndex, endIndex, updateTextAreaSelection } = props;
   const highlighterRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
   useRephraseToolTextboxSize(value, highlighterRef);
@@ -71,6 +68,11 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
   );
 
   useEffect(() => {
+    updateTextAreaSelection(
+      getCurrentHighlightStartIndex(),
+      getCurrentHighlightEndIndex()
+    );
+
     if (getStartIndex() === 0 && getEndIndex() === 0) {
       setCurrentHighlight({
         startIndex: getCurrentHighlightStartIndex(),
@@ -89,6 +91,7 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
     getEndIndex,
     getCurrentHighlightEndIndex,
     getCurrentHighlightStartIndex,
+    updateTextAreaSelection,
   ]);
 
   return (
@@ -103,7 +106,7 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
               endIndex: currentHighlight.endIndex,
             },
           ],
-          '#FFE6B6',
+          '#ffd485',
           theme.palette.text.light
         )
       )}
