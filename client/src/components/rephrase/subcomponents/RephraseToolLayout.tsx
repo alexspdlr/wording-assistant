@@ -91,15 +91,10 @@ const RephraseToolLayout = (props: RephraseToolLayoutProps) => {
   const deselectText = useBoundStore((state) => state.deselectText);
   // handle deselect text outside toolcard container
   const onClickAway = (event: any) => {
-    console.log('OUTER CLICK AWAY');
     deselectText();
   };
 
   useClickAway(containerRef, onClickAway);
-
-  const handleServerResponse = useBoundStore(
-    (state) => state.handleServerResponse
-  );
 
   return (
     <ToolCardContainer
@@ -113,29 +108,6 @@ const RephraseToolLayout = (props: RephraseToolLayoutProps) => {
     >
       <Header isSource style={{ gridArea: '1 / 1 / 2 / 2' }}>
         Enter Text
-        <button
-          onClick={() =>
-            handleServerResponse(
-              {
-                workerState: {
-                  stateName: 'waitingForTargetTextAction',
-                  data: {
-                    id: 'some_worker_id',
-                    originalText: 'Bombshell text',
-                    targetText: 'Bombshell text',
-                    cursorIndex: 0,
-                    rephrasingOptions: [],
-                  },
-                },
-                eventId: 'TEST',
-              },
-              'selectTextCompleted'
-            )
-          }
-        >
-          {' '}
-          sendSelect text completed{' '}
-        </button>
       </Header>
       <Header isSource={false} style={{ gridArea: '1 / 2 / 2 / 3' }}>
         Paraphrase

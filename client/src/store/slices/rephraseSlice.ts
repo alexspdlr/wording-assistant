@@ -2,6 +2,7 @@ import produce from 'immer';
 import { Socket } from 'socket.io-client';
 import {
   ClientActionEvent,
+  ClientActionPayload_SelectText,
   ServerResponseEndpoint,
   ServerResponsePayload,
 } from 'src/types/socket';
@@ -18,16 +19,18 @@ const ininitalState: RephraseState = {
       targetText: null,
       cursorIndex: 0,
       rephrasingOptions: [],
+      sourceSelectionStart: null,
+      sourceSelectionEnd: null,
     },
   },
-
   uiState: {
     originalText: null,
     targetText: null,
     rephrasingOptions: [],
     expectedResponse: null,
+    sourceSelectionStart: null,
+    sourceSelectionEnd: null,
   },
-
   isErrorActive: false,
   isConnectedToServer: false,
   socket: null,
@@ -37,6 +40,7 @@ const ininitalState: RephraseState = {
 const socketEmit = (socket: Socket | null, event: ClientActionEvent) => {
   const { endpoint, payload } = event;
   if (socket) {
+    console.log(`${endpoint}:`, payload);
     socket.emit(endpoint, payload, async (callback: any) => {});
   }
 };
@@ -135,8 +139,6 @@ const createRephraseSlice: StateCreator<
       }
     }
 
-    console.log('here');
-
     /* ------------------------ UPDATE DIFFERENCES IN UI ------------------------ */
     const currentUiState = get().uiState;
     if (newState.data.originalText !== currentUiState.originalText) {
@@ -163,6 +165,27 @@ const createRephraseSlice: StateCreator<
       );
     }
 
+    if (
+      newState.data.sourceSelectionStart !== currentUiState.sourceSelectionStart
+    ) {
+      set(
+        produce((state: RephraseState) => {
+          state.uiState.sourceSelectionStart =
+            newState.data.sourceSelectionStart;
+        })
+      );
+    }
+
+    if (
+      newState.data.sourceSelectionEnd !== currentUiState.sourceSelectionEnd
+    ) {
+      set(
+        produce((state: RephraseState) => {
+          state.uiState.sourceSelectionEnd = newState.data.sourceSelectionEnd;
+        })
+      );
+    }
+
     // update server state
     set(
       produce((state: RephraseState) => {
@@ -177,7 +200,11 @@ const createRephraseSlice: StateCreator<
 
   /* ------------------------------- SELECT TEXT ------------------------------ */
 
-  selectText: async (text: string) => {
+  selectText: async (
+    text: string,
+    selectionStart: number,
+    selectionEnd: number
+  ) => {
     // PREPARE
     const socket = get().socket;
     const eventId = prepareClientAction(socket, set);
@@ -194,6 +221,8 @@ const createRephraseSlice: StateCreator<
     set(
       produce((state: RephraseState) => {
         state.uiState.originalText = text;
+        state.uiState.sourceSelectionStart = selectionStart;
+        state.uiState.sourceSelectionEnd = selectionEnd;
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'selectText',
@@ -202,12 +231,17 @@ const createRephraseSlice: StateCreator<
     );
 
     // EMIT TO SOCKET
+
+    const eventPayload: ClientActionPayload_SelectText = {
+      eventId,
+      originalText: text,
+      sourceSelectionStart: selectionStart,
+      sourceSelectionEnd: selectionEnd,
+    };
+
     const event: ClientActionEvent = {
       endpoint: 'selectText',
-      payload: {
-        eventId,
-        originalText: text,
-      },
+      payload: eventPayload,
     };
 
     socketEmit(socket, event);
@@ -235,6 +269,8 @@ const createRephraseSlice: StateCreator<
       produce((state: RephraseState) => {
         state.uiState.originalText = null;
         state.uiState.targetText = null;
+        state.uiState.sourceSelectionStart = null;
+        state.uiState.sourceSelectionEnd = null;
         state.uiState.rephrasingOptions = [];
         state.uiState.expectedResponse = {
           eventId,

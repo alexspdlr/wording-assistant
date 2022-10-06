@@ -13,6 +13,8 @@ const generateDefaultWorkerState = (
       targetText: null,
       cursorIndex: 0,
       rephrasingOptions: [],
+      sourceSelectionStart: null,
+      sourceSelectionEnd: null,
     },
   };
 };

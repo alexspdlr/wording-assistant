@@ -47,7 +47,11 @@ export interface RephraseActions {
   ) => void;
 
   // client actions
-  selectText: (text: string) => void;
+  selectText: (
+    text: string,
+    selectionStart: number,
+    selectionEnd: number
+  ) => void;
   deselectText: () => void;
   moveCursor: (newCursorIndex: number) => void;
   updateTargetText: (newTargetText: string, newCursorIndex: number) => void;

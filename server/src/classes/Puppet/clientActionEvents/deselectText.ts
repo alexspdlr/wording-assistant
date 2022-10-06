@@ -23,6 +23,8 @@ const deselectText = async (
         targetText: null,
         cursorIndex: 0,
         rephrasingOptions: [],
+        sourceSelectionStart: null,
+        sourceSelectionEnd: null,
       },
     };
 
@@ -55,6 +57,8 @@ const deselectText = async (
         targetText: null,
         cursorIndex: 0,
         rephrasingOptions: [],
+        sourceSelectionStart: null,
+        sourceSelectionEnd: null,
       },
     };
 

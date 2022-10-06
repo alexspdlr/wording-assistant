@@ -8,7 +8,9 @@ const selectText = async (
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void,
-  originalText: string
+  originalText: string,
+  sourceSelectionStart: number,
+  sourceSelectionEnd: number
 ) => {
   if (localState.page && localState.browser) {
     /* -------------------------------------------------------------------------- */
@@ -21,6 +23,8 @@ const selectText = async (
       data: {
         ...localState.workerState.data,
         originalText,
+        sourceSelectionStart,
+        sourceSelectionEnd,
       },
     };
 
@@ -64,6 +68,8 @@ const selectText = async (
         data: {
           ...localState.workerState.data,
           originalText,
+          sourceSelectionStart,
+          sourceSelectionEnd,
           targetText:
             response.data.result || localState.workerState.data.targetText,
         },

@@ -57,6 +57,8 @@ const handleError = async (
         targetText: null,
         cursorIndex: 0,
         rephrasingOptions: [],
+        sourceSelectionStart: null,
+        sourceSelectionEnd: null,
       },
     };
 

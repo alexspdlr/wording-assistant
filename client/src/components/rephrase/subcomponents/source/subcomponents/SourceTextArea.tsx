@@ -14,6 +14,7 @@ import useClickAway from 'src/utils/hooks/useClickAway';
 import useMouseIsDown from 'src/utils/hooks/useMouseIsDown';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import wait from 'src/utils/wait';
+import { Z_ASCII } from 'zlib';
 import SourceClearButton from './SourceClearButton';
 import SourceHighlighter from './SourceHighlighter';
 
@@ -69,13 +70,18 @@ interface SourceTextAreaProps {
 const SourceTextArea = (props: SourceTextAreaProps) => {
   const { value, setValue } = props;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const selectedText = useBoundStore((state) => state.uiState.originalText);
+  const uiState = useBoundStore((state) => state.uiState);
   const mouseIsPressed = useMouseIsDown();
   const [range, setRange] = useState<SelectionRange | null>(null);
   useRephraseToolTextboxSize(value, textareaRef);
   const deselectText = useBoundStore((state) => state.deselectText);
   const textAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setRange(null);
     setValue(event.target.value);
+
+    if (uiState.originalText && uiState.originalText.length > 0) {
+      deselectText();
+    }
   };
 
   const resetInput = () => {
@@ -102,8 +108,12 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
 
       const selectionString = selection?.toString();
 
-      if (selectionString && selection) {
-        selectText(selectionString);
+      if (selectionString && selection && textareaRef.current) {
+        selectText(
+          selectionString,
+          textareaRef.current.selectionStart,
+          textareaRef.current.selectionEnd
+        );
       }
     }
   };
@@ -174,25 +184,85 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     return `${targetHeight}px`;
   };
 
-  const updateRangeOnSelectTextChange = useCallback(
-    (selectedText: string) => {
-      if (!selectedText || selectedText === '') {
-        setRange(null);
-      }
-    },
-    [selectedText]
-  );
+  const getMemoizedOriginalText = useCallback(() => {
+    return uiState.originalText;
+  }, [uiState.originalText]);
 
   useEffect(() => {
-    if (!selectedText || selectedText.length === 0) {
-      if (!mouseIsPressed) {
-        console.log('4');
+    const getRange = () => range;
+    const getValue = () => value;
+    const getUiState = () => uiState;
+    const getTextareaRef = () => {
+      if (textareaRef.current) {
+        return textareaRef.current;
+      }
+    };
+    const originalText = getMemoizedOriginalText();
+    const localRange = getRange();
+    const localTextAreaRef = getTextareaRef();
+    const localUiState = getUiState();
+    const localValue = getValue();
+
+    // if selected text doesnt exists at same place (in source text) anymore
+    if (
+      localUiState.sourceSelectionStart &&
+      localUiState.sourceSelectionEnd &&
+      !(
+        localValue.substring(
+          localUiState.sourceSelectionStart,
+          localUiState.sourceSelectionEnd
+        ) === originalText
+      )
+    ) {
+      deselectText();
+    }
+
+    if (
+      localUiState.sourceSelectionStart === null ||
+      localUiState.sourceSelectionEnd === null
+    ) {
+      // ui range === null
+
+      // correct range
+      if (localRange !== null) {
         setRange(null);
       }
+
+      // correct textarea selection
+      if (
+        localTextAreaRef &&
+        textareaRef.current &&
+        localTextAreaRef.selectionStart !== localTextAreaRef.selectionEnd
+      ) {
+        textareaRef.current.selectionStart = localTextAreaRef.selectionEnd;
+      }
     } else {
-      updateRangeOnSelectTextChange(selectedText);
+      // ui range !== null
+
+      // correct range
+      if (
+        localRange === null ||
+        localRange.startIndex !== localUiState.sourceSelectionStart ||
+        localRange.startIndex !== localUiState.sourceSelectionEnd
+      ) {
+        setRange({
+          startIndex: localUiState.sourceSelectionStart,
+          endIndex: localUiState.sourceSelectionEnd,
+        });
+      }
+
+      // correct textarea selection
+      if (
+        textareaRef.current &&
+        (textareaRef.current.selectionStart !==
+          localUiState.sourceSelectionStart ||
+          textareaRef.current.selectionEnd !== localUiState.sourceSelectionEnd)
+      ) {
+        textareaRef.current.selectionStart = localUiState.sourceSelectionStart;
+        textareaRef.current.selectionEnd = localUiState.sourceSelectionEnd;
+      }
     }
-  }, [mouseIsPressed, selectedText, updateRangeOnSelectTextChange]);
+  }, [getMemoizedOriginalText]);
 
   return (
     <>
@@ -221,6 +291,11 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
         ref={textareaRef}
         onChange={textAreaChange}
         onSelect={onSelectText}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            deselectText();
+          }
+        }}
         autoFocus
         value={value}
         spellCheck={false}
