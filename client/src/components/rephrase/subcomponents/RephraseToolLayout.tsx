@@ -28,6 +28,11 @@ const Header = styled('div')(
     align-items: center; 
     padding: 19px 12px 19px 24px;
     font-weight: 600; 
+    color: ${
+      defaultProps.theme.activeMode === 'dark'
+        ? defaultProps.theme.palette.text.light
+        : defaultProps.theme.palette.primary.dark
+    };
     border: 1px solid ${defaultProps.theme.palette.border};
     border-right: ${props.isSource && `none`};
     border-left: ${!props.isSource && `none`};
