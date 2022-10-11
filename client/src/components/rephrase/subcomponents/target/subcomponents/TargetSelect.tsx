@@ -35,12 +35,12 @@ const Container = styled('div')(
       `
 );
 
-interface WordProps {
+interface TextProps {
   selected: boolean;
 }
 
-const Word = styled('span')(
-  (props: WordProps) => (defaultProps) =>
+const Text = styled('span')(
+  (props: TextProps) => (defaultProps) =>
     `
     position: relative; 
   padding-top: 2px; 
@@ -135,7 +135,7 @@ const TargetSelect = (props: TargetSelectProps) => {
         >
           {splitWords.map((token, i) =>
             token.kind === 'text' ? (
-              <Word
+              <Text
                 selected={
                   targetCursorIndex !== null &&
                   (targetCursorIndex.index || targetCursorIndex.index === 0
@@ -154,9 +154,12 @@ const TargetSelect = (props: TargetSelectProps) => {
                 }
               >
                 {token.value}
-              </Word>
+              </Text>
             ) : (
-              <span key={`token_${i}`} style={{ whiteSpace: 'pre-wrap' }}>
+              <span
+                key={`token_${i}`}
+                style={{ whiteSpace: 'pre-wrap', color: 'transparent' }}
+              >
                 {token.value}
               </span>
             )
@@ -176,7 +179,7 @@ const TargetSelect = (props: TargetSelectProps) => {
             )}`,
           }}
         >
-          Original: <>{JSON.stringify(targetCursorIndex)}</>
+          Original:
           <div
             style={{
               fontWeight: 400,
