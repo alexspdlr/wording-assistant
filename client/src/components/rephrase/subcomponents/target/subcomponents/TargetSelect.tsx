@@ -84,7 +84,7 @@ const TargetSelect = (props: TargetSelectProps) => {
       targetCursorIndex || targetCursorIndex === 0
         ? splitWords.find(
             (word) =>
-              word.kind === 'word' &&
+              word.kind === 'text' &&
               targetCursorIndex.index >= word.startIndex &&
               targetCursorIndex.index <= word.endIndex
           )
@@ -103,8 +103,6 @@ const TargetSelect = (props: TargetSelectProps) => {
     }
 
     if (targetCursorIndex?.movementTriggeredBy === 'mouse') {
-      //TODO: toggle falls im selben wort, sonst true
-
       if (
         uiState.selectedTextToken === null ||
         !(
@@ -136,7 +134,7 @@ const TargetSelect = (props: TargetSelectProps) => {
           }}
         >
           {splitWords.map((token, i) =>
-            token.kind === 'word' ? (
+            token.kind === 'text' ? (
               <Word
                 selected={
                   targetCursorIndex !== null &&

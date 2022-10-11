@@ -61,6 +61,9 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const expectedResponse: UiExpectedResponse | null = useBoundStore(
     (state) => state.uiState.expectedResponse
   );
+  const rephrasingOptions: string[] = useBoundStore(
+    (state) => state.uiState.rephrasingOptions
+  );
   const storedTextToken = useBoundStore(
     (state) => state.uiState.selectedTextToken
   );
@@ -85,6 +88,8 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   useEffect(() => {
     setStoredTextToken(selectedTextToken);
     if (selectedTextToken && !_.isEqual(selectedTextToken, storedTextToken)) {
+      // only call for letters & digits
+
       moveCursor(selectedTextToken.startIndex, selectedTextToken);
     }
   }, [selectedTextToken, setStoredTextToken, storedTextToken]);
@@ -140,6 +145,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
       </Wrapper>
 
       {!(popoverTargetRect === null || showHint() || showLoadingSpinner()) &&
+        !(expectedResponse === null && rephrasingOptions.length === 0) &&
         showTargetWordPopover && (
           <TargetWordPopover popoverTargetRect={popoverTargetRect} />
         )}

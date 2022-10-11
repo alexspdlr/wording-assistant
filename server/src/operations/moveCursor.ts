@@ -1,4 +1,5 @@
 import waitUntil from 'async-wait-until';
+import { Console } from 'console';
 import { Page } from 'puppeteer';
 import { PuppeteerResponse } from '../types';
 import delay from '../utils/delay';
@@ -33,22 +34,28 @@ const moveCursor = async (
     await page.keyboard.press('ArrowLeft');
 
     /* Wait until popover is rendered and filled with alternatives */
-    await page.waitForSelector(
-      '[dl-test=translator-target-alternatives-popup]'
-    );
-    await page.waitForFunction(() => {
-      const targetEl = document.querySelector(
-        '[dl-test=translator-target-alternatives-popup]'
-      ) as HTMLTextAreaElement | null;
-      const numberOfResults = targetEl
-        ? Array.from(targetEl.getElementsByTagName('li')).length
-        : 0;
-      return numberOfResults > 1;
-    });
 
-    await page.waitForSelector(
-      '[dl-test=translator-target-alternatives-popup]'
-    );
+    try {
+      await page.waitForSelector(
+        '[dl-test=translator-target-alternatives-popup]',
+        { timeout: 500 }
+      );
+
+      await page.waitForFunction(
+        () => {
+          const targetEl = document.querySelector(
+            '[dl-test=translator-target-alternatives-popup]'
+          ) as HTMLTextAreaElement | null;
+          const numberOfResults = targetEl
+            ? Array.from(targetEl.getElementsByTagName('li')).length
+            : 0;
+          return numberOfResults > 1;
+        },
+        { timeout: 5000 }
+      );
+    } catch (error) {
+      console.log(error);
+    }
 
     /* Store alternatives */
 

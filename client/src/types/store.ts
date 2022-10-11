@@ -20,10 +20,12 @@ export interface UiExpectedResponse {
 
 export interface TextToken {
   value: string;
-  kind: 'whitespace' | 'word';
+  kind: 'whitespace' | 'special_character' | 'text';
   startIndex: number;
   endIndex: number;
 }
+
+export type TextTokenReduced = Omit<TextToken, 'startIndex' | 'endIndex'>;
 
 interface UiState extends Omit<ActiveWorkerStateData, 'id' | 'cursorIndex'> {
   expectedResponse: UiExpectedResponse | null;

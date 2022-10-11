@@ -21,6 +21,8 @@ const SocketContextComponent: React.FunctionComponent<
     (state) => state.setIsConnectedToServer
   );
 
+  const setIsErrorActive = useBoundStore((state) => state.setIsErrorActive);
+
   const setSocket = useBoundStore((state) => state.setSocket);
 
   const handleServerResponse = useBoundStore(
@@ -109,6 +111,7 @@ const SocketContextComponent: React.FunctionComponent<
     /** Connection / reconnection listeners */
     socket.on('connect', () => {
       setIsConnectedToServer(true);
+      setIsErrorActive(false);
       handleServerResponse(
         {
           eventId: '',
@@ -141,6 +144,7 @@ const SocketContextComponent: React.FunctionComponent<
 
       console.info('Reconnected on attempt: ' + attempt);
       setIsConnectedToServer(true);
+      setIsErrorActive(false);
     });
 
     socket.io.on('reconnect_attempt', (attempt) => {

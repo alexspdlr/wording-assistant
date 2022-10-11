@@ -1,11 +1,8 @@
-interface Token {
-  value: string;
-  kind: 'whitespace' | 'word';
-}
+import { TextTokenReduced } from 'src/types/store';
 
 interface Accumulator {
   reducedText: string;
-  output: Token[];
+  output: TextTokenReduced[];
 }
 
 const reformat = (
@@ -32,13 +29,13 @@ const reformat = (
           },
           {
             value: currentValue,
-            kind: 'word',
+            kind: 'text',
           },
           {
             value: after.endsWith('\n') ? after.concat('\n') : after,
             kind: 'whitespace',
           },
-        ] as Token[])
+        ] as TextTokenReduced[])
       : ([
           {
             value: before,
@@ -46,9 +43,9 @@ const reformat = (
           },
           {
             value: currentValue,
-            kind: 'word',
+            kind: 'text',
           },
-        ] as Token[]);
+        ] as TextTokenReduced[]);
 
   const result: Accumulator = {
     reducedText: after,
