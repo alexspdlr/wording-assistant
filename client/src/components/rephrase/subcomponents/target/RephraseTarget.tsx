@@ -47,7 +47,6 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
   const targetText = useBoundStore((state) => state.uiState.targetText);
-
   const moveCursor = useBoundStore((state) => state.moveCursor);
 
   const [targetTextareValue, setTargetTextareValue] = useState(targetText);
@@ -69,7 +68,9 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     (state) => state.setSelectedTextToken
   );
 
-  useEffect(() => setTargetTextareValue(targetText), [targetText]);
+  useEffect(() => {
+    setTargetTextareValue(targetText);
+  }, [targetText]);
 
   const showLoadingSpinner = () =>
     expectedResponse ? expectedResponse.endpoint === 'selectText' : false;
@@ -82,10 +83,9 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   );
 
   useEffect(() => {
+    setStoredTextToken(selectedTextToken);
     if (selectedTextToken && !_.isEqual(selectedTextToken, storedTextToken)) {
-      moveCursor(selectedTextToken.startIndex);
-
-      setStoredTextToken(selectedTextToken);
+      moveCursor(selectedTextToken.startIndex, selectedTextToken);
     }
   }, [selectedTextToken, setStoredTextToken, storedTextToken]);
 

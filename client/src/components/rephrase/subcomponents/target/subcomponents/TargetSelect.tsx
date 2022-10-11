@@ -178,7 +178,7 @@ const TargetSelect = (props: TargetSelectProps) => {
             )}`,
           }}
         >
-          Original:
+          Original: <>{JSON.stringify(targetCursorIndex)}</>
           <div
             style={{
               fontWeight: 400,

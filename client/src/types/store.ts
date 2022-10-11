@@ -63,7 +63,10 @@ export interface RephraseActions {
     selectionEnd: number
   ) => void;
   deselectText: () => void;
-  moveCursor: (newCursorIndex: number) => void;
+  moveCursor: (
+    newCursorIndex: number,
+    selectedTextToken: TextToken | null
+  ) => void;
   updateTargetText: (newTargetText: string, newCursorIndex: number) => void;
   selectWordingAlternative: (selectedAlternativeIndex: number) => void;
 }

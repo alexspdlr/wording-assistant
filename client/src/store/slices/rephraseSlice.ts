@@ -305,7 +305,10 @@ const createRephraseSlice: StateCreator<
   },
 
   /* ------------------------------- MOVE CURSOR ------------------------------ */
-  moveCursor: async (newCursorIndex: number) => {
+  moveCursor: async (
+    newCursorIndex: number,
+    selectedTextToken: TextToken | null
+  ) => {
     // PREPARE
     const socket = get().socket;
     const eventId = prepareClientAction(socket, set);
@@ -317,6 +320,7 @@ const createRephraseSlice: StateCreator<
     set(
       produce((state: RephraseState) => {
         state.uiState.rephrasingOptions = [];
+        state.uiState.selectedTextToken = selectedTextToken;
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'moveCursor',
