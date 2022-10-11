@@ -74,7 +74,6 @@ export interface ClientActionPayload_MoveCursor {
 export interface ClientActionPayload_UpdateTargetText {
   eventId: string;
   newTargetText: string;
-  postChangeCursorIndex: number;
 }
 
 export interface ClientActionPayload_SelectWordingAlternative {

@@ -1,13 +1,9 @@
-import waitUntil from 'async-wait-until';
 import { Page } from 'puppeteer';
 import { PuppeteerResponse } from '../types';
-import delay from '../utils/delay';
-import puppeteer_move_cursor from './moveCursor';
 
 const updateTargetText = async (
   page: Page,
   textAreaSelector: string,
-  targetIndex: number,
   newTargetText: string
 ): Promise<PuppeteerResponse> => {
   try {
@@ -19,7 +15,10 @@ const updateTargetText = async (
         '[dl-test=translator-target-input]'
       ) as HTMLTextAreaElement | null;
 
-      if (translatorTargetInput) {
+      if (
+        translatorTargetInput &&
+        translatorTargetInput.value !== newTargetText
+      ) {
         translatorTargetInput.value = newTargetText;
       }
     }, newTargetText);
@@ -28,6 +27,7 @@ const updateTargetText = async (
     await page.keyboard.press('ArrowLeft');
     await page.keyboard.press('ArrowRight');
 
+    /*
     // move cursor
     const rephrasingOptions = await puppeteer_move_cursor(
       page,
@@ -35,10 +35,12 @@ const updateTargetText = async (
       targetIndex
     );
 
+    */
+
     return {
       type: 'response',
       data: {
-        rephrasingOptions,
+        targetText: newTargetText,
       },
     };
   } catch (error) {

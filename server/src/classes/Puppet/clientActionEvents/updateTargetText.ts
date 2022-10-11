@@ -8,7 +8,6 @@ const updateTargetText = async (
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void,
-  newCursorIndex: number,
   updatedText: string
 ) => {
   if (localState.page && localState.browser) {
@@ -45,7 +44,6 @@ const updateTargetText = async (
     const response = await puppeteer_update_target_text(
       localState.page,
       '[dl-test=translator-target-input]',
-      newCursorIndex,
       updatedText
     );
 
@@ -64,7 +62,7 @@ const updateTargetText = async (
         stateName: 'waitingForTargetTextAction',
         data: {
           ...localState.workerState.data,
-          rephrasingOptions: response.data.rephrasingOptions,
+          targetText: response.data.targetText,
         },
       };
 

@@ -69,7 +69,9 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
       ref={textareaRef}
       value={targetValue || ''}
       disabled={!targetValue}
-      onChange={(e) => setTargetValue(e.target.value)}
+      onChange={(e) => {
+        setTargetValue(e.target.value);
+      }}
       onSelect={(e) => {
         if (
           textareaRef.current &&

@@ -13,7 +13,7 @@ import RephraseHint from '../RephraseHint';
 import TargetSelect from './subcomponents/TargetSelect';
 import TargetTextArea from './subcomponents/TargetTextArea';
 import TargetWordPopover from './subcomponents/TargetWordPopover';
-import _ from 'lodash';
+import _, { debounce } from 'lodash';
 
 const Wrapper = styled('div')(
   () => `
@@ -58,6 +58,22 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     null
   );
 
+  const updateTargetText = useBoundStore((state) => state.updateTargetText);
+  const updateTargetTextMemoized = useCallback(
+    debounce((value) => {
+      console.log(`123123: `, value);
+      updateTargetText(value);
+    }, 400),
+    []
+  );
+
+  useEffect(() => {
+    if (targetTextareValue !== targetText) {
+      updateTargetTextMemoized(targetTextareValue);
+    }
+    // updateTargetTextMemoized(targetTextareValue);
+  }, [targetTextareValue]);
+
   const expectedResponse: UiExpectedResponse | null = useBoundStore(
     (state) => state.uiState.expectedResponse
   );
@@ -89,6 +105,8 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     setStoredTextToken(selectedTextToken);
     if (selectedTextToken && !_.isEqual(selectedTextToken, storedTextToken)) {
       // only call for letters & digits
+      console.log('local length', targetTextareValue?.length);
+      console.log('ui length', targetText?.length);
 
       moveCursor(selectedTextToken.startIndex, selectedTextToken);
     }
@@ -145,7 +163,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
       </Wrapper>
 
       {!(popoverTargetRect === null || showHint() || showLoadingSpinner()) &&
-        !(expectedResponse === null && rephrasingOptions.length === 0) &&
+        !(expectedResponse === null && rephrasingOptions?.length === 0) &&
         showTargetWordPopover && (
           <TargetWordPopover popoverTargetRect={popoverTargetRect} />
         )}

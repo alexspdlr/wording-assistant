@@ -86,8 +86,6 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
         localState,
         updateLocalState,
         respondToPuppet,
-        (event.payload as ClientActionPayload_UpdateTargetText)
-          .postChangeCursorIndex,
         (event.payload as ClientActionPayload_UpdateTargetText).newTargetText
       );
       return;
