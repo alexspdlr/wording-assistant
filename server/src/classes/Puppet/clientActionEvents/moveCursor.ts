@@ -64,9 +64,11 @@ const moveCursor = async (
         data: {
           ...localState.workerState.data,
           cursorIndex: newCursorIndex,
-          rephrasingOptions: response.data.rephrasingOptions,
+          rephrasingOptions: response.data.rephrasingAlternatives,
         },
       };
+
+      console.log(response.data.rephrasingAlternatives);
 
       const response_Finish: ServerResponseEvent_Extended = {
         endpoint: 'moveCursorCompleted',

@@ -17,8 +17,17 @@ export interface UiExpectedResponse {
   eventId: string;
   endpoint: ClientActionEndpoint;
 }
+
+export interface TextToken {
+  value: string;
+  kind: 'whitespace' | 'word';
+  startIndex: number;
+  endIndex: number;
+}
+
 interface UiState extends Omit<ActiveWorkerStateData, 'id' | 'cursorIndex'> {
   expectedResponse: UiExpectedResponse | null;
+  selectedTextToken: TextToken | null;
 }
 
 export interface RephraseState {
@@ -39,6 +48,7 @@ export interface RephraseActions {
   setSocket: (socket: Socket) => void;
   setIsConnectedToServer: (isConnectedToServer: boolean) => void;
   setIsErrorActive: (isErrorActive: boolean) => void;
+  setSelectedTextToken: (newToken: TextToken | null) => void;
 
   // handle incoming server event
   handleServerResponse: (

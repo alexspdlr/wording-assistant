@@ -6,9 +6,10 @@ import {
   ServerResponseEndpoint,
   ServerResponsePayload,
 } from 'src/types/socket';
-import { RephraseSlice, RephraseState } from 'src/types/store';
+import { RephraseSlice, RephraseState, TextToken } from 'src/types/store';
 import { v4 as uuidv4 } from 'uuid';
 import { StateCreator } from 'zustand';
+import _ from 'lodash';
 
 const ininitalState: RephraseState = {
   serverState: {
@@ -26,6 +27,7 @@ const ininitalState: RephraseState = {
   uiState: {
     originalText: null,
     targetText: null,
+    selectedTextToken: null,
     rephrasingOptions: [],
     expectedResponse: null,
     sourceSelectionStart: null,
@@ -96,6 +98,16 @@ const createRephraseSlice: StateCreator<
     );
   },
 
+  setSelectedTextToken: (newToken: TextToken | null) => {
+    if (!_.isEqual(get().uiState.selectedTextToken, newToken)) {
+      set(
+        produce((state: RephraseState) => {
+          state.uiState.selectedTextToken = newToken;
+        })
+      );
+    }
+  },
+
   /* -------------------------------------------------------------------------- */
   /*                        HANDLE INCOMING SERVER EVENT                        */
   /* -------------------------------------------------------------------------- */
@@ -140,6 +152,9 @@ const createRephraseSlice: StateCreator<
     }
 
     /* ------------------------ UPDATE DIFFERENCES IN UI ------------------------ */
+
+    console.log(`${endpoint}: `, payload);
+
     const currentUiState = get().uiState;
     if (newState.data.originalText !== currentUiState.originalText) {
       set(
@@ -289,7 +304,37 @@ const createRephraseSlice: StateCreator<
     socketEmit(socket, event);
   },
 
-  moveCursor: (newCursorIndex: number) => null,
+  /* ------------------------------- MOVE CURSOR ------------------------------ */
+  moveCursor: async (newCursorIndex: number) => {
+    // PREPARE
+    const socket = get().socket;
+    const eventId = prepareClientAction(socket, set);
+    if (!eventId) {
+      return;
+    }
+
+    // UPDATE UI STATE
+    set(
+      produce((state: RephraseState) => {
+        state.uiState.rephrasingOptions = [];
+        state.uiState.expectedResponse = {
+          eventId,
+          endpoint: 'moveCursor',
+        };
+      })
+    );
+
+    const event: ClientActionEvent = {
+      endpoint: 'moveCursor',
+      payload: {
+        eventId,
+        newCursorIndex,
+      },
+    };
+
+    socketEmit(socket, event);
+  },
+
   updateTargetText: (newTargetText: string, newCursorIndex: number) => null,
   selectWordingAlternative: (selectedAlternativeIndex: number) => null,
 });

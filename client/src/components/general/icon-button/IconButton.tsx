@@ -17,7 +17,7 @@ const IconButtonStyled = styled('button')(
     color: ${
       props.variant === 'permanent'
         ? defaultProps.theme.palette.primary.main
-        : defaultProps.theme.palette.text.disabled
+        : addAlphaToHexColor(defaultProps.theme.palette.text.disabled, 0.65)
     };
     background-color: transparent; 
     cursor: pointer; 
@@ -25,7 +25,7 @@ const IconButtonStyled = styled('button')(
     &:hover{
       color: ${defaultProps.theme.palette.primary.main}; 
       background-color: ${addAlphaToHexColor(
-        defaultProps.theme.palette.text.main,
+        defaultProps.theme.palette.primary.light,
         0.07
       )}; 
     }

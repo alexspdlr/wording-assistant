@@ -26,7 +26,7 @@ const Header = styled('div')(
     display: flex;
     justify-content: space-between;
     align-items: center; 
-    padding: 19px 12px 19px 24px;
+    padding: 21px 12px 21px 26px;
     font-weight: 600; 
     color: ${
       defaultProps.theme.activeMode === 'dark'

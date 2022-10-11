@@ -3,12 +3,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import useBoundStore from 'src/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import useClickAway from 'src/utils/hooks/useClickAway';
-import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
+import useSourceTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import splitIntoSentences from 'src/utils/splitIntoSentences';
 
 const Container = styled('div')(
   (props) => `
-  margin: 16px 56px 72px 28px;
+  margin: 16px 56px 72px 36px;
   flex-grow: 1;
   outline: none;
   display: block; 
@@ -84,7 +84,7 @@ interface SourceSelectProps {
 const SourceSelect = (props: SourceSelectProps) => {
   const { value } = props;
   const containerRef = useRef(null);
-  useRephraseToolTextboxSize(value, containerRef);
+  useSourceTextboxSize(value, containerRef);
   const [hoveredSentence, setHoveredSentence] = useState<string | null>(null);
   const [selectedSentence, setSelectedSentence] = useState<string | null>(null);
 
@@ -101,7 +101,7 @@ const SourceSelect = (props: SourceSelectProps) => {
   return (
     <Container ref={containerRef} tabIndex={0} id='source-select-container'>
       {splitIntoSentences(value).map((token, i) =>
-        token.kind === 'clickable' ? (
+        token.kind === 'word' ? (
           <Sentence
             ref={sentenceRef}
             onClick={() => selectSentence(token.value, i)}

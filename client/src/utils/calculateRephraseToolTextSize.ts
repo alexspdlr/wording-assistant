@@ -9,7 +9,7 @@ const calculateRephraseToolTextSize = (
     case '3XL':
       if (textLength < 55) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -36,7 +36,7 @@ const calculateRephraseToolTextSize = (
     case '2XL':
       if (textLength < 55) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -63,7 +63,7 @@ const calculateRephraseToolTextSize = (
     case 'XL':
       if (textLength < 50) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -90,7 +90,7 @@ const calculateRephraseToolTextSize = (
     case 'L':
       if (textLength < 45) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -117,7 +117,7 @@ const calculateRephraseToolTextSize = (
     case 'M':
       if (textLength < 40) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -144,7 +144,7 @@ const calculateRephraseToolTextSize = (
     case 'S':
       if (textLength < 35) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -171,7 +171,7 @@ const calculateRephraseToolTextSize = (
     case 'XS':
       if (textLength < 25) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -198,7 +198,7 @@ const calculateRephraseToolTextSize = (
     case '2XS':
       if (textLength < 50) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }

@@ -1,6 +1,6 @@
 interface Token {
   value: string;
-  kind: string;
+  kind: 'whitespace' | 'word';
 }
 
 interface Accumulator {
@@ -25,18 +25,30 @@ const reformat = (
 
   const newOutput =
     index === array.length - 1
-      ? [
-          { value: before, kind: 'whitespace' },
-          { value: currentValue, kind: 'clickable' },
+      ? ([
+          {
+            value: before,
+            kind: 'whitespace',
+          },
+          {
+            value: currentValue,
+            kind: 'word',
+          },
           {
             value: after.endsWith('\n') ? after.concat('\n') : after,
             kind: 'whitespace',
           },
-        ]
-      : [
-          { value: before, kind: 'whitespace' },
-          { value: currentValue, kind: 'clickable' },
-        ];
+        ] as Token[])
+      : ([
+          {
+            value: before,
+            kind: 'whitespace',
+          },
+          {
+            value: currentValue,
+            kind: 'word',
+          },
+        ] as Token[]);
 
   const result: Accumulator = {
     reducedText: after,
@@ -52,7 +64,7 @@ const determineWhitespace = (text: string, sentences: string[]) => {
     output: [],
   } as Accumulator);
 
-  return reducedResult.output;
+  return reducedResult.output.filter((item) => item.value !== '');
 };
 
 export default determineWhitespace;

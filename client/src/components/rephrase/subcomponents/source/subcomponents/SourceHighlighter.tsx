@@ -9,7 +9,7 @@ const Container = styled('div')(
   (defaultProps) => ` 
   position: absolute; 
   margin: 0px 60px 0px 0px;  
-  padding: 24px 0px 0px 36px; 
+  padding: 28px 0px 0px 28px; 
   flex-grow: 1;
   outline: none; 
   display: block;   
@@ -22,7 +22,7 @@ const Container = styled('div')(
   color: transparent; 
   -webkit-font-smoothing: antialiased; 
   -webkit-touch-callout: none;
-  -webkit-user-select: none;
+  -webkit-user-select: none; 
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -106,7 +106,7 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
               endIndex: currentHighlight.endIndex,
             },
           ],
-          '#ffd485',
+          '#fee8c0',
           theme.palette.text.light
         )
       )}

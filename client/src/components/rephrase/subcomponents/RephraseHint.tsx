@@ -14,14 +14,14 @@ const Container = styled('div')(
     align-items: strech;
     flex-direction: column;
     text-align: left;
-    padding: 24px 56px 72px 36px; 
+    padding: 29px 56px 72px 28px; 
     cursor: default;  
     animation: fade 300ms;
     @keyframes fade {
       0% { opacity: 0; } 
       50% {opacity: 0.8;}
       100% { opacity: 1; }
-    }
+    } 
 
     `
 );

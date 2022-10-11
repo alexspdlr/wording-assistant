@@ -7,12 +7,10 @@ const PopoverContainer = styled('div')(
   -webkit-transition: all 0.25s ease-out;
   -moz-transition: all 0.25s ease-out;
   -o-transition: all 0.25s ease-out;
-  transition: all 0.25s ease-out; 
-  position: absolute; 
-  z-index: 10; 
+  transition: all 0.25s ease-out;  
   font-size: 22px; 
   font-weight: 400;   
-  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 10%); 
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 15%);  
   max-height: 250px;
   max-width: 318px;
   min-width: 100px;
@@ -45,29 +43,29 @@ const Alternative = styled('div')(
 interface CustomPopoverProps {
   alternatives: string[];
   rephrase: (alternative: string) => void;
-  children: ReactNode;
 }
 
 const CustomPopover = ({ alternatives, rephrase }: CustomPopoverProps) => {
   return (
-    <PopoverContainer>
-      <AnimateHeight>
-        {' '}
-        <div style={{ position: 'relative' }}>
-          {alternatives.length > 0 ? (
-            <>
-              {alternatives.map((alternative, i) => (
-                <Alternative onClick={() => rephrase(alternative)}>
-                  {alternative}
-                </Alternative>
-              ))}
-            </>
-          ) : (
-            <Alternative disabled>...</Alternative>
-          )}
-        </div>
-      </AnimateHeight>
-    </PopoverContainer>
+    <div style={{ position: 'relative' }}>
+      <PopoverContainer>
+        <AnimateHeight>
+          <div style={{ position: 'relative' }}>
+            {alternatives.length > 0 ? (
+              <>
+                {alternatives.map((alternative, i) => (
+                  <Alternative onClick={() => rephrase(alternative)}>
+                    {alternative}
+                  </Alternative>
+                ))}
+              </>
+            ) : (
+              <Alternative disabled>...</Alternative>
+            )}
+          </div>
+        </AnimateHeight>
+      </PopoverContainer>
+    </div>
   );
 };
 

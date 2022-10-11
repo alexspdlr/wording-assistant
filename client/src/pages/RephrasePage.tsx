@@ -33,12 +33,6 @@ const RephrasePage = () => {
         </div>
       </div>
 
-      <CustomPopover
-        alternatives={['Test ...', 'Bla ...']}
-        rephrase={(alternative: string) => console.log(alternative)}
-      >
-        <div>test</div>
-      </CustomPopover>
       <Section backgroundColor={theme.palette.background.main}>
         <InfoSection />
       </Section>

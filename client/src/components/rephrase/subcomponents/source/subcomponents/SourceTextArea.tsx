@@ -38,7 +38,7 @@ const TextArea = styled('textarea')(
     font-weight: 400; 
     overflow: visible;
     margin: 0px 60px 60px 0px;  
-    padding: 24px 0px 0px 36px;  
+    padding: 28px 0px 0px 28px;  
     -webkit-font-smoothing: antialiased; 
     line-height: 0;
     color: ${addAlphaToHexColor(

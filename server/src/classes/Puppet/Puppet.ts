@@ -102,45 +102,16 @@ export class Puppet {
       return;
     }
 
+    console.log('EVENT: ', event.payload);
+
     const eventData = event.payload.workerState.data;
-    this.updateWorkerState(event.payload.workerState.stateName, {
-      originalText: eventData.originalText ? eventData.originalText : undefined,
-      targetText: eventData.targetText ? eventData.targetText : undefined,
-      cursorIndex: eventData.cursorIndex ? eventData.cursorIndex : undefined,
-      rephrasingOptions: eventData.rephrasingOptions
-        ? eventData.rephrasingOptions
-        : undefined,
-    });
+    this.updateWorkerState(event.payload.workerState);
 
     this.respondToSocket(event as ServerResponseEvent);
   }
 
-  private updateWorkerState = (
-    stateName: ActiveWorkerStateName,
-    updateObject: {
-      originalText?: string;
-      targetText?: string;
-      cursorIndex?: number;
-      rephrasingOptions?: string[];
-    }
-  ) => {
-    this.workerState.stateName = stateName;
-
-    if (updateObject.originalText) {
-      this.workerState.data.originalText = updateObject.originalText;
-    }
-
-    if (updateObject.targetText) {
-      this.workerState.data.targetText = updateObject.targetText;
-    }
-
-    if (updateObject.cursorIndex) {
-      this.workerState.data.cursorIndex = updateObject.cursorIndex;
-    }
-
-    if (updateObject.rephrasingOptions) {
-      this.workerState.data.rephrasingOptions = updateObject.rephrasingOptions;
-    }
+  private updateWorkerState = (newState: ActiveWorkerState) => {
+    this.workerState = newState;
 
     return;
   };
