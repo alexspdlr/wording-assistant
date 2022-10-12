@@ -1,14 +1,9 @@
 import styled from '@emotion/styled';
-import { useEffect, useRef, useState } from 'react';
-import copyToClipboard from 'src/utils/copyToClipboard';
-import SourceCopyButton from './subcomponents/SourceCopyButton';
-import RephraseHint from '../RephraseHint';
-import SourceSelect from './subcomponents/SourceSelect';
-import SourceTextArea from './subcomponents/SourceTextArea';
 import { useSearchParams } from 'react-router-dom';
-import useBoundStore from 'src/store';
-import useClickAway from 'src/utils/hooks/useClickAway';
-import SourceHighlighter from './subcomponents/SourceHighlighter';
+import copyToClipboard from 'src/utils/copyToClipboard';
+import RephraseHint from '../RephraseHint';
+import SourceCopyButton from './subcomponents/action-buttons/SourceCopyButton';
+import SourceTextArea from './subcomponents/SourceTextArea';
 
 const Wrapper = styled('div')(
   () => `

@@ -22,14 +22,18 @@ export type ActiveWorkerStateName =
   | 'processingTerminate'
   | 'processingError';
 
+export interface ActiveWorkerTextSelection {
+  startIndex: number;
+  endIndex: number;
+  value: string;
+}
+
 export interface ActiveWorkerStateData {
   id: string;
-  originalText: string | null;
-  targetText: string | null;
   cursorIndex: number;
+  originalTextSelection: ActiveWorkerTextSelection | null;
+  activeTextSelection: ActiveWorkerTextSelection | null;
   rephrasingOptions: string[];
-  sourceSelectionStart: number | null;
-  sourceSelectionEnd: number | null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -57,9 +61,7 @@ export type ClientActionPayload =
 
 export interface ClientActionPayload_SelectText {
   eventId: string;
-  originalText: string;
-  sourceSelectionStart: number;
-  sourceSelectionEnd: number;
+  newOriginalTextSelection: ActiveWorkerTextSelection;
 }
 
 export interface ClientActionPayload_DeselectText {
@@ -73,7 +75,7 @@ export interface ClientActionPayload_MoveCursor {
 
 export interface ClientActionPayload_UpdateTargetText {
   eventId: string;
-  newTargetText: string;
+  newActiveTextSelection: ActiveWorkerTextSelection;
 }
 
 export interface ClientActionPayload_SelectWordingAlternative {

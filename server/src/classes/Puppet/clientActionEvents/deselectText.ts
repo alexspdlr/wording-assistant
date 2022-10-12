@@ -19,12 +19,10 @@ const deselectText = async (
       stateName: 'processingDeselectText',
       data: {
         id: localState.workerState.data.id,
-        originalText: null,
-        targetText: null,
+        originalTextSelection: null,
+        activeTextSelection: null,
         cursorIndex: 0,
         rephrasingOptions: [],
-        sourceSelectionStart: null,
-        sourceSelectionEnd: null,
       },
     };
 
@@ -53,12 +51,10 @@ const deselectText = async (
       stateName: 'waitingForSelectText',
       data: {
         id: localState.workerState.data.id,
-        originalText: null,
-        targetText: null,
+        originalTextSelection: null,
+        activeTextSelection: null,
         cursorIndex: 0,
         rephrasingOptions: [],
-        sourceSelectionStart: null,
-        sourceSelectionEnd: null,
       },
     };
 

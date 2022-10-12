@@ -7,7 +7,6 @@ interface Range {
 }
 
 const highlightText = (
-  type: 'appear' | 'disappear',
   text: string,
   highlightRanges: Range[],
   color: string,
@@ -18,11 +17,7 @@ const highlightText = (
       `${resultingString.slice(
         0,
         range.startIndex
-      )}<mark style="padding:3px 0px 4px 0px; color:${textColor}; ${
-        type === 'appear'
-          ? ''
-          : 'transition: opacity 150ms ease-out; opacity: 0;'
-      } background-color: ${color};};">${resultingString.slice(
+      )}<mark style="padding:3px 0px 4px 0px; color:${textColor}; background-color: ${color};};">${resultingString.slice(
         range.startIndex,
         range.endIndex
       )}</mark>${resultingString.slice(range.endIndex)}`,

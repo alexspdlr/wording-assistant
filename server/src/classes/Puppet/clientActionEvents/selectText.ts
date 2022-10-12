@@ -1,6 +1,9 @@
 import puppeteer_select_text from '../../../operations/selectText';
 import { PuppetState, ServerResponseEvent_Extended } from '../../../types';
-import { ActiveWorkerState } from '../../../types/socket';
+import {
+  ActiveWorkerState,
+  ActiveWorkerTextSelection,
+} from '../../../types/socket';
 import handleError from '../otherEvents/handleError';
 
 const selectText = async (
@@ -8,9 +11,7 @@ const selectText = async (
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void,
-  originalText: string,
-  sourceSelectionStart: number,
-  sourceSelectionEnd: number
+  originalTextSelection: ActiveWorkerTextSelection
 ) => {
   if (localState.page && localState.browser) {
     /* -------------------------------------------------------------------------- */
@@ -22,9 +23,7 @@ const selectText = async (
       stateName: 'processingSelectText',
       data: {
         ...localState.workerState.data,
-        originalText,
-        sourceSelectionStart,
-        sourceSelectionEnd,
+        originalTextSelection: originalTextSelection,
       },
     };
 
@@ -47,7 +46,7 @@ const selectText = async (
 
     // ACTION
     const response = await puppeteer_select_text(
-      originalText,
+      originalTextSelection.value,
       localState.page,
       localState.browser
     );
@@ -62,16 +61,24 @@ const selectText = async (
         response.data
       );
     } else {
+      const newActiveSelectionValue: string =
+        response.data.result ||
+        localState.workerState.data.activeTextSelection?.value;
+
+      const newActiveTextSelection: ActiveWorkerTextSelection = {
+        value: newActiveSelectionValue,
+        startIndex: originalTextSelection.startIndex,
+        endIndex:
+          originalTextSelection.endIndex + newActiveSelectionValue.length,
+      };
+
       // CREATE NEW WORKER STATE & RESPONSE
       const newWorkerState_Finish: ActiveWorkerState = {
         stateName: 'waitingForTargetTextAction',
         data: {
           ...localState.workerState.data,
-          originalText,
-          sourceSelectionStart,
-          sourceSelectionEnd,
-          targetText:
-            response.data.result || localState.workerState.data.targetText,
+          originalTextSelection: originalTextSelection,
+          activeTextSelection: newActiveTextSelection,
         },
       };
 

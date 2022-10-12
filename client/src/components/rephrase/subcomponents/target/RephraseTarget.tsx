@@ -46,14 +46,17 @@ interface RephraseTargetProps {}
 const RephraseTarget = (props: RephraseTargetProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
-  const targetText = useBoundStore((state) => state.uiState.targetText);
+  const activeTextSelection = useBoundStore(
+    (state) => state.uiState.activeTextSelection
+  );
   const moveCursor = useBoundStore((state) => state.moveCursor);
 
-  const [targetTextareValue, setTargetTextareValue] = useState(targetText);
+  // maybe move these useStates into ui state !?
   const [targetCursorIndex, setTargetCursorIndex] =
     useState<TargetCursorIndexInfo | null>(null);
   const [showTargetWordPopover, setShowTargetWordPopover] =
     useState<boolean>(false);
+
   const [popoverTargetRect, setPopoverTargetRect] = useState<DOMRect | null>(
     null
   );
@@ -64,37 +67,24 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const rephrasingOptions: string[] = useBoundStore(
     (state) => state.uiState.rephrasingOptions
   );
-  const storedTextToken = useBoundStore(
-    (state) => state.uiState.selectedTextToken
+  const activeRephrasingToken = useBoundStore(
+    (state) => state.uiState.activeRephrasingToken
   );
-  const setStoredTextToken = useBoundStore(
-    (state) => state.setSelectedTextToken
+  const setActiveRephrasingToken = useBoundStore(
+    (state) => state.setActiveRephrasingToken
   );
-
-  useEffect(() => {
-    setTargetTextareValue(targetText);
-  }, [targetText]);
 
   const showLoadingSpinner = () =>
     expectedResponse ? expectedResponse.endpoint === 'selectText' : false;
   const showHint = () =>
     (expectedResponse && expectedResponse.endpoint === 'deselectText') ||
-    !targetText;
-
-  const [selectedTextToken, setSelectedTextToken] = useState<TextToken | null>(
-    null
-  );
+    !activeTextSelection;
 
   useEffect(() => {
-    setStoredTextToken(selectedTextToken);
-    if (selectedTextToken && !_.isEqual(selectedTextToken, storedTextToken)) {
-      // only call for letters & digits
-      console.log('local length', targetTextareValue?.length);
-      console.log('ui length', targetText?.length);
-
-      moveCursor(selectedTextToken.startIndex, selectedTextToken);
+    if (activeRephrasingToken) {
+      moveCursor(activeRephrasingToken?.startIndex, activeRephrasingToken);
     }
-  }, [selectedTextToken, setStoredTextToken, storedTextToken]);
+  }, [activeRephrasingToken]);
 
   return (
     <>
@@ -125,16 +115,12 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                     }}
                   >
                     <TargetTextArea
-                      targetValue={targetTextareValue}
-                      setTargetValue={setTargetTextareValue}
                       setTargetCursorIndex={setTargetCursorIndex}
                     />
 
                     <TargetSelect
                       targetCursorIndex={targetCursorIndex}
-                      value={targetTextareValue || ''}
                       setPopoverTargetRect={setPopoverTargetRect}
-                      setSelectedTextToken={setSelectedTextToken}
                       showTargetWordPopover={showTargetWordPopover}
                       setShowTargetWordPopover={setShowTargetWordPopover}
                     />

@@ -9,12 +9,10 @@ const generateDefaultWorkerState = (
       variant === 'start' ? 'processingInitialize' : 'processingTerminate',
     data: {
       id: id || '',
-      originalText: null,
-      targetText: null,
+      originalTextSelection: null,
+      activeTextSelection: null,
       cursorIndex: 0,
       rephrasingOptions: [],
-      sourceSelectionStart: null,
-      sourceSelectionEnd: null,
     },
   };
 };

@@ -54,9 +54,8 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
         localState,
         updateLocalState,
         respondToPuppet,
-        (event.payload as ClientActionPayload_SelectText).originalText,
-        (event.payload as ClientActionPayload_SelectText).sourceSelectionStart,
-        (event.payload as ClientActionPayload_SelectText).sourceSelectionEnd
+        (event.payload as ClientActionPayload_SelectText)
+          .newOriginalTextSelection
       );
 
       return;
@@ -86,7 +85,8 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
         localState,
         updateLocalState,
         respondToPuppet,
-        (event.payload as ClientActionPayload_UpdateTargetText).newTargetText
+        (event.payload as ClientActionPayload_UpdateTargetText)
+          .newActiveTextSelection
       );
       return;
 

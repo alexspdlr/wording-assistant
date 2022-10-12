@@ -1,7 +1,10 @@
 import { Browser, Page } from 'puppeteer';
 import selectWordingAlternative from '../../../operations/selectWordingAlternative';
 import { PuppetState, ServerResponseEvent_Extended } from '../../../types';
-import { ActiveWorkerState } from '../../../types/socket';
+import {
+  ActiveWorkerState,
+  ActiveWorkerTextSelection,
+} from '../../../types/socket';
 import handleError from '../otherEvents/handleError';
 
 const selectWordingAlternativeExported = async (
@@ -58,13 +61,25 @@ const selectWordingAlternativeExported = async (
       );
     } else {
       // CREATE NEW WORKER STATE & RESPONSE
+
+      const newActiveSelectionValue: string =
+        response.data.rephrasingResult ||
+        localState.workerState.data.activeTextSelection?.value;
+
+      const newActiveTextSelection: ActiveWorkerTextSelection = {
+        value: newActiveSelectionValue,
+        startIndex:
+          localState.workerState.data.originalTextSelection?.startIndex || 0,
+        endIndex:
+          (localState.workerState.data.originalTextSelection?.startIndex || 0) +
+          newActiveSelectionValue.length,
+      };
+
       const newWorkerState_Finish: ActiveWorkerState = {
         stateName: 'waitingForTargetTextAction',
         data: {
           ...localState.workerState.data,
-          targetText:
-            response.data.rephrasingResult ||
-            localState.workerState.data.targetText,
+          activeTextSelection: newActiveTextSelection,
         },
       };
 

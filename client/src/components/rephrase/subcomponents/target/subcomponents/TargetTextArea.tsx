@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useBoundStore from 'src/store';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import { TargetCursorIndexInfo } from '../RephraseTarget';
@@ -32,16 +33,33 @@ const TextArea = styled('textarea')(
 );
 
 interface TargetTextAreaProps {
-  targetValue: string | null;
-  setTargetValue: Function;
   setTargetCursorIndex: (target: TargetCursorIndexInfo | null) => void;
 }
 
 const TargetTextArea = (props: TargetTextAreaProps) => {
-  const { targetValue, setTargetValue, setTargetCursorIndex } = props;
+  const { setTargetCursorIndex } = props;
 
+  /* ----------------------- GET DATA FROM SEARCH PARAMS ---------------------- */
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sourceValue = searchParams.get('source-value');
+
+  /* --------------------------- GET DATA FROM STORE -------------------------- */
+
+  const activeTextSelection = useBoundStore(
+    (state) => state.uiState.activeTextSelection
+  );
+  const setActiveTextSelection = useBoundStore(
+    (state) => state.setActiveTextSelection
+  );
+  const originalTextSelection = useBoundStore(
+    (state) => state.uiState.originalTextSelection
+  );
+  const updateTargetText = useBoundStore((state) => state.updateTargetText);
+
+  /* ---------------------------------- UTILS --------------------------------- */
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  useRephraseToolTextboxSize(targetValue || '', textareaRef);
+  useRephraseToolTextboxSize(activeTextSelection?.value || '', textareaRef);
 
   const calculateMinHeight = () => {
     const viewportHeight = window.innerHeight;
@@ -64,11 +82,13 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
     return `${targetHeight}px`;
   };
 
-  const updateTargetText = useBoundStore((state) => state.updateTargetText);
   const updateTargetTextMemoized = useCallback(
-    debounce((value) => {
-      console.log(`123123: `, value);
-      updateTargetText(value);
+    debounce((value, startIndex, endIndex) => {
+      updateTargetText({
+        value,
+        startIndex,
+        endIndex,
+      });
     }, 400),
     []
   );
@@ -77,11 +97,21 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
     <TextArea
       id='target-value-input'
       ref={textareaRef}
-      value={targetValue || ''}
-      disabled={!targetValue}
+      value={activeTextSelection?.value || ''}
+      disabled={!activeTextSelection}
       onChange={(e) => {
-        setTargetValue(e.target.value);
-        updateTargetTextMemoized(e.target.value);
+        if (originalTextSelection) {
+          setActiveTextSelection({
+            startIndex: originalTextSelection.startIndex,
+            endIndex: originalTextSelection.startIndex + e.target.value.length,
+            value: e.target.value,
+          });
+          updateTargetTextMemoized(
+            e.target.value,
+            originalTextSelection.startIndex,
+            originalTextSelection.startIndex + e.target.value.length
+          );
+        }
       }}
       onSelect={(e) => {
         if (

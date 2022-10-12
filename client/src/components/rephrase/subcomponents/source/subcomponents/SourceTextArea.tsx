@@ -15,7 +15,7 @@ import useMouseIsDown from 'src/utils/hooks/useMouseIsDown';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import wait from 'src/utils/wait';
 import { Z_ASCII } from 'zlib';
-import SourceClearButton from './SourceClearButton';
+import SourceClearButton from './action-buttons/SourceClearButton';
 import SourceHighlighter from './SourceHighlighter';
 
 interface TextAreaProps {
@@ -47,6 +47,7 @@ const TextArea = styled('textarea')(
     )}; 
 
     ::selection{
+      background-color: #ff0000b9; 
       color: ${
         props.textSelected
           ? 'transparent'
@@ -69,21 +70,34 @@ interface SourceTextAreaProps {
 
 const SourceTextArea = (props: SourceTextAreaProps) => {
   const { value, setValue } = props;
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const uiState = useBoundStore((state) => state.uiState);
-  const mouseIsPressed = useMouseIsDown();
-  const [range, setRange] = useState<SelectionRange | null>(null);
-  useRephraseToolTextboxSize(value, textareaRef);
+
+  /* --------------------------- GET DATA FROM STORE -------------------------- */
+
+  const originalTextSelection = useBoundStore(
+    (state) => state.uiState.originalTextSelection
+  );
+  const setOriginalTextSelection = useBoundStore(
+    (state) => state.setOriginalTextSelection
+  );
   const deselectText = useBoundStore((state) => state.deselectText);
+  const selectText = useBoundStore((state) => state.selectText);
+
+  /* ------------------------------- OTHER HOOKS ------------------------------ */
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  useRephraseToolTextboxSize(value, textareaRef);
+
+  /* ---------------------------------- UTILS --------------------------------- */
   const textAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setRange(null);
     setValue(event.target.value);
 
-    if (uiState.originalText && uiState.originalText.length > 0) {
+    if (
+      originalTextSelection?.value &&
+      originalTextSelection?.value.length > 0
+    ) {
       deselectText();
     }
   };
-
   const resetInput = () => {
     deselectText();
     setValue('');
@@ -92,16 +106,6 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     }
     textareaRef.current?.focus();
   };
-
-  useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.setSelectionRange(value.length, value.length);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const selectText = useBoundStore((state) => state.selectText);
-
   const onSelectText = (event: SyntheticEvent<HTMLTextAreaElement, Event>) => {
     if (event.isTrusted) {
       const selection = window.getSelection();
@@ -109,16 +113,42 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       const selectionString = selection?.toString();
 
       if (selectionString && selection && textareaRef.current) {
-        selectText(
-          selectionString,
-          textareaRef.current.selectionStart,
-          textareaRef.current.selectionEnd
-        );
+        selectText({
+          value: selectionString,
+          startIndex: textareaRef.current.selectionStart,
+          endIndex: textareaRef.current.selectionEnd,
+        });
       }
     }
   };
+  const calculateMinHeight = () => {
+    const viewportHeight = window.innerHeight;
 
-  // highlight selected text
+    const margin = 60;
+
+    const maxHeight = 490 - margin;
+    const minHeight = 300 - margin;
+
+    let targetHeight = viewportHeight * 0.5 - margin;
+
+    if (targetHeight > maxHeight) {
+      targetHeight = maxHeight;
+    }
+
+    if (targetHeight < minHeight) {
+      targetHeight = minHeight;
+    }
+
+    return `${targetHeight}px`;
+  };
+
+  /* ------------------------------- USE EFFECTS ------------------------------ */
+  useEffect(() => {
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.setSelectionRange(value.length, value.length);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const selectionChangeListener = (event: Event) => {
@@ -133,13 +163,18 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
               startIndex: textareaRef.current?.selectionStart,
               endIndex: textareaRef.current?.selectionEnd,
             };
-            if (newRange !== range) {
-              setRange(newRange);
+            if (
+              newRange.startIndex !== originalTextSelection?.startIndex ||
+              newRange.endIndex !== originalTextSelection?.endIndex
+            ) {
+              setOriginalTextSelection({
+                value: value.substring(newRange.startIndex, newRange.endIndex),
+                endIndex: newRange.endIndex,
+                startIndex: newRange.startIndex,
+              });
             }
           }
         } else {
-          setRange(null);
-
           deselectText();
         }
       }
@@ -163,129 +198,9 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     };
   }, []);
 
-  const calculateMinHeight = () => {
-    const viewportHeight = window.innerHeight;
-
-    const margin = 60;
-
-    const maxHeight = 490 - margin;
-    const minHeight = 300 - margin;
-
-    let targetHeight = viewportHeight * 0.5 - margin;
-
-    if (targetHeight > maxHeight) {
-      targetHeight = maxHeight;
-    }
-
-    if (targetHeight < minHeight) {
-      targetHeight = minHeight;
-    }
-
-    return `${targetHeight}px`;
-  };
-
-  const getMemoizedOriginalText = useCallback(() => {
-    return uiState.originalText;
-  }, [uiState.originalText]);
-
-  useEffect(() => {
-    const getRange = () => range;
-    const getValue = () => value;
-    const getUiState = () => uiState;
-    const getTextareaRef = () => {
-      if (textareaRef.current) {
-        return textareaRef.current;
-      }
-    };
-    const originalText = getMemoizedOriginalText();
-    const localRange = getRange();
-    const localTextAreaRef = getTextareaRef();
-    const localUiState = getUiState();
-    const localValue = getValue();
-
-    // if selected text doesnt exists at same place (in source text) anymore
-    if (
-      localUiState.sourceSelectionStart &&
-      localUiState.sourceSelectionEnd &&
-      !(
-        localValue.substring(
-          localUiState.sourceSelectionStart,
-          localUiState.sourceSelectionEnd
-        ) === originalText
-      )
-    ) {
-      deselectText();
-    }
-
-    if (
-      localUiState.sourceSelectionStart === null ||
-      localUiState.sourceSelectionEnd === null
-    ) {
-      // ui range === null
-
-      // correct range
-      if (localRange !== null) {
-        setRange(null);
-      }
-
-      // correct textarea selection
-      if (
-        localTextAreaRef &&
-        textareaRef.current &&
-        localTextAreaRef.selectionStart !== localTextAreaRef.selectionEnd
-      ) {
-        textareaRef.current.selectionStart = localTextAreaRef.selectionEnd;
-      }
-    } else {
-      // ui range !== null
-
-      // correct range
-      if (
-        localRange === null ||
-        localRange.startIndex !== localUiState.sourceSelectionStart ||
-        localRange.startIndex !== localUiState.sourceSelectionEnd
-      ) {
-        setRange({
-          startIndex: localUiState.sourceSelectionStart,
-          endIndex: localUiState.sourceSelectionEnd,
-        });
-      }
-
-      // correct textarea selection
-      if (
-        textareaRef.current &&
-        (textareaRef.current.selectionStart !==
-          localUiState.sourceSelectionStart ||
-          textareaRef.current.selectionEnd !== localUiState.sourceSelectionEnd)
-      ) {
-        textareaRef.current.selectionStart = localUiState.sourceSelectionStart;
-        textareaRef.current.selectionEnd = localUiState.sourceSelectionEnd;
-      }
-    }
-  }, [getMemoizedOriginalText]);
-
   return (
     <>
-      <SourceHighlighter
-        value={value || ''}
-        startIndex={range?.startIndex || 0}
-        endIndex={range?.endIndex || 0}
-        updateTextAreaSelection={(
-          newStartIndex: number,
-          newEndIndex: number
-        ) => {
-          /*
-          if (!mouseIsPressed && textareaRef.current) {
-            if (textareaRef.current.selectionStart !== newStartIndex) {
-              textareaRef.current.selectionStart = newStartIndex;
-            }
-            if (textareaRef.current.selectionEnd !== newEndIndex) {
-              textareaRef.current.selectionEnd = newEndIndex;
-            }
-          }
-          */
-        }}
-      />
+      <SourceHighlighter value={value || ''} />
       <TextArea
         id='source-value-input'
         ref={textareaRef}
@@ -299,7 +214,9 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
         autoFocus
         value={value}
         spellCheck={false}
-        textSelected={range ? range.startIndex !== range.endIndex : false}
+        textSelected={
+          originalTextSelection?.startIndex !== originalTextSelection?.endIndex
+        }
         style={{
           minHeight: calculateMinHeight(),
         }}

@@ -1,6 +1,7 @@
 import produce from 'immer';
 import { Socket } from 'socket.io-client';
 import {
+  ActiveWorkerTextSelection,
   ClientActionEvent,
   ClientActionPayload_DeselectText,
   ClientActionPayload_MoveCursor,
@@ -19,22 +20,18 @@ const ininitalState: RephraseState = {
     stateName: 'disconnected',
     data: {
       id: '',
-      originalText: null,
-      targetText: null,
       cursorIndex: 0,
+      originalTextSelection: null,
+      activeTextSelection: null,
       rephrasingOptions: [],
-      sourceSelectionStart: null,
-      sourceSelectionEnd: null,
     },
   },
   uiState: {
-    originalText: null,
-    targetText: null,
-    selectedTextToken: null,
+    originalTextSelection: null,
+    activeTextSelection: null,
+    activeRephrasingToken: null,
     rephrasingOptions: [],
     expectedResponse: null,
-    sourceSelectionStart: null,
-    sourceSelectionEnd: null,
   },
   isErrorActive: false,
   isConnectedToServer: false,
@@ -101,14 +98,30 @@ const createRephraseSlice: StateCreator<
     );
   },
 
-  setSelectedTextToken: (newToken: TextToken | null) => {
-    if (!_.isEqual(get().uiState.selectedTextToken, newToken)) {
+  setActiveRephrasingToken: (newToken: TextToken | null) => {
+    if (!_.isEqual(get().uiState.activeRephrasingToken, newToken)) {
       set(
         produce((state: RephraseState) => {
-          state.uiState.selectedTextToken = newToken;
+          state.uiState.activeRephrasingToken = newToken;
         })
       );
     }
+  },
+
+  setOriginalTextSelection: (selection: ActiveWorkerTextSelection | null) => {
+    set(
+      produce((state: RephraseState) => {
+        state.uiState.originalTextSelection = selection;
+      })
+    );
+  },
+
+  setActiveTextSelection: (selection: ActiveWorkerTextSelection | null) => {
+    set(
+      produce((state: RephraseState) => {
+        state.uiState.activeTextSelection = selection;
+      })
+    );
   },
 
   /* -------------------------------------------------------------------------- */
@@ -126,11 +139,13 @@ const createRephraseSlice: StateCreator<
 
     const expectedResponse = get().uiState.expectedResponse;
 
+    /*
     console.log(
       `Enpoint: ${endpoint}, expectedResponse: ${JSON.stringify(
         expectedResponse
       )}`
     );
+    */
 
     if (expectedResponse) {
       const resolvingEndpoints: Array<
@@ -157,57 +172,52 @@ const createRephraseSlice: StateCreator<
       } else {
         // block ui update
 
-        console.log(`Blocked ${endpoint}`);
+        // console.log(`Blocked ${endpoint}`);
         return;
       }
     }
 
     /* ------------------------ UPDATE DIFFERENCES IN UI ------------------------ */
 
-    console.log(`${endpoint}: `, payload);
+    // console.log(`${endpoint}: `, payload);
 
     const currentUiState = get().uiState;
-    if (newState.data.originalText !== currentUiState.originalText) {
+    if (
+      !_.isEqual(
+        newState.data.originalTextSelection,
+        currentUiState.originalTextSelection
+      )
+    ) {
       set(
         produce((state: RephraseState) => {
-          state.uiState.originalText = newState.data.originalText;
+          state.uiState.originalTextSelection =
+            newState.data.originalTextSelection;
         })
       );
     }
 
-    if (newState.data.targetText !== currentUiState.targetText) {
+    if (
+      !_.isEqual(
+        newState.data.activeTextSelection,
+        currentUiState.activeTextSelection
+      )
+    ) {
       set(
         produce((state: RephraseState) => {
-          state.uiState.targetText = newState.data.targetText;
+          state.uiState.activeTextSelection = newState.data.activeTextSelection;
         })
       );
     }
 
-    if (newState.data.rephrasingOptions !== currentUiState.rephrasingOptions) {
+    if (
+      !_.isEqual(
+        newState.data.rephrasingOptions,
+        currentUiState.rephrasingOptions
+      )
+    ) {
       set(
         produce((state: RephraseState) => {
           state.uiState.rephrasingOptions = newState.data.rephrasingOptions;
-        })
-      );
-    }
-
-    if (
-      newState.data.sourceSelectionStart !== currentUiState.sourceSelectionStart
-    ) {
-      set(
-        produce((state: RephraseState) => {
-          state.uiState.sourceSelectionStart =
-            newState.data.sourceSelectionStart;
-        })
-      );
-    }
-
-    if (
-      newState.data.sourceSelectionEnd !== currentUiState.sourceSelectionEnd
-    ) {
-      set(
-        produce((state: RephraseState) => {
-          state.uiState.sourceSelectionEnd = newState.data.sourceSelectionEnd;
         })
       );
     }
@@ -226,11 +236,7 @@ const createRephraseSlice: StateCreator<
 
   /* ------------------------------- SELECT TEXT ------------------------------ */
 
-  selectText: async (
-    text: string,
-    selectionStart: number,
-    selectionEnd: number
-  ) => {
+  selectText: async (newOriginalTextSelection: ActiveWorkerTextSelection) => {
     // PREPARE
     const socket = get().socket;
     const eventId = prepareClientAction(socket, set);
@@ -239,16 +245,14 @@ const createRephraseSlice: StateCreator<
     }
 
     // HANDLE CUSTOM DECLINE SITUATIONS
-    if (text.trim().length === 0) {
+    if (newOriginalTextSelection.value.trim().length === 0) {
       return;
     }
 
     // UPDATE UI STATE
     set(
       produce((state: RephraseState) => {
-        state.uiState.originalText = text;
-        state.uiState.sourceSelectionStart = selectionStart;
-        state.uiState.sourceSelectionEnd = selectionEnd;
+        state.uiState.originalTextSelection = newOriginalTextSelection;
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'selectText',
@@ -260,9 +264,7 @@ const createRephraseSlice: StateCreator<
 
     const payload: ClientActionPayload_SelectText = {
       eventId,
-      originalText: text,
-      sourceSelectionStart: selectionStart,
-      sourceSelectionEnd: selectionEnd,
+      newOriginalTextSelection,
     };
 
     const event: ClientActionEvent = {
@@ -293,10 +295,8 @@ const createRephraseSlice: StateCreator<
     // UPDATE UI STATE
     set(
       produce((state: RephraseState) => {
-        state.uiState.originalText = null;
-        state.uiState.targetText = null;
-        state.uiState.sourceSelectionStart = null;
-        state.uiState.sourceSelectionEnd = null;
+        state.uiState.originalTextSelection = null;
+        state.uiState.activeTextSelection = null;
         state.uiState.rephrasingOptions = [];
         state.uiState.expectedResponse = {
           eventId,
@@ -320,7 +320,7 @@ const createRephraseSlice: StateCreator<
   /* ------------------------------- MOVE CURSOR ------------------------------ */
   moveCursor: async (
     newCursorIndex: number,
-    selectedTextToken: TextToken | null
+    newActiveRephrasingToken: TextToken | null
   ) => {
     // PREPARE
     const socket = get().socket;
@@ -336,7 +336,7 @@ const createRephraseSlice: StateCreator<
     set(
       produce((state: RephraseState) => {
         state.uiState.rephrasingOptions = [];
-        state.uiState.selectedTextToken = selectedTextToken;
+        state.uiState.activeRephrasingToken = newActiveRephrasingToken;
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'moveCursor',
@@ -358,7 +358,9 @@ const createRephraseSlice: StateCreator<
   },
 
   /* --------------------------- UPDATE TARGET TEXT --------------------------- */
-  updateTargetText: async (newTargetText: string) => {
+  updateTargetText: async (
+    newActiveTextSelection: ActiveWorkerTextSelection
+  ) => {
     // PREPARE
     const socket = get().socket;
     const eventId = prepareClientAction(socket, set);
@@ -369,7 +371,7 @@ const createRephraseSlice: StateCreator<
     // UPDATE UI STATE
     set(
       produce((state: RephraseState) => {
-        state.uiState.targetText = newTargetText;
+        state.uiState.activeTextSelection = newActiveTextSelection;
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'updateTargetText',
@@ -379,7 +381,7 @@ const createRephraseSlice: StateCreator<
 
     const payload: ClientActionPayload_UpdateTargetText = {
       eventId,
-      newTargetText,
+      newActiveTextSelection,
     };
 
     const event: ClientActionEvent = {

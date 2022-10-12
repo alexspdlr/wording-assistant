@@ -6,6 +6,7 @@ import useBoundStore from 'src/store';
 import { TextToken } from 'src/types/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import useClickAway from 'src/utils/hooks/useClickAway';
+import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import useSourceTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import splitIntoWords from 'src/utils/splitIntoWords';
 import { TargetCursorIndexInfo } from '../RephraseTarget';
@@ -57,27 +58,39 @@ const Text = styled('span')(
 );
 
 interface TargetSelectProps {
-  value: string;
   targetCursorIndex: TargetCursorIndexInfo | null;
   setPopoverTargetRect: Function;
-  setSelectedTextToken: (token: TextToken | null) => void;
   showTargetWordPopover: boolean;
   setShowTargetWordPopover: (show: boolean) => void;
 }
 
 const TargetSelect = (props: TargetSelectProps) => {
   const {
-    value,
     targetCursorIndex,
     setPopoverTargetRect,
-    setSelectedTextToken,
     showTargetWordPopover,
     setShowTargetWordPopover,
   } = props;
-  const containerRef = useRef(null);
-  useSourceTextboxSize(value, containerRef);
+  /* --------------------------- GET DATA FROM STORE -------------------------- */
+
+  const activeTextSelection = useBoundStore(
+    (state) => state.uiState.activeTextSelection
+  );
+  const originalTextSelection = useBoundStore(
+    (state) => state.uiState.originalTextSelection
+  );
+  const activeRephrasingToken = useBoundStore(
+    (state) => state.uiState.activeRephrasingToken
+  );
+  const setActiveRephrasingToken = useBoundStore(
+    (state) => state.setActiveRephrasingToken
+  );
+
+  /* ---------------------------------- UTILS --------------------------------- */
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  useRephraseToolTextboxSize(activeTextSelection?.value || '', containerRef);
+
   const theme = useTheme();
-  const uiState = useBoundStore((state) => state.uiState);
 
   useEffect(() => {
     const newSelectedWord =
@@ -90,7 +103,7 @@ const TargetSelect = (props: TargetSelectProps) => {
           )
         : null;
 
-    setSelectedTextToken(newSelectedWord || null);
+    setActiveRephrasingToken(newSelectedWord || null);
 
     const targetElementRect = document
       .getElementById('target-word-selected')
@@ -104,10 +117,10 @@ const TargetSelect = (props: TargetSelectProps) => {
 
     if (targetCursorIndex?.movementTriggeredBy === 'mouse') {
       if (
-        uiState.selectedTextToken === null ||
+        activeRephrasingToken === null ||
         !(
-          targetCursorIndex.index >= uiState.selectedTextToken.startIndex &&
-          targetCursorIndex.index <= uiState.selectedTextToken.endIndex
+          targetCursorIndex.index >= activeRephrasingToken.startIndex &&
+          targetCursorIndex.index <= activeRephrasingToken.endIndex
         )
       ) {
         setShowTargetWordPopover(true);
@@ -123,7 +136,7 @@ const TargetSelect = (props: TargetSelectProps) => {
     }
   }, [targetCursorIndex]);
 
-  const splitWords = splitIntoWords(value);
+  const splitWords = splitIntoWords(activeTextSelection?.value || '');
 
   return (
     <>
@@ -194,7 +207,7 @@ const TargetSelect = (props: TargetSelectProps) => {
               width: 'calc(100% - 36px)',
             }}
           >
-            {uiState.originalText}
+            {originalTextSelection?.value}
           </div>
         </div>
       </Container>

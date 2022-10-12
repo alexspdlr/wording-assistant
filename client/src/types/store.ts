@@ -3,6 +3,7 @@ import {
   ActiveWorkerState,
   ActiveWorkerStateData,
   ActiveWorkerStateName,
+  ActiveWorkerTextSelection,
   ClientActionEndpoint,
   ServerResponseEndpoint,
   ServerResponsePayload,
@@ -29,7 +30,7 @@ export type TextTokenReduced = Omit<TextToken, 'startIndex' | 'endIndex'>;
 
 interface UiState extends Omit<ActiveWorkerStateData, 'id' | 'cursorIndex'> {
   expectedResponse: UiExpectedResponse | null;
-  selectedTextToken: TextToken | null;
+  activeRephrasingToken: TextToken | null;
 }
 
 export interface RephraseState {
@@ -50,7 +51,11 @@ export interface RephraseActions {
   setSocket: (socket: Socket) => void;
   setIsConnectedToServer: (isConnectedToServer: boolean) => void;
   setIsErrorActive: (isErrorActive: boolean) => void;
-  setSelectedTextToken: (newToken: TextToken | null) => void;
+  setActiveRephrasingToken: (newToken: TextToken | null) => void;
+  setOriginalTextSelection: (
+    selection: ActiveWorkerTextSelection | null
+  ) => void;
+  setActiveTextSelection: (selection: ActiveWorkerTextSelection | null) => void;
 
   // handle incoming server event
   handleServerResponse: (
@@ -59,17 +64,13 @@ export interface RephraseActions {
   ) => void;
 
   // client actions
-  selectText: (
-    text: string,
-    selectionStart: number,
-    selectionEnd: number
-  ) => void;
+  selectText: (newOriginalTextSelection: ActiveWorkerTextSelection) => void;
   deselectText: () => void;
   moveCursor: (
     newCursorIndex: number,
     selectedTextToken: TextToken | null
   ) => void;
-  updateTargetText: (newTargetText: string) => void;
+  updateTargetText: (newActiveTextSelection: ActiveWorkerTextSelection) => void;
   selectWordingAlternative: (selectedAlternativeIndex: number) => void;
 }
 
