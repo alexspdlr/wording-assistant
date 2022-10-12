@@ -12,7 +12,8 @@ const selectWordingAlternativeExported = async (
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void,
-  selectedAlternativeIndex: number
+  selectedAlternativeIndex: number,
+  selectedAlternativeValue: string
 ) => {
   if (localState.page && localState.browser) {
     /* -------------------------------------------------------------------------- */
@@ -47,6 +48,7 @@ const selectWordingAlternativeExported = async (
     // ACTION
     const response = await selectWordingAlternative(
       selectedAlternativeIndex,
+      selectedAlternativeValue,
       localState.page
     );
 

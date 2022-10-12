@@ -63,6 +63,10 @@ const TargetWordPopover = (props: TargetWordPopoverProps) => {
     (state) => state.uiState.rephrasingOptions
   );
 
+  const selectWordingAlternative = useBoundStore(
+    (state) => state.selectWordingAlternative
+  );
+
   const fontSize =
     document.getElementById('target-value-input')?.style.fontSize || '22px';
 
@@ -82,9 +86,11 @@ const TargetWordPopover = (props: TargetWordPopoverProps) => {
           >
             {alternatives.length > 0 ? (
               <>
-                {alternatives.map((alternative, i) => (
-                  <Alternative onClick={() => console.log(alternative)}>
-                    {alternative}
+                {alternatives.map((value, i) => (
+                  <Alternative
+                    onClick={() => selectWordingAlternative(i, value)}
+                  >
+                    {value}
                   </Alternative>
                 ))}
               </>

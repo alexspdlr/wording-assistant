@@ -4,9 +4,43 @@ import isJSON from '../utils/isJSON';
 
 const selectWordingAlternative = async (
   selectedAlternativeIndex: number,
+  selectedAlternativeValue: string,
   page: Page
 ): Promise<PuppeteerResponse> => {
   try {
+    /* Check if selected option has the correct value -> throw error if not */
+
+    console.log('**** selectedAlternativeIndex', selectedAlternativeIndex);
+    console.log('**** selectedAlternativeValue', selectedAlternativeValue);
+
+    const isCorrectTarget: boolean = await page.evaluate(
+      (selectedAlternativeIndex, selectedAlternativeValue) => {
+        const popover = document.querySelector(
+          '[dl-test=translator-target-alternatives-popup]'
+        );
+        console.log('**** popover', selectedAlternativeValue);
+        if (popover) {
+          console.log(
+            '**** popover li elements',
+            Array.from(popover.getElementsByTagName('li'))
+          );
+
+          return (
+            Array.from(popover.getElementsByTagName('li'))[
+              selectedAlternativeIndex
+            ].innerHTML === selectedAlternativeValue
+          );
+        }
+        return false;
+      },
+      selectedAlternativeIndex,
+      selectedAlternativeValue
+    );
+
+    if (!isCorrectTarget) {
+      throw 'selected wording alternative not found';
+    }
+
     /* Focus selected option & press enter */
     for (const i of [...Array(selectedAlternativeIndex + 1).keys()]) {
       await page.keyboard.press('ArrowDown');

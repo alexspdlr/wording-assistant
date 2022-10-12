@@ -96,7 +96,9 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
         updateLocalState,
         respondToPuppet,
         (event.payload as ClientActionPayload_SelectWordingAlternative)
-          .selectedAlternativeIndex
+          .selectedAlternativeIndex,
+        (event.payload as ClientActionPayload_SelectWordingAlternative)
+          .selectedAlternativeValue
       );
       return;
 

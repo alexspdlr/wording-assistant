@@ -71,7 +71,10 @@ export interface RephraseActions {
     selectedTextToken: TextToken | null
   ) => void;
   updateTargetText: (newActiveTextSelection: ActiveWorkerTextSelection) => void;
-  selectWordingAlternative: (selectedAlternativeIndex: number) => void;
+  selectWordingAlternative: (
+    selectedAlternativeIndex: number,
+    selectedAlternativeValue: string
+  ) => void;
 }
 
 export interface RephraseSlice extends RephraseState, RephraseActions {}

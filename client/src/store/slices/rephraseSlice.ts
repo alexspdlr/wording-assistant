@@ -6,6 +6,7 @@ import {
   ClientActionPayload_DeselectText,
   ClientActionPayload_MoveCursor,
   ClientActionPayload_SelectText,
+  ClientActionPayload_SelectWordingAlternative,
   ClientActionPayload_UpdateTargetText,
   ServerResponseEndpoint,
   ServerResponsePayload,
@@ -249,6 +250,7 @@ const createRephraseSlice: StateCreator<
       produce((state: RephraseState) => {
         state.uiState.originalTextSelection = newTextSelection;
         state.uiState.activeTextSelection = newTextSelection;
+        state.uiState.rephrasingOptions = [];
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'selectText',
@@ -388,7 +390,44 @@ const createRephraseSlice: StateCreator<
 
     socketEmit(socket, event);
   },
-  selectWordingAlternative: (selectedAlternativeIndex: number) => null,
+
+  /* ----------------------- SELECT WORDING ALTERNATIVE ----------------------- */
+
+  selectWordingAlternative: (
+    selectedAlternativeIndex: number,
+    selectedAlternativeValue: string
+  ) => {
+    // PREPARE
+    const socket = get().socket;
+    const eventId = prepareClientAction(socket, set);
+    if (!eventId) {
+      return;
+    }
+
+    // UPDATE UI STATE
+    set(
+      produce((state: RephraseState) => {
+        state.uiState.rephrasingOptions = [];
+        state.uiState.expectedResponse = {
+          eventId,
+          endpoint: 'selectWordingAlternative',
+        };
+      })
+    );
+
+    const payload: ClientActionPayload_SelectWordingAlternative = {
+      eventId,
+      selectedAlternativeIndex,
+      selectedAlternativeValue,
+    };
+
+    const event: ClientActionEvent = {
+      endpoint: 'selectWordingAlternative',
+      payload,
+    };
+
+    socketEmit(socket, event);
+  },
 });
 
 export default createRephraseSlice;

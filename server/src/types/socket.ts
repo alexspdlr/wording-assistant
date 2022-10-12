@@ -81,6 +81,7 @@ export interface ClientActionPayload_UpdateTargetText {
 export interface ClientActionPayload_SelectWordingAlternative {
   eventId: string;
   selectedAlternativeIndex: number;
+  selectedAlternativeValue: string;
 }
 
 /* -------------------------------------------------------------------------- */
