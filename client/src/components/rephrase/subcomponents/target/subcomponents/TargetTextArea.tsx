@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useRef } from 'react';
+import { debounce } from 'lodash';
+import React, { useCallback, useEffect, useRef } from 'react';
 import useBoundStore from 'src/store';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import { TargetCursorIndexInfo } from '../RephraseTarget';
@@ -63,6 +64,15 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
     return `${targetHeight}px`;
   };
 
+  const updateTargetText = useBoundStore((state) => state.updateTargetText);
+  const updateTargetTextMemoized = useCallback(
+    debounce((value) => {
+      console.log(`123123: `, value);
+      updateTargetText(value);
+    }, 400),
+    []
+  );
+
   return (
     <TextArea
       id='target-value-input'
@@ -71,6 +81,7 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
       disabled={!targetValue}
       onChange={(e) => {
         setTargetValue(e.target.value);
+        updateTargetTextMemoized(e.target.value);
       }}
       onSelect={(e) => {
         if (

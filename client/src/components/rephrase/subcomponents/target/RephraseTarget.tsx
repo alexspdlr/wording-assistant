@@ -58,22 +58,6 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     null
   );
 
-  const updateTargetText = useBoundStore((state) => state.updateTargetText);
-  const updateTargetTextMemoized = useCallback(
-    debounce((value) => {
-      console.log(`123123: `, value);
-      updateTargetText(value);
-    }, 400),
-    []
-  );
-
-  useEffect(() => {
-    if (targetTextareValue !== targetText) {
-      updateTargetTextMemoized(targetTextareValue);
-    }
-    // updateTargetTextMemoized(targetTextareValue);
-  }, [targetTextareValue]);
-
   const expectedResponse: UiExpectedResponse | null = useBoundStore(
     (state) => state.uiState.expectedResponse
   );
