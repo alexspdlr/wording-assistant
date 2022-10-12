@@ -61,7 +61,7 @@ export type ClientActionPayload =
 
 export interface ClientActionPayload_SelectText {
   eventId: string;
-  newOriginalTextSelection: ActiveWorkerTextSelection;
+  newTextSelection: ActiveWorkerTextSelection;
 }
 
 export interface ClientActionPayload_DeselectText {

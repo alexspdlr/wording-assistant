@@ -40,8 +40,8 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
 
   /* ----------------------------- GET STORE DATA ----------------------------- */
 
-  const originalTextSelection = useBoundStore(
-    (state) => state.uiState.originalTextSelection
+  const activeTextSelection = useBoundStore(
+    (state) => state.uiState.activeTextSelection
   );
 
   const highlighterRef = useRef<HTMLDivElement | null>(null);
@@ -55,8 +55,8 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
           value,
           [
             {
-              startIndex: originalTextSelection?.startIndex || 0,
-              endIndex: originalTextSelection?.endIndex || 0,
+              startIndex: activeTextSelection?.startIndex || 0,
+              endIndex: activeTextSelection?.endIndex || 0,
             },
           ],
           '#fee8c0',

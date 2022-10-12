@@ -139,13 +139,7 @@ const createRephraseSlice: StateCreator<
 
     const expectedResponse = get().uiState.expectedResponse;
 
-    /*
-    console.log(
-      `Enpoint: ${endpoint}, expectedResponse: ${JSON.stringify(
-        expectedResponse
-      )}`
-    );
-    */
+    // console.log(`${endpoint} - ${JSON.stringify(newState)}`);
 
     if (expectedResponse) {
       const resolvingEndpoints: Array<
@@ -236,7 +230,7 @@ const createRephraseSlice: StateCreator<
 
   /* ------------------------------- SELECT TEXT ------------------------------ */
 
-  selectText: async (newOriginalTextSelection: ActiveWorkerTextSelection) => {
+  selectText: async (newTextSelection: ActiveWorkerTextSelection) => {
     // PREPARE
     const socket = get().socket;
     const eventId = prepareClientAction(socket, set);
@@ -245,14 +239,16 @@ const createRephraseSlice: StateCreator<
     }
 
     // HANDLE CUSTOM DECLINE SITUATIONS
-    if (newOriginalTextSelection.value.trim().length === 0) {
+    if (newTextSelection.value.trim().length === 0) {
       return;
     }
 
     // UPDATE UI STATE
+
     set(
       produce((state: RephraseState) => {
-        state.uiState.originalTextSelection = newOriginalTextSelection;
+        state.uiState.originalTextSelection = newTextSelection;
+        state.uiState.activeTextSelection = newTextSelection;
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'selectText',
@@ -264,7 +260,7 @@ const createRephraseSlice: StateCreator<
 
     const payload: ClientActionPayload_SelectText = {
       eventId,
-      newOriginalTextSelection,
+      newTextSelection,
     };
 
     const event: ClientActionEvent = {

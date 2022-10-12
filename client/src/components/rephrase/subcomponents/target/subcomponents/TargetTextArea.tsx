@@ -3,6 +3,7 @@ import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useBoundStore from 'src/store';
+import useIsTyping from 'src/utils/hooks/useIsTyping';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import { TargetCursorIndexInfo } from '../RephraseTarget';
 
@@ -34,10 +35,11 @@ const TextArea = styled('textarea')(
 
 interface TargetTextAreaProps {
   setTargetCursorIndex: (target: TargetCursorIndexInfo | null) => void;
+  setIsTypingInTarget: (bool: boolean) => void;
 }
 
 const TargetTextArea = (props: TargetTextAreaProps) => {
-  const { setTargetCursorIndex } = props;
+  const { setTargetCursorIndex, setIsTypingInTarget } = props;
 
   /* ----------------------- GET DATA FROM SEARCH PARAMS ---------------------- */
 
@@ -58,7 +60,18 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
   const updateTargetText = useBoundStore((state) => state.updateTargetText);
 
   /* ---------------------------------- UTILS --------------------------------- */
+
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const [isTyping, register] = useIsTyping();
+  useEffect(() => {
+    if (textareaRef.current) register(textareaRef.current);
+  }, [textareaRef.current]);
+
+  useEffect(() => {
+    setIsTypingInTarget(isTyping);
+  }, [isTyping]);
+
   useRephraseToolTextboxSize(activeTextSelection?.value || '', textareaRef);
 
   const calculateMinHeight = () => {
@@ -89,9 +102,22 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
         startIndex,
         endIndex,
       });
-    }, 400),
+    }, 500),
     []
   );
+
+  const replaceSubstring = (
+    originalString: string,
+    startIndex: number,
+    endIndex: number,
+    insertion: string
+  ) => {
+    return (
+      originalString.substring(0, startIndex) +
+      insertion +
+      origin.substring(endIndex)
+    );
+  };
 
   return (
     <TextArea
@@ -106,6 +132,17 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
             endIndex: originalTextSelection.startIndex + e.target.value.length,
             value: e.target.value,
           });
+
+          // Update source text area
+          if (sourceValue && activeTextSelection) {
+            const newSourceValue =
+              sourceValue.substr(0, activeTextSelection.startIndex) +
+              e.target.value +
+              sourceValue.substr(activeTextSelection.endIndex);
+
+            setSearchParams({ 'source-value': newSourceValue });
+          }
+
           updateTargetTextMemoized(
             e.target.value,
             originalTextSelection.startIndex,

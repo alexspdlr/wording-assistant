@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import CustomPopover from 'src/components/Popover';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import useMouseIsDown from 'src/utils/hooks/useMouseIsDown';
+import useIsTyping from 'src/utils/hooks/useIsTyping';
 const RephrasePage = () => {
   const theme = useTheme();
 
@@ -23,11 +24,11 @@ const RephrasePage = () => {
       </Section>
       <div style={{ display: 'flex' }}>
         BREAKPOINT: {activeBreakpoint}
-        <div style={{ width: '50%', backgroundColor: 'yellow' }}>
+        <div style={{ backgroundColor: 'yellow' }}>
           UI STATE:
           <div>{JSON.stringify(uiState)}</div>
         </div>
-        <div style={{ width: '50%' }}>
+        <div style={{}}>
           SERVER STATE:
           <div>{JSON.stringify(serverState)}</div>
         </div>

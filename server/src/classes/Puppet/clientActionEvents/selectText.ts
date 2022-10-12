@@ -69,7 +69,7 @@ const selectText = async (
         value: newActiveSelectionValue,
         startIndex: originalTextSelection.startIndex,
         endIndex:
-          originalTextSelection.endIndex + newActiveSelectionValue.length,
+          originalTextSelection.startIndex + newActiveSelectionValue.length,
       };
 
       // CREATE NEW WORKER STATE & RESPONSE

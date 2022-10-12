@@ -14,6 +14,7 @@ import TargetSelect from './subcomponents/TargetSelect';
 import TargetTextArea from './subcomponents/TargetTextArea';
 import TargetWordPopover from './subcomponents/TargetWordPopover';
 import _, { debounce } from 'lodash';
+import { original } from 'immer';
 
 const Wrapper = styled('div')(
   () => `
@@ -49,6 +50,10 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const activeTextSelection = useBoundStore(
     (state) => state.uiState.activeTextSelection
   );
+
+  const originalTextSelection = useBoundStore(
+    (state) => state.uiState.originalTextSelection
+  );
   const moveCursor = useBoundStore((state) => state.moveCursor);
 
   // maybe move these useStates into ui state !?
@@ -60,6 +65,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const [popoverTargetRect, setPopoverTargetRect] = useState<DOMRect | null>(
     null
   );
+  const [isTypingInTarget, setIsTypingInTarget] = useState<boolean>(false);
 
   const expectedResponse: UiExpectedResponse | null = useBoundStore(
     (state) => state.uiState.expectedResponse
@@ -73,6 +79,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const setActiveRephrasingToken = useBoundStore(
     (state) => state.setActiveRephrasingToken
   );
+  const deselectText = useBoundStore((state) => state.deselectText);
 
   const showLoadingSpinner = () =>
     expectedResponse ? expectedResponse.endpoint === 'selectText' : false;
@@ -81,10 +88,23 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     !activeTextSelection;
 
   useEffect(() => {
-    if (activeRephrasingToken) {
+    if (activeRephrasingToken && !isTypingInTarget) {
       moveCursor(activeRephrasingToken?.startIndex, activeRephrasingToken);
     }
   }, [activeRephrasingToken]);
+
+  const resetToOriginalSelection = () => {
+    // Update source text area
+    if (value && activeTextSelection) {
+      const newSourceValue =
+        value.substr(0, activeTextSelection.startIndex) +
+        originalTextSelection?.value +
+        value.substr(activeTextSelection.endIndex);
+
+      setSearchParams({ 'source-value': newSourceValue });
+      deselectText();
+    }
+  };
 
   return (
     <>
@@ -116,6 +136,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                   >
                     <TargetTextArea
                       setTargetCursorIndex={setTargetCursorIndex}
+                      setIsTypingInTarget={setIsTypingInTarget}
                     />
 
                     <TargetSelect
@@ -123,6 +144,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                       setPopoverTargetRect={setPopoverTargetRect}
                       showTargetWordPopover={showTargetWordPopover}
                       setShowTargetWordPopover={setShowTargetWordPopover}
+                      resetToOriginalSelection={resetToOriginalSelection}
                     />
                   </div>
                 </>
