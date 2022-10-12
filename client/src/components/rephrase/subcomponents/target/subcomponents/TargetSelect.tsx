@@ -11,6 +11,7 @@ import useSourceTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import splitIntoWords from 'src/utils/splitIntoWords';
 import { TargetCursorIndexInfo } from '../RephraseTarget';
 import _ from 'lodash';
+import TargetOriginalSelection from './TargetOriginalSelection';
 
 const Container = styled('div')(
   () => `
@@ -181,41 +182,10 @@ const TargetSelect = (props: TargetSelectProps) => {
             )
           )}
         </div>
-        {!_.isEqual(originalTextSelection, activeTextSelection) && (
-          <div
-            style={{
-              margin: '0px 22px 0px 22px',
-              padding: '10px 6px 0px 6px',
-              color: '#888',
-              fontSize: '21px',
-              fontWeight: 300,
-              position: 'relative',
-              borderTop: `1px solid ${addAlphaToHexColor(
-                theme.palette.border,
-                0.6
-              )}`,
-            }}
-          >
-            Original:
-            <div
-              onClick={resetToOriginalSelection}
-              style={{
-                fontWeight: 400,
-                color: theme.palette.text.main,
-                position: 'absolute',
-                zIndex: 50,
-                paddingTop: '14px',
-                cursor: 'pointer',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                width: 'calc(100% - 36px)',
-              }}
-            >
-              {originalTextSelection?.value}
-            </div>
-          </div>
-        )}
+        <TargetOriginalSelection
+          hide={_.isEqual(originalTextSelection, activeTextSelection)}
+          resetToOriginalSelection={resetToOriginalSelection}
+        />
       </Container>
     </>
   );

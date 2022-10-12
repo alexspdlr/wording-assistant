@@ -368,6 +368,7 @@ const createRephraseSlice: StateCreator<
     set(
       produce((state: RephraseState) => {
         state.uiState.activeTextSelection = newActiveTextSelection;
+        state.uiState.rephrasingOptions = [];
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'updateTargetText',

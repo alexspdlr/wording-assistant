@@ -56,7 +56,7 @@ const useIsTyping = ({ timeout = 200 }: UseIsTypingProps = {}): [
     const keyUpDownListener = (e: Event) => {
       const hasValue = (e.target as TextElement).value !== '';
 
-      setIsTyping(hasValue);
+      if (e.target) setIsTyping(hasValue);
       reset();
     };
     const blurListener = () => {
