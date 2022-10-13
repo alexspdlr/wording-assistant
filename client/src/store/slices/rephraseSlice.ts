@@ -174,9 +174,10 @@ const createRephraseSlice: StateCreator<
 
     /* ------------------------ UPDATE DIFFERENCES IN UI ------------------------ */
 
-    // console.log(`${endpoint}: `, payload);
+    console.log(`${endpoint}: `, payload);
 
     const currentUiState = get().uiState;
+
     if (
       !_.isEqual(
         newState.data.originalTextSelection,
@@ -367,6 +368,7 @@ const createRephraseSlice: StateCreator<
     }
 
     // UPDATE UI STATE
+
     set(
       produce((state: RephraseState) => {
         state.uiState.activeTextSelection = newActiveTextSelection;

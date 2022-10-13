@@ -65,7 +65,7 @@ const selectWordingAlternativeExported = async (
       // CREATE NEW WORKER STATE & RESPONSE
 
       const newActiveSelectionValue: string =
-        response.data.rephrasingResult ||
+        response.data.rephrasingResult.trim() ||
         localState.workerState.data.activeTextSelection?.value;
 
       const newActiveTextSelection: ActiveWorkerTextSelection = {

@@ -8,11 +8,13 @@ import React, {
   useState,
 } from 'react';
 import useBoundStore from 'src/store';
+import { ActiveWorkerTextSelection } from 'src/types/socket';
 import { UiExpectedResponse } from 'src/types/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import useClickAway from 'src/utils/hooks/useClickAway';
 import useMouseIsDown from 'src/utils/hooks/useMouseIsDown';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
+import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 import wait from 'src/utils/wait';
 import { Z_ASCII } from 'zlib';
 import SourceClearButton from './action-buttons/SourceClearButton';
@@ -75,6 +77,9 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
 
   const originalTextSelection = useBoundStore(
     (state) => state.uiState.originalTextSelection
+  );
+  const activeTextSelection = useBoundStore(
+    (state) => state.uiState.activeTextSelection
   );
   const setOriginalTextSelection = useBoundStore(
     (state) => state.setOriginalTextSelection
@@ -198,9 +203,43 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     };
   }, []);
 
+  const [localActivetextSelection, setLocalActiveTextSelection] =
+    useState<ActiveWorkerTextSelection | null>(activeTextSelection);
+
+  useEffect(() => {
+    console.log(
+      'ACTIVE TEXT SELECTION CHANGED FROM: ',
+      localActivetextSelection,
+      'TO :',
+      activeTextSelection
+    );
+    if (activeTextSelection && localActivetextSelection) {
+      const newSourceValue = replaceCharactersBetween(
+        value,
+        activeTextSelection.value,
+        localActivetextSelection.startIndex,
+        localActivetextSelection.endIndex
+      );
+
+      setValue(newSourceValue);
+    }
+    setLocalActiveTextSelection(activeTextSelection);
+  }, [activeTextSelection]);
+
+  useEffect(() => {
+    console.error(
+      'localActivetextSelection changedd: ',
+      localActivetextSelection
+    );
+  }, [localActivetextSelection]);
+
   return (
     <>
-      <SourceHighlighter value={value || ''} />
+      <SourceHighlighter
+        value={value || ''}
+        startIndex={localActivetextSelection?.startIndex || null}
+        endIndex={localActivetextSelection?.endIndex || null}
+      />
       <TextArea
         id='source-value-input'
         ref={textareaRef}

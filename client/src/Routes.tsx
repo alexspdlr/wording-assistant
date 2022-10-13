@@ -50,26 +50,21 @@ const AppRoute = (props: AppRouteProps) => {
 
 const AppRoutes = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='' element={<AppLayout />}>
-          <Route path='*' element={<Page404 />} />
-          <Route index element={<AppRoute target={<RephrasePage />} />} />
-          <Route
-            path='documentation'
-            element={<AppRoute target={<DocumentationPage />} />}
-          />
-          <Route
-            path='process'
-            element={<AppRoute target={<ProcessPage />} />}
-          />
-          <Route
-            path='about-me'
-            element={<AppRoute target={<AboutMePage />} />}
-          />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path='' element={<AppLayout />}>
+        <Route path='*' element={<Page404 />} />
+        <Route index element={<AppRoute target={<RephrasePage />} />} />
+        <Route
+          path='documentation'
+          element={<AppRoute target={<DocumentationPage />} />}
+        />
+        <Route path='process' element={<AppRoute target={<ProcessPage />} />} />
+        <Route
+          path='about-me'
+          element={<AppRoute target={<AboutMePage />} />}
+        />
+      </Route>
+    </Routes>
   );
 };
 

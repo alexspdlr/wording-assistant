@@ -33,16 +33,14 @@ const Container = styled('div')(
 
 interface SourceHighlighterProps {
   value: string;
+  startIndex: number | null;
+  endIndex: number | null;
 }
 
 const SourceHighlighter = (props: SourceHighlighterProps) => {
-  const { value } = props;
+  const { value, startIndex, endIndex } = props;
 
   /* ----------------------------- GET STORE DATA ----------------------------- */
-
-  const activeTextSelection = useBoundStore(
-    (state) => state.uiState.activeTextSelection
-  );
 
   const highlighterRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
@@ -55,8 +53,8 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
           value,
           [
             {
-              startIndex: activeTextSelection?.startIndex || 0,
-              endIndex: activeTextSelection?.endIndex || 0,
+              startIndex: startIndex || 0,
+              endIndex: endIndex || 0,
             },
           ],
           '#fee8c0',

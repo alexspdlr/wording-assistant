@@ -15,6 +15,7 @@ import TargetTextArea from './subcomponents/TargetTextArea';
 import TargetWordPopover from './subcomponents/TargetWordPopover';
 import _, { debounce } from 'lodash';
 import { original } from 'immer';
+import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 
 const Wrapper = styled('div')(
   () => `
@@ -95,12 +96,13 @@ const RephraseTarget = (props: RephraseTargetProps) => {
 
   const resetToOriginalSelection = () => {
     // Update source text area
-    if (value && activeTextSelection) {
-      const newSourceValue =
-        value.substr(0, activeTextSelection.startIndex) +
-        originalTextSelection?.value +
-        value.substr(activeTextSelection.endIndex);
-
+    if (value && activeTextSelection && originalTextSelection) {
+      const newSourceValue = replaceCharactersBetween(
+        value,
+        originalTextSelection.value,
+        activeTextSelection.startIndex,
+        activeTextSelection.endIndex
+      );
       setSearchParams({ 'source-value': newSourceValue });
       deselectText();
     }

@@ -4,8 +4,10 @@ import React, {
   useReducer,
   useState,
 } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ActiveWorkerState, ServerResponsePayload } from 'src/types/socket';
 import generateDefaultWorkerState from 'src/utils/generateDefaultWorkerState';
+import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 
 import useBoundStore from '../store';
 import { useSocket } from '../utils/hooks/useSocket';
@@ -29,6 +31,8 @@ const SocketContextComponent: React.FunctionComponent<
     (state) => state.handleServerResponse
   );
 
+  const uiState = useBoundStore((state) => state.uiState);
+
   const socket = useSocket('ws://localhost:3001', {
     reconnectionAttempts: 5,
     reconnectionDelay: 500,
@@ -37,7 +41,7 @@ const SocketContextComponent: React.FunctionComponent<
 
   useEffect(() => {
     socket.connect();
-    startListeners();
+    startListeners(() => uiState);
     // eslint-disable-next-line
   }, []);
 
@@ -47,7 +51,7 @@ const SocketContextComponent: React.FunctionComponent<
     // eslint-disable-next-line
   }, [socket]);
 
-  const startListeners = () => {
+  const startListeners = (getuiState: () => void) => {
     /** Messages */
 
     socket.on('setupCompleted', (payload: ServerResponsePayload) => {
