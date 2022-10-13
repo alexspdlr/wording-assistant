@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useSearchParams } from 'react-router-dom';
+import useBoundStore from 'src/store';
 import copyToClipboard from 'src/utils/copyToClipboard';
 import RephraseHint from '../RephraseHint';
 import SourceCopyButton from './subcomponents/action-buttons/SourceCopyButton';

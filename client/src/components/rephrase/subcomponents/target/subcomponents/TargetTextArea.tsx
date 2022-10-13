@@ -107,19 +107,6 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
     []
   );
 
-  const replaceSubstring = (
-    originalString: string,
-    startIndex: number,
-    endIndex: number,
-    insertion: string
-  ) => {
-    return (
-      originalString.substring(0, startIndex) +
-      insertion +
-      origin.substring(endIndex)
-    );
-  };
-
   return (
     <TextArea
       id='target-value-input'

@@ -1,39 +1,29 @@
-import Section from 'src/components/section';
-import RephraseTool from 'src/components/rephrase';
-import QuoteSection from 'src/components/quote';
-import InfoSection from 'src/components/info/InfoSection';
 import { useTheme } from '@emotion/react';
+import LoadingRipple from 'src/components/general/loading-ripple';
+import InfoSection from 'src/components/info/InfoSection';
+import QuoteSection from 'src/components/quote';
+import RephraseTool from 'src/components/rephrase';
+import Section from 'src/components/section';
 import useBoundStore from 'src/store';
-import { useEffect } from 'react';
-import CustomPopover from 'src/components/Popover';
-import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import useMouseIsDown from 'src/utils/hooks/useMouseIsDown';
-import useIsTyping from 'src/utils/hooks/useIsTyping';
 const RephrasePage = () => {
   const theme = useTheme();
 
-  const uiState = useBoundStore((state) => state.uiState);
-  const serverState = useBoundStore((state) => state.serverState);
+  const expectedResponse = useBoundStore(
+    (state) => state.uiState.expectedResponse
+  );
 
-  const activeBreakpoint = useBreakpoint();
+  const loadingRephrasing =
+    expectedResponse !== null &&
+    (expectedResponse.endpoint === 'selectWordingAlternative' ||
+      expectedResponse.endpoint === 'updateTargetText');
 
   return (
     <>
       <Section backgroundColor={theme.palette.background.dark}>
         <RephraseTool />
       </Section>
-      <div style={{ display: 'flex' }}>
-        BREAKPOINT: {activeBreakpoint}
-        <div style={{ backgroundColor: 'yellow' }}>
-          UI STATE:
-          <div>{JSON.stringify(uiState)}</div>
-        </div>
-        <div style={{}}>
-          SERVER STATE:
-          <div>{JSON.stringify(serverState)}</div>
-        </div>
-      </div>
-
+      loading Rephrasing: {String(loadingRephrasing)}
+      {!loadingRephrasing && <LoadingRipple />}
       <Section backgroundColor={theme.palette.background.main}>
         <InfoSection />
       </Section>

@@ -41,7 +41,6 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
   const { value, startIndex, endIndex } = props;
 
   /* ----------------------------- GET STORE DATA ----------------------------- */
-
   const highlighterRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
   useRephraseToolTextboxSize(value, highlighterRef);

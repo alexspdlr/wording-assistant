@@ -108,6 +108,11 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     }
   };
 
+  const showTargetWordPopoverPreconditions =
+    !(popoverTargetRect === null || showHint() || showLoadingSpinner()) &&
+    !(expectedResponse === null && rephrasingOptions?.length === 0) &&
+    document.getElementById('target-value-input') === document.activeElement;
+
   return (
     <>
       <Wrapper>
@@ -156,11 +161,9 @@ const RephraseTarget = (props: RephraseTargetProps) => {
         </Container>
       </Wrapper>
 
-      {!(popoverTargetRect === null || showHint() || showLoadingSpinner()) &&
-        !(expectedResponse === null && rephrasingOptions?.length === 0) &&
-        showTargetWordPopover && (
-          <TargetWordPopover popoverTargetRect={popoverTargetRect} />
-        )}
+      {showTargetWordPopoverPreconditions && showTargetWordPopover && (
+        <TargetWordPopover popoverTargetRect={popoverTargetRect} />
+      )}
     </>
   );
 };

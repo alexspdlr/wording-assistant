@@ -49,10 +49,10 @@ const TextArea = styled('textarea')(
     )}; 
 
     ::selection{
-      background-color: #ff0000b9; 
+      background-color: #ffe6b7;  
       color: ${
         props.textSelected
-          ? 'transparent'
+          ? defaultProps.theme.palette.text.light
           : defaultProps.theme.palette.text.light
       }; 
     } 
@@ -80,6 +80,9 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
   );
   const activeTextSelection = useBoundStore(
     (state) => state.uiState.activeTextSelection
+  );
+  const expectedResponse = useBoundStore(
+    (state) => state.uiState.expectedResponse
   );
   const setOriginalTextSelection = useBoundStore(
     (state) => state.setOriginalTextSelection
@@ -147,6 +150,11 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     return `${targetHeight}px`;
   };
 
+  const loadingRephrasing =
+    expectedResponse !== null &&
+    (expectedResponse.endpoint === 'selectWordingAlternative' ||
+      expectedResponse.endpoint === 'updateTargetText');
+
   /* ------------------------------- USE EFFECTS ------------------------------ */
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
@@ -207,12 +215,6 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     useState<ActiveWorkerTextSelection | null>(activeTextSelection);
 
   useEffect(() => {
-    console.log(
-      'ACTIVE TEXT SELECTION CHANGED FROM: ',
-      localActivetextSelection,
-      'TO :',
-      activeTextSelection
-    );
     if (activeTextSelection && localActivetextSelection) {
       const newSourceValue = replaceCharactersBetween(
         value,
@@ -226,20 +228,13 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
     setLocalActiveTextSelection(activeTextSelection);
   }, [activeTextSelection]);
 
-  useEffect(() => {
-    console.error(
-      'localActivetextSelection changedd: ',
-      localActivetextSelection
-    );
-  }, [localActivetextSelection]);
-
   return (
     <>
-      <SourceHighlighter
+      {/*<SourceHighlighter
         value={value || ''}
         startIndex={localActivetextSelection?.startIndex || null}
         endIndex={localActivetextSelection?.endIndex || null}
-      />
+      />*/}
       <TextArea
         id='source-value-input'
         ref={textareaRef}
@@ -252,6 +247,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
         }}
         autoFocus
         value={value}
+        disabled={loadingRephrasing}
         spellCheck={false}
         textSelected={
           originalTextSelection?.startIndex !== originalTextSelection?.endIndex

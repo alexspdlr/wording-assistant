@@ -82,6 +82,7 @@ const selectWordingAlternativeExported = async (
         data: {
           ...localState.workerState.data,
           activeTextSelection: newActiveTextSelection,
+          rephrasingOptions: [],
         },
       };
 

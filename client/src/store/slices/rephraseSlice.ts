@@ -410,6 +410,7 @@ const createRephraseSlice: StateCreator<
     set(
       produce((state: RephraseState) => {
         state.uiState.rephrasingOptions = [];
+        state.uiState.activeRephrasingToken = null;
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'selectWordingAlternative',
