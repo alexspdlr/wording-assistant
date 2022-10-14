@@ -16,6 +16,8 @@ import TargetWordPopover from './subcomponents/TargetWordPopover';
 import _, { debounce } from 'lodash';
 import { original } from 'immer';
 import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
+import LoadingRipple from 'src/components/general/loading-ripple';
+import useActiveElement from 'src/utils/hooks/useActiveElement';
 
 const Wrapper = styled('div')(
   () => `
@@ -110,8 +112,12 @@ const RephraseTarget = (props: RephraseTargetProps) => {
 
   const showTargetWordPopoverPreconditions =
     !(popoverTargetRect === null || showHint() || showLoadingSpinner()) &&
-    !(expectedResponse === null && rephrasingOptions?.length === 0) &&
-    document.getElementById('target-value-input') === document.activeElement;
+    !(expectedResponse === null && rephrasingOptions?.length === 0);
+
+  const loadingRephrasing =
+    expectedResponse !== null &&
+    (expectedResponse.endpoint === 'selectWordingAlternative' ||
+      expectedResponse.endpoint === 'updateTargetText');
 
   return (
     <>
@@ -134,27 +140,37 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                   )}
                 </>
               ) : (
-                <>
-                  <div
-                    style={{
-                      position: 'relative',
-                      width: '100%',
-                    }}
-                  >
-                    <TargetTextArea
-                      setTargetCursorIndex={setTargetCursorIndex}
-                      setIsTypingInTarget={setIsTypingInTarget}
-                    />
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                  }}
+                >
+                  <LoadingRipple
+                    hide={!loadingRephrasing}
+                    width={
+                      document.getElementById('target-value-input')
+                        ?.clientWidth || null
+                    }
+                    height={
+                      document.getElementById('target-value-input')
+                        ?.clientHeight || null
+                    }
+                  />
 
-                    <TargetSelect
-                      targetCursorIndex={targetCursorIndex}
-                      setPopoverTargetRect={setPopoverTargetRect}
-                      showTargetWordPopover={showTargetWordPopover}
-                      setShowTargetWordPopover={setShowTargetWordPopover}
-                      resetToOriginalSelection={resetToOriginalSelection}
-                    />
-                  </div>
-                </>
+                  <TargetTextArea
+                    setTargetCursorIndex={setTargetCursorIndex}
+                    setIsTypingInTarget={setIsTypingInTarget}
+                  />
+
+                  <TargetSelect
+                    targetCursorIndex={targetCursorIndex}
+                    setPopoverTargetRect={setPopoverTargetRect}
+                    showTargetWordPopover={showTargetWordPopover}
+                    setShowTargetWordPopover={setShowTargetWordPopover}
+                    resetToOriginalSelection={resetToOriginalSelection}
+                  />
+                </div>
               )}
             </>
           )}
@@ -162,7 +178,10 @@ const RephraseTarget = (props: RephraseTargetProps) => {
       </Wrapper>
 
       {showTargetWordPopoverPreconditions && showTargetWordPopover && (
-        <TargetWordPopover popoverTargetRect={popoverTargetRect} />
+        <TargetWordPopover
+          popoverTargetRect={popoverTargetRect}
+          setShowTargetWordPopover={setShowTargetWordPopover}
+        />
       )}
     </>
   );

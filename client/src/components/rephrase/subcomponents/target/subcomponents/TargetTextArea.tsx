@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import LoadingRipple from 'src/components/general/loading-ripple';
 import useBoundStore from 'src/store';
 import useIsTyping from 'src/utils/hooks/useIsTyping';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
@@ -57,6 +58,9 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
   );
   const originalTextSelection = useBoundStore(
     (state) => state.uiState.originalTextSelection
+  );
+  const expectedResponse = useBoundStore(
+    (state) => state.uiState.expectedResponse
   );
   const updateTargetText = useBoundStore((state) => state.updateTargetText);
 

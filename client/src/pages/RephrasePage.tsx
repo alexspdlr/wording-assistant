@@ -12,18 +12,11 @@ const RephrasePage = () => {
     (state) => state.uiState.expectedResponse
   );
 
-  const loadingRephrasing =
-    expectedResponse !== null &&
-    (expectedResponse.endpoint === 'selectWordingAlternative' ||
-      expectedResponse.endpoint === 'updateTargetText');
-
   return (
     <>
       <Section backgroundColor={theme.palette.background.dark}>
         <RephraseTool />
       </Section>
-      loading Rephrasing: {String(loadingRephrasing)}
-      {!loadingRephrasing && <LoadingRipple />}
       <Section backgroundColor={theme.palette.background.main}>
         <InfoSection />
       </Section>

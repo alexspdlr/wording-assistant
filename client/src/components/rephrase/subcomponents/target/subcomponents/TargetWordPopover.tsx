@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import useBoundStore from 'src/store';
+import useClickAway from 'src/utils/hooks/useClickAway';
 
 interface PopoverContainerProps {
   fontSize: string;
@@ -55,10 +56,11 @@ const Alternative = styled('div')(
 
 interface TargetWordPopoverProps {
   popoverTargetRect: DOMRect | null;
+  setShowTargetWordPopover: (bool: boolean) => void;
 }
 
 const TargetWordPopover = (props: TargetWordPopoverProps) => {
-  const { popoverTargetRect } = props;
+  const { popoverTargetRect, setShowTargetWordPopover } = props;
   const alternatives = useBoundStore(
     (state) => state.uiState.rephrasingOptions
   );
@@ -69,6 +71,14 @@ const TargetWordPopover = (props: TargetWordPopoverProps) => {
 
   const fontSize =
     document.getElementById('target-value-input')?.style.fontSize || '22px';
+
+  const containerRef = useRef(null);
+
+  const onClickAway = () => {
+    setShowTargetWordPopover(false);
+  };
+
+  useClickAway(containerRef, onClickAway);
 
   return (
     <>
@@ -82,6 +92,7 @@ const TargetWordPopover = (props: TargetWordPopoverProps) => {
           }}
         >
           <PopoverContainer
+            ref={containerRef}
             fontSize={fontSize === '25.99px' ? '22px' : fontSize}
           >
             {alternatives.length > 0 ? (
