@@ -11,7 +11,7 @@ import useClickAway from 'src/utils/hooks/useClickAway';
 import isMobileDevice from 'src/utils/isMobileDevice';
 import { isMap } from 'util/types';
 import RephraseHint from './RephraseHint';
-import SourceCopyButton from './source/subcomponents/action-buttons/SourceCopyButton';
+import SourceCopyButton from './source/subcomponents/action-buttons/SourceActionButtons';
 import SourceTextArea from './source/subcomponents/SourceTextArea';
 import RephraseTarget from './target/RephraseTarget';
 

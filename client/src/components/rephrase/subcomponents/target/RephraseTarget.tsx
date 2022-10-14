@@ -18,6 +18,7 @@ import { original } from 'immer';
 import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 import LoadingRipple from 'src/components/general/loading-ripple';
 import useActiveElement from 'src/utils/hooks/useActiveElement';
+import TargetActions from './subcomponents/TargetActions';
 
 const Wrapper = styled('div')(
   () => `
@@ -175,6 +176,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
             </>
           )}
         </Container>
+        <TargetActions />
       </Wrapper>
 
       {showTargetWordPopoverPreconditions && showTargetWordPopover && (

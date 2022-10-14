@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import useBoundStore from 'src/store';
 import copyToClipboard from 'src/utils/copyToClipboard';
 import RephraseHint from '../RephraseHint';
-import SourceCopyButton from './subcomponents/action-buttons/SourceCopyButton';
+import SourceActionButtons from './subcomponents/action-buttons/SourceActionButtons';
 import SourceTextArea from './subcomponents/SourceTextArea';
 
 const Wrapper = styled('div')(
@@ -54,7 +54,7 @@ const RephraseSource = (props: RephraseSourceProps) => {
           </>
         )}
       </Container>
-      <SourceCopyButton onClick={() => copyToClipboard(value || '')} />
+      <SourceActionButtons onClick={() => copyToClipboard(value || '')} />
     </Wrapper>
   );
 };
