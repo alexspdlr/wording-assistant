@@ -4,6 +4,8 @@ import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 
 interface IconButtonStyledProps {
   variant: 'permanent' | 'dynamic';
+  inactiveBackground: 'transparent' | 'colored' | undefined;
+  active: boolean;
 }
 
 const IconButtonStyled = styled('button')(
@@ -16,17 +18,30 @@ const IconButtonStyled = styled('button')(
     padding: 8px; 
     color: ${
       props.variant === 'permanent'
-        ? defaultProps.theme.palette.primary.main
+        ? `${
+            props.active
+              ? defaultProps.theme.palette.primary.light
+              : defaultProps.theme.palette.primary.main
+          }`
         : addAlphaToHexColor(defaultProps.theme.palette.text.disabled, 0.65)
     };
-    background-color: transparent; 
+    background-color: ${
+      props.inactiveBackground === 'colored' || props.active
+        ? addAlphaToHexColor(defaultProps.theme.palette.primary.light, 0.07)
+        : 'transparent'
+    }; 
     cursor: pointer; 
     fill: transparent; 
+    transition: background-color 150ms ease-in-out, color 150ms ease-in-out; 
     &:hover{
-      color: ${defaultProps.theme.palette.primary.main}; 
+      color: ${
+        props.active
+          ? defaultProps.theme.palette.primary.light
+          : defaultProps.theme.palette.primary.main
+      }; 
       background-color: ${addAlphaToHexColor(
         defaultProps.theme.palette.primary.light,
-        0.07
+        props.inactiveBackground === 'colored' ? 0.15 : 0.07
       )}; 
     }
     `
@@ -36,12 +51,21 @@ interface IconButtonProps {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   icon: ReactElement<any, string | JSXElementConstructor<any>>;
   variant: 'permanent' | 'dynamic';
+  inactiveBackground?: 'transparent' | 'colored';
+  active?: boolean;
+  ref?: React.MutableRefObject<any>;
 }
 
 function IconButton(props: IconButtonProps) {
-  const { onClick, icon, variant } = props;
+  const { onClick, icon, variant, inactiveBackground, active, ref } = props;
   return (
-    <IconButtonStyled onClick={onClick} variant={variant}>
+    <IconButtonStyled
+      ref={ref}
+      active={active || false}
+      onClick={onClick}
+      variant={variant}
+      inactiveBackground={inactiveBackground}
+    >
       {cloneElement(icon, {
         style: {
           width: 24,

@@ -18,7 +18,7 @@ const Layout = styled('div')(
   () => `
     position: absolute;
     z-index: 3; 
-    bottom: 16px;
+    bottom: 12px;
     right: 22px;
     display: flex; 
     justify-content: space-between;  

@@ -11,7 +11,7 @@ import useClickAway from 'src/utils/hooks/useClickAway';
 import isMobileDevice from 'src/utils/isMobileDevice';
 import { isMap } from 'util/types';
 import RephraseHint from './RephraseHint';
-import SourceCopyButton from './source/subcomponents/action-buttons/SourceActionButtons';
+import SourceActionButtons from './source/subcomponents/action-buttons/SourceActionButtons';
 import SourceTextArea from './source/subcomponents/SourceTextArea';
 import RephraseTarget from './target/RephraseTarget';
 
@@ -129,11 +129,7 @@ const RephraseToolLayout = (props: RephraseToolLayoutProps) => {
             setSearchParams({ 'source-value': newVal })
           }
         />
-        {sourceValue && sourceValue.length > 0 && (
-          <SourceCopyButton
-            onClick={() => copyToClipboard(sourceValue || '')}
-          />
-        )}
+        {sourceValue && sourceValue.length > 0 && <SourceActionButtons />}
       </Body>
       <Body
         id='target-container'

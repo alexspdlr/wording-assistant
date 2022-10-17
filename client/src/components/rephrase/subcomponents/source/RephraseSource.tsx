@@ -54,7 +54,7 @@ const RephraseSource = (props: RephraseSourceProps) => {
           </>
         )}
       </Container>
-      <SourceActionButtons onClick={() => copyToClipboard(value || '')} />
+      <SourceActionButtons />
     </Wrapper>
   );
 };
