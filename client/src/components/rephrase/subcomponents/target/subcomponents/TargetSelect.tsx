@@ -65,6 +65,7 @@ interface TargetSelectProps {
   showTargetWordPopover: boolean;
   setShowTargetWordPopover: (show: boolean) => void;
   resetToOriginalSelection: () => void;
+  targetTextAreaIsFocused: boolean;
 }
 
 const TargetSelect = (props: TargetSelectProps) => {
@@ -74,6 +75,7 @@ const TargetSelect = (props: TargetSelectProps) => {
     showTargetWordPopover,
     setShowTargetWordPopover,
     resetToOriginalSelection,
+    targetTextAreaIsFocused,
   } = props;
   /* --------------------------- GET DATA FROM STORE -------------------------- */
 
@@ -107,7 +109,9 @@ const TargetSelect = (props: TargetSelectProps) => {
           )
         : null;
 
-    setActiveRephrasingToken(newSelectedWord || null);
+    if (targetTextAreaIsFocused) {
+      setActiveRephrasingToken(newSelectedWord || null);
+    }
 
     const targetElementRect = document
       .getElementById('target-word-selected')

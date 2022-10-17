@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { debounce } from 'lodash';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import LoadingRipple from 'src/components/general/loading-ripple';
 import useBoundStore from 'src/store';
@@ -38,10 +38,15 @@ const TextArea = styled('textarea')(
 interface TargetTextAreaProps {
   setTargetCursorIndex: (target: TargetCursorIndexInfo | null) => void;
   setIsTypingInTarget: (bool: boolean) => void;
+  setTargetTextAreaIsFocused: (bool: boolean) => void;
 }
 
 const TargetTextArea = (props: TargetTextAreaProps) => {
-  const { setTargetCursorIndex, setIsTypingInTarget } = props;
+  const {
+    setTargetCursorIndex,
+    setIsTypingInTarget,
+    setTargetTextAreaIsFocused,
+  } = props;
 
   /* ----------------------- GET DATA FROM SEARCH PARAMS ---------------------- */
 
@@ -117,6 +122,8 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
       ref={textareaRef}
       value={activeTextSelection?.value || ''}
       disabled={!activeTextSelection}
+      onFocus={() => setTargetTextAreaIsFocused(true)}
+      onBlur={() => setTargetTextAreaIsFocused(false)}
       onChange={(e) => {
         if (originalTextSelection) {
           setActiveTextSelection({

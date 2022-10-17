@@ -297,6 +297,7 @@ const createRephraseSlice: StateCreator<
         state.uiState.originalTextSelection = null;
         state.uiState.activeTextSelection = null;
         state.uiState.rephrasingOptions = [];
+        state.uiState.activeRephrasingToken = null;
         state.uiState.expectedResponse = {
           eventId,
           endpoint: 'deselectText',

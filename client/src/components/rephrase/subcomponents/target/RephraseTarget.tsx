@@ -19,6 +19,8 @@ import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 import LoadingRipple from 'src/components/general/loading-ripple';
 import useActiveElement from 'src/utils/hooks/useActiveElement';
 import TargetActions from './subcomponents/TargetActions';
+import { useTheme } from '@emotion/react';
+import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 
 const Wrapper = styled('div')(
   () => `
@@ -65,7 +67,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     useState<TargetCursorIndexInfo | null>(null);
   const [showTargetWordPopover, setShowTargetWordPopover] =
     useState<boolean>(false);
-
+  const [targetTextAreaIsFocused, setTargetTextAreaIsFocused] = useState(false);
   const [popoverTargetRect, setPopoverTargetRect] = useState<DOMRect | null>(
     null
   );
@@ -80,19 +82,19 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const activeRephrasingToken = useBoundStore(
     (state) => state.uiState.activeRephrasingToken
   );
-  const setActiveRephrasingToken = useBoundStore(
-    (state) => state.setActiveRephrasingToken
-  );
+
   const deselectText = useBoundStore((state) => state.deselectText);
 
   const showLoadingSpinner = () =>
     expectedResponse ? expectedResponse.endpoint === 'selectText' : false;
+
   const showHint = () =>
     (expectedResponse && expectedResponse.endpoint === 'deselectText') ||
     !activeTextSelection;
 
   useEffect(() => {
     if (activeRephrasingToken && !isTypingInTarget) {
+      console.log('active token _________:', activeRephrasingToken);
       moveCursor(activeRephrasingToken?.startIndex, activeRephrasingToken);
     }
   }, [activeRephrasingToken]);
@@ -120,13 +122,25 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     (expectedResponse.endpoint === 'selectWordingAlternative' ||
       expectedResponse.endpoint === 'updateTargetText');
 
+  const theme = useTheme();
+
   return (
     <>
       <Wrapper>
         <Container>
           {showLoadingSpinner() ? (
-            <div style={{ padding: '30px' }}>
-              <LoadingSpinner />
+            <div
+              style={{
+                padding: '40px',
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+              }}
+            >
+              <LoadingSpinner
+                size={26}
+                color={theme.activeMode === 'light' ? '#d1d1d1' : '#3b3b3b'}
+              />
             </div>
           ) : (
             <>
@@ -162,6 +176,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                   <TargetTextArea
                     setTargetCursorIndex={setTargetCursorIndex}
                     setIsTypingInTarget={setIsTypingInTarget}
+                    setTargetTextAreaIsFocused={setTargetTextAreaIsFocused}
                   />
 
                   <TargetSelect
@@ -170,6 +185,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                     showTargetWordPopover={showTargetWordPopover}
                     setShowTargetWordPopover={setShowTargetWordPopover}
                     resetToOriginalSelection={resetToOriginalSelection}
+                    targetTextAreaIsFocused={targetTextAreaIsFocused}
                   />
                 </div>
               )}
