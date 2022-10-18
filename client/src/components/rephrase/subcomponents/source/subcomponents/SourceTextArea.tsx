@@ -1,22 +1,9 @@
 import styled from '@emotion/styled';
-import React, {
-  ReactEventHandler,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import useBoundStore from 'src/store';
 import { ActiveWorkerTextSelection } from 'src/types/socket';
-import { UiExpectedResponse } from 'src/types/store';
-import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
-import useClickAway from 'src/utils/hooks/useClickAway';
-import useMouseIsDown from 'src/utils/hooks/useMouseIsDown';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
-import wait from 'src/utils/wait';
-import { Z_ASCII } from 'zlib';
 import SourceClearButton from './action-buttons/SourceClearButton';
 import SourceHighlighter from './SourceHighlighter';
 
@@ -42,21 +29,15 @@ const TextArea = styled('textarea')(
     margin: 0px 60px 60px 0px;  
     padding: 28px 0px 0px 28px;  
     -webkit-font-smoothing: antialiased; 
-    line-height: 0;
     color: transparent; 
     caret-color: ${defaultProps.theme.palette.text.light};
-    transition: background-color 1000ms ease-in-out;
+
     ::selection{
-      background-color: #B3D7FE;  
-      color:  ${defaultProps.theme.palette.text.light}; 
+      background-color: transparent;  
     } 
     `
 );
 
-interface SelectionRange {
-  startIndex: number;
-  endIndex: number;
-}
 interface SourceTextAreaProps {
   value: string;
   setValue: Function;
@@ -168,6 +149,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
               startIndex: textareaRef.current?.selectionStart,
               endIndex: textareaRef.current?.selectionEnd,
             };
+
             if (
               newRange.startIndex !== originalTextSelection?.startIndex ||
               newRange.endIndex !== originalTextSelection?.endIndex
