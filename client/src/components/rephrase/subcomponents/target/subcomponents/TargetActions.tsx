@@ -4,6 +4,7 @@ import { ReactComponent as CheckIcon } from 'src/assets/check.svg';
 import { ReactComponent as ClearIcon } from 'src/assets/ClearIcon.svg';
 import IconButton from 'src/components/general/icon-button';
 import Tooltip from 'src/components/general/tooltip';
+import useBoundStore from 'src/store';
 
 const Fragment = styled('div')(
   () => `
@@ -27,25 +28,33 @@ const Layout = styled('div')(
         `
 );
 
-interface TargetActionsProps {}
+interface TargetActionsProps {
+  resetToOriginalSelection: () => void;
+}
 
 const TargetActions = (props: TargetActionsProps) => {
-  const length = 431;
+  const { resetToOriginalSelection } = props;
+  const targetTextLength = useBoundStore(
+    (state) => state.uiState.activeTextSelection?.value.length
+  );
+  const deselectText = useBoundStore((state) => state.deselectText);
 
   return (
     <Layout>
-      <Fragment> &nbsp;&nbsp;Selected: {length} / 1000</Fragment>
+      <Fragment>
+        {targetTextLength && `Selected: ${targetTextLength} / 1000`}
+      </Fragment>
       <Fragment>
         <Tooltip content='Decline text' direction='top'>
           <IconButton
-            onClick={() => null}
+            onClick={resetToOriginalSelection}
             icon={<ClearIcon />}
             variant='permanent'
           />
         </Tooltip>
         <Tooltip content='Accept text' direction='top'>
           <IconButton
-            onClick={() => null}
+            onClick={() => deselectText()}
             icon={<CheckIcon />}
             variant='permanent'
           />

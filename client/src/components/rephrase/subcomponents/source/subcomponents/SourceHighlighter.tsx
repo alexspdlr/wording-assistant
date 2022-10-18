@@ -3,11 +3,17 @@ import styled from '@emotion/styled';
 import parse from 'html-react-parser';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useBoundStore from 'src/store';
+import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import highlightText from 'src/utils/highlightText';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 
+interface ContainerProps {
+  textSelected: boolean;
+}
+
 const Container = styled('div')(
-  (defaultProps) => ` 
+  (props: ContainerProps) => (defaultProps) =>
+    ` 
   position: absolute; 
   margin: 0px 60px 0px 0px;  
   padding: 28px 0px 0px 28px; 
@@ -20,7 +26,11 @@ const Container = styled('div')(
   font-weight: 400;
   white-space: pre-wrap; 
   overflow: visible;
-  color: transparent; 
+  color: ${addAlphaToHexColor(
+    defaultProps.theme.palette.text.light,
+    props.textSelected ? 0.4 : 1
+  )}; 
+  transition: color 300ms ease-in-out, background-color 00ms ease-in-out;
   -webkit-font-smoothing: antialiased; 
   -webkit-touch-callout: none;
   -webkit-user-select: none; 
@@ -46,7 +56,12 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
   useRephraseToolTextboxSize(value, highlighterRef);
 
   return (
-    <Container ref={highlighterRef}>
+    <Container
+      ref={highlighterRef}
+      textSelected={
+        startIndex !== null && endIndex !== null && startIndex !== endIndex
+      }
+    >
       {parse(
         highlightText(
           value,
@@ -56,8 +71,8 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
               endIndex: endIndex || 0,
             },
           ],
-          '#fee8c0',
-          theme.palette.text.light
+          'transparent',
+          theme.palette.primary.main
         )
       )}
     </Container>

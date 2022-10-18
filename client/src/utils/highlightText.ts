@@ -17,7 +17,7 @@ const highlightText = (
       `${resultingString.slice(
         0,
         range.startIndex
-      )}<mark style="padding:3px 0px 4px 0px; color:${textColor}; background-color: ${color};};">${resultingString.slice(
+      )}<mark style="padding:3px 0px 4px 0px; color:${textColor}; background-color: ${color};">${resultingString.slice(
         range.startIndex,
         range.endIndex
       )}</mark>${resultingString.slice(range.endIndex)}`,

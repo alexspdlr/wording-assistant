@@ -192,7 +192,9 @@ const RephraseTarget = (props: RephraseTargetProps) => {
             </>
           )}
         </Container>
-        <TargetActions />
+        {!showHint() && !showLoadingSpinner() && (
+          <TargetActions resetToOriginalSelection={resetToOriginalSelection} />
+        )}
       </Wrapper>
 
       {showTargetWordPopoverPreconditions && showTargetWordPopover && (

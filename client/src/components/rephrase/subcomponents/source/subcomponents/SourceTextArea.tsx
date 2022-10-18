@@ -43,21 +43,13 @@ const TextArea = styled('textarea')(
     padding: 28px 0px 0px 28px;  
     -webkit-font-smoothing: antialiased; 
     line-height: 0;
-    color: ${addAlphaToHexColor(
-      defaultProps.theme.palette.text.light,
-      props.textSelected ? 0.7 : 1
-    )}; 
-
+    color: transparent; 
+    caret-color: ${defaultProps.theme.palette.text.light};
+    transition: background-color 1000ms ease-in-out;
     ::selection{
-      background-color: #ffe6b7;  
-      color: ${
-        props.textSelected
-          ? defaultProps.theme.palette.text.light
-          : defaultProps.theme.palette.text.light
-      }; 
+      background-color: #B3D7FE;  
+      color:  ${defaultProps.theme.palette.text.light}; 
     } 
-
-    transition: color 300ms ease-in-out;
     `
 );
 
@@ -230,11 +222,11 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
 
   return (
     <>
-      {/*<SourceHighlighter
+      <SourceHighlighter
         value={value || ''}
         startIndex={localActivetextSelection?.startIndex || null}
         endIndex={localActivetextSelection?.endIndex || null}
-      />*/}
+      />
       <TextArea
         id='source-value-input'
         ref={textareaRef}
