@@ -32,6 +32,9 @@ const TextArea = styled('textarea')(
     line-height: 0;
     color: ${defaultProps.theme.palette.text.light}; 
     transition: color 300ms ease-in-out;
+    ::selection{
+      background-color: #ffe4b3;  
+    } 
     `
 );
 

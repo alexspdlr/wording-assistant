@@ -47,7 +47,7 @@ const TextArea = styled('textarea')(
     caret-color: ${defaultProps.theme.palette.text.light};
     transition: background-color 1000ms ease-in-out;
     ::selection{
-      background-color: #B3D7FE;  
+      background-color: #ffe4b3;  
       color:  ${defaultProps.theme.palette.text.light}; 
     } 
     `
