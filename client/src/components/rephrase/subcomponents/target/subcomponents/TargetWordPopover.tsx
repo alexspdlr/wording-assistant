@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useRef, useState } from 'react';
+import { MutableRefObject, useRef, useState } from 'react';
 import useBoundStore from 'src/store';
 import useClickAway from 'src/utils/hooks/useClickAway';
 
@@ -74,8 +74,10 @@ const TargetWordPopover = (props: TargetWordPopoverProps) => {
 
   const containerRef = useRef(null);
 
-  const onClickAway = () => {
-    setShowTargetWordPopover(false);
+  const onClickAway = (event: any) => {
+    if (!(event.target.id === 'target-value-input')) {
+      setShowTargetWordPopover(false);
+    }
   };
 
   useClickAway(containerRef, onClickAway);

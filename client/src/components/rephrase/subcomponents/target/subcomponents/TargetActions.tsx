@@ -45,14 +45,14 @@ const TargetActions = (props: TargetActionsProps) => {
         {targetTextLength && `Selected: ${targetTextLength} / 1000`}
       </Fragment>
       <Fragment>
-        <Tooltip content='Decline text' direction='top'>
+        <Tooltip content='Decline' direction='top'>
           <IconButton
             onClick={resetToOriginalSelection}
             icon={<ClearIcon />}
             variant='permanent'
           />
         </Tooltip>
-        <Tooltip content='Accept text' direction='top'>
+        <Tooltip content='Accept' direction='top'>
           <IconButton
             onClick={() => deselectText()}
             icon={<CheckIcon />}

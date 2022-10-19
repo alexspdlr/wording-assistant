@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import LoadingRipple from 'src/components/general/loading-ripple';
 import useBoundStore from 'src/store';
+import useClickAway from 'src/utils/hooks/useClickAway';
 import useIsTyping from 'src/utils/hooks/useIsTyping';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
@@ -50,11 +51,6 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
     setIsTypingInTarget,
     setTargetTextAreaIsFocused,
   } = props;
-
-  /* ----------------------- GET DATA FROM SEARCH PARAMS ---------------------- */
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const sourceValue = searchParams.get('source-value');
 
   /* --------------------------- GET DATA FROM STORE -------------------------- */
 

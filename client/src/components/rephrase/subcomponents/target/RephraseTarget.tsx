@@ -1,26 +1,17 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import LoadingRipple from 'src/components/general/loading-ripple';
 import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
-import { ActiveWorkerState } from 'src/types/socket';
-import {
-  ClientWorkerState,
-  TextToken,
-  UiExpectedResponse,
-} from 'src/types/store';
+import { UiExpectedResponse } from 'src/types/store';
+import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 import RephraseHint from '../RephraseHint';
+import TargetActions from './subcomponents/TargetActions';
 import TargetSelect from './subcomponents/TargetSelect';
 import TargetTextArea from './subcomponents/TargetTextArea';
 import TargetWordPopover from './subcomponents/TargetWordPopover';
-import _, { debounce } from 'lodash';
-import { original } from 'immer';
-import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
-import LoadingRipple from 'src/components/general/loading-ripple';
-import useActiveElement from 'src/utils/hooks/useActiveElement';
-import TargetActions from './subcomponents/TargetActions';
-import { useTheme } from '@emotion/react';
-import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 
 const Wrapper = styled('div')(
   () => `
