@@ -18,7 +18,7 @@ const Container = styled('div')(
   align-items: center; 
   z-index: ${props.hide ? '0' : '55'};
   opacity:${props.hide ? '0' : '1'}; 
-  transition: opacity 500ms ease; 
+  transition: opacity 500ms ease;  
   `
 );
 
@@ -82,7 +82,6 @@ const Border = styled('div')(
         }
       } 
  
-  position: absolute;
   border: 1px solid ${defaultProps.theme.palette.primary.main}; 
   opacity: 1;  
   animation: lds-ripple 1.75s ease-in infinite; 

@@ -1,11 +1,13 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import LoadingRipple from 'src/components/general/loading-ripple';
 import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
 import { UiExpectedResponse } from 'src/types/store';
+import useWindowHeight from 'src/utils/hooks/useWindowHeight';
+import useWindowWidth from 'src/utils/hooks/useWindowWidth';
 import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 import RephraseHint from '../RephraseHint';
 import TargetActions from './subcomponents/TargetActions';
@@ -115,6 +117,25 @@ const RephraseTarget = (props: RephraseTargetProps) => {
 
   const theme = useTheme();
 
+  const [textAreaSize, setTextAreaSize] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const windowWidth = useWindowWidth();
+  const windowHeight = useWindowHeight();
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      setTextAreaSize({
+        width: textAreaRef.current.clientWidth,
+        height: textAreaRef.current.clientHeight,
+      });
+    }
+  }, [windowWidth, windowHeight]);
+
   return (
     <>
       <Wrapper>
@@ -154,17 +175,12 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                 >
                   <LoadingRipple
                     hide={!loadingRephrasing}
-                    width={
-                      document.getElementById('target-value-input')
-                        ?.clientWidth || null
-                    }
-                    height={
-                      document.getElementById('target-value-input')
-                        ?.clientHeight || null
-                    }
+                    width={textAreaSize.width || 0}
+                    height={textAreaSize.height || 0}
                   />
 
                   <TargetTextArea
+                    textAreaRef={textAreaRef}
                     setTargetCursorIndex={setTargetCursorIndex}
                     setIsTypingInTarget={setIsTypingInTarget}
                     setTargetTextAreaIsFocused={setTargetTextAreaIsFocused}

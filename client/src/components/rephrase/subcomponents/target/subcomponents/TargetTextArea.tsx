@@ -1,6 +1,12 @@
 import styled from '@emotion/styled';
 import { debounce } from 'lodash';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useSearchParams } from 'react-router-dom';
 import LoadingRipple from 'src/components/general/loading-ripple';
 import useBoundStore from 'src/store';
@@ -40,6 +46,7 @@ const TextArea = styled('textarea')(
 );
 
 interface TargetTextAreaProps {
+  textAreaRef: MutableRefObject<any>;
   setTargetCursorIndex: (target: TargetCursorIndexInfo | null) => void;
   setIsTypingInTarget: (bool: boolean) => void;
   setTargetTextAreaIsFocused: (bool: boolean) => void;
@@ -47,6 +54,7 @@ interface TargetTextAreaProps {
 
 const TargetTextArea = (props: TargetTextAreaProps) => {
   const {
+    textAreaRef,
     setTargetCursorIndex,
     setIsTypingInTarget,
     setTargetTextAreaIsFocused,
@@ -70,18 +78,16 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
 
   /* ---------------------------------- UTILS --------------------------------- */
 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
   const [isTyping, register] = useIsTyping();
   useEffect(() => {
-    if (textareaRef.current) register(textareaRef.current);
-  }, [textareaRef.current]);
+    if (textAreaRef.current) register(textAreaRef.current);
+  }, [textAreaRef.current]);
 
   useEffect(() => {
     setIsTypingInTarget(isTyping);
   }, [isTyping]);
 
-  useRephraseToolTextboxSize(activeTextSelection?.value || '', textareaRef);
+  useRephraseToolTextboxSize(activeTextSelection?.value || '', textAreaRef);
 
   const calculateMinHeight = () => {
     const viewportHeight = window.innerHeight;
@@ -118,7 +124,7 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
   return (
     <TextArea
       id='target-value-input'
-      ref={textareaRef}
+      ref={textAreaRef}
       value={activeTextSelection?.value || ''}
       disabled={!activeTextSelection}
       onFocus={() => setTargetTextAreaIsFocused(true)}
@@ -140,16 +146,16 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
       }}
       onSelect={(e) => {
         if (
-          textareaRef.current &&
-          textareaRef.current.selectionStart ===
-            textareaRef.current.selectionEnd &&
+          textAreaRef.current &&
+          textAreaRef.current.selectionStart ===
+            textAreaRef.current.selectionEnd &&
           e.nativeEvent.type !== 'mouseup'
         ) {
           setTargetCursorIndex(
-            textareaRef.current.selectionStart ||
-              textareaRef.current.selectionStart === 0
+            textAreaRef.current.selectionStart ||
+              textAreaRef.current.selectionStart === 0
               ? {
-                  index: textareaRef.current.selectionStart,
+                  index: textAreaRef.current.selectionStart,
                   movementTriggeredBy: 'keyboard',
                 }
               : null
@@ -158,15 +164,15 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
       }}
       onClick={(e) => {
         if (
-          textareaRef.current &&
-          textareaRef.current.selectionStart ===
-            textareaRef.current.selectionEnd
+          textAreaRef.current &&
+          textAreaRef.current.selectionStart ===
+            textAreaRef.current.selectionEnd
         ) {
           setTargetCursorIndex(
-            textareaRef.current.selectionStart ||
-              textareaRef.current.selectionStart === 0
+            textAreaRef.current.selectionStart ||
+              textAreaRef.current.selectionStart === 0
               ? {
-                  index: textareaRef.current.selectionStart,
+                  index: textAreaRef.current.selectionStart,
                   movementTriggeredBy: 'mouse',
                 }
               : null
