@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import calculateRephraseToolTextSize from '../calculateRephraseToolTextSize';
 import useBreakpoint from './useBreakpoint';
 import useWindowHeight from './useWindowHeight';
+import useWindowWidth from './useWindowWidth';
 
 const useRephraseToolTextboxSize = (
   text: string,
@@ -9,6 +10,7 @@ const useRephraseToolTextboxSize = (
 ) => {
   const activeBreakpoint = useBreakpoint();
   const windowHeight = useWindowHeight();
+  const windowWidth = useWindowWidth();
 
   useEffect(() => {
     if (targetRef && targetRef.current) {
@@ -21,7 +23,7 @@ const useRephraseToolTextboxSize = (
       targetRef.current.style.lineHeight = `${textSize.lineHeight}px`;
       targetRef.current.style.height = `${targetRef.current.scrollHeight}px`;
     }
-  }, [text, activeBreakpoint, windowHeight, targetRef]);
+  }, [text, activeBreakpoint, windowHeight, targetRef, windowWidth]);
 };
 
 export default useRephraseToolTextboxSize;
