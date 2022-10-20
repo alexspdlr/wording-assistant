@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import useBoundStore from 'src/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
+import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
 
 interface ContainerProps {
   hide: boolean;
@@ -43,7 +44,7 @@ const OriginalText = styled('div')(
     font-weight: 400;
     color: ${defaultProps.theme.palette.text.light};
     position: absolute;
-    z-index: ${props.hide && !props.hasRendered ? -1 : 50};
+    z-index: ${props.hide && !props.hasRendered ? -1 : 4};
     padding-top: 8px;
     cursor: pointer;
     width: calc(100% - 36px);

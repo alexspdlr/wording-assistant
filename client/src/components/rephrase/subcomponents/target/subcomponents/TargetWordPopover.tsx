@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import { MutableRefObject, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import useBoundStore from 'src/store';
 import useClickAway from 'src/utils/hooks/useClickAway';
+import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
 
 interface PopoverContainerProps {
   fontSize: string;
@@ -20,7 +21,7 @@ const PopoverContainer = styled('div')(
   max-height: 390px;
   max-width: 318px;
   min-width: 100px;
-  margin-top: 5px; 
+  margin-top: 4px; 
   width: auto;
   height: auto;
   background-color: ${defaultProps.theme.palette.background.main};
@@ -88,8 +89,11 @@ const TargetWordPopover = (props: TargetWordPopoverProps) => {
         <div
           style={{
             position: 'absolute',
-            zIndex: 1000,
-            top: popoverTargetRect.y + popoverTargetRect.height,
+            zIndex: 5,
+            top:
+              window.pageYOffset +
+              popoverTargetRect.y +
+              popoverTargetRect.height,
             left: popoverTargetRect.x,
           }}
         >

@@ -7,6 +7,7 @@ import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
 import { UiExpectedResponse } from 'src/types/store';
 import useWindowHeight from 'src/utils/hooks/useWindowHeight';
+import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
 import useWindowWidth from 'src/utils/hooks/useWindowWidth';
 import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 import RephraseHint from '../RephraseHint';
@@ -110,6 +111,8 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     !(popoverTargetRect === null || showHint() || showLoadingSpinner()) &&
     !(expectedResponse === null && rephrasingOptions?.length === 0);
 
+  const windowIsFocused = useWindowIsFocused();
+
   const loadingRephrasing =
     expectedResponse !== null &&
     (expectedResponse.endpoint === 'selectWordingAlternative' ||
@@ -185,12 +188,14 @@ const RephraseTarget = (props: RephraseTargetProps) => {
         )}
       </Wrapper>
 
-      {showTargetWordPopoverPreconditions && showTargetWordPopover && (
-        <TargetWordPopover
-          popoverTargetRect={popoverTargetRect}
-          setShowTargetWordPopover={setShowTargetWordPopover}
-        />
-      )}
+      {showTargetWordPopoverPreconditions &&
+        showTargetWordPopover &&
+        windowIsFocused && (
+          <TargetWordPopover
+            popoverTargetRect={popoverTargetRect}
+            setShowTargetWordPopover={setShowTargetWordPopover}
+          />
+        )}
     </>
   );
 };

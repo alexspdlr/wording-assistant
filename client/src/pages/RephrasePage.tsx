@@ -5,6 +5,7 @@ import QuoteSection from 'src/components/quote';
 import RephraseTool from 'src/components/rephrase';
 import Section from 'src/components/section';
 import useBoundStore from 'src/store';
+import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
 const RephrasePage = () => {
   const theme = useTheme();
 

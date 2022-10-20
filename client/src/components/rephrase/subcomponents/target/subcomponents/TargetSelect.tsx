@@ -12,6 +12,7 @@ import splitIntoWords from 'src/utils/splitIntoWords';
 import { TargetCursorIndexInfo } from '../RephraseTarget';
 import _ from 'lodash';
 import TargetOriginalSelection from './TargetOriginalSelection';
+import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
 
 const Container = styled('div')(
   () => `
@@ -143,6 +144,15 @@ const TargetSelect = (props: TargetSelectProps) => {
       }
     }
   }, [targetCursorIndex]);
+
+  const windowIsFocused = useWindowIsFocused();
+  useEffect(() => {
+    if (!windowIsFocused) {
+      setActiveRephrasingToken(null);
+      setPopoverTargetRect(null);
+      setShowTargetWordPopover(false);
+    }
+  }, [windowIsFocused]);
 
   const splitWords = splitIntoWords(activeTextSelection?.value || '');
 
