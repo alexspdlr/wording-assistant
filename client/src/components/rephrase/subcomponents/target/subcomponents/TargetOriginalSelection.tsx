@@ -1,16 +1,8 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
-import CustomPopover from 'src/components/Popover';
+import React, { useEffect, useState } from 'react';
 import useBoundStore from 'src/store';
-import { TextToken } from 'src/types/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
-import useClickAway from 'src/utils/hooks/useClickAway';
-import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
-import useSourceTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
-import splitIntoWords from 'src/utils/splitIntoWords';
-import { TargetCursorIndexInfo } from '../RephraseTarget';
-import _ from 'lodash';
 
 interface ContainerProps {
   hide: boolean;
@@ -20,7 +12,7 @@ const Container = styled('div')(
   (props: ContainerProps) => (defaultProps) =>
     `
     margin: 0px 22px 0px 22px;
-    padding: 10px 6px 0px 6px;
+    padding: 20px 6px 0px 8px;
     color: #888;
     font-size: 21px;
     font-weight: 300;
@@ -34,6 +26,42 @@ const Container = styled('div')(
       transition: opacity 300ms ease-out;
     
       `
+);
+
+interface OriginalTextProps {
+  hide: boolean;
+  hasRendered: boolean;
+}
+
+const OriginalText = styled('div')(
+  (props: OriginalTextProps) => (defaultProps) =>
+    `
+  
+  white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-weight: 400;
+    color: ${defaultProps.theme.palette.text.light};
+    position: absolute;
+    z-index: ${props.hide && !props.hasRendered ? -1 : 50};
+    padding-top: 8px;
+    cursor: pointer;
+    width: calc(100% - 36px);
+    font-size: 16.1px;
+    line-height: 25px;
+
+    &:hover {
+      color: ${defaultProps.theme.palette.primary.main};
+    }
+
+    @supports (-webkit-line-clamp: 3) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: initial;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }`
 );
 
 interface TargetOriginalSelectionProps {
@@ -56,23 +84,13 @@ const TargetOriginalSelection = (props: TargetOriginalSelectionProps) => {
   return (
     <Container hide={hide && !hasRendered}>
       Original:
-      <div
+      <OriginalText
         onClick={resetToOriginalSelection}
-        style={{
-          fontWeight: 400,
-          color: theme.palette.text.main,
-          position: 'absolute',
-          zIndex: hide && !hasRendered ? -1 : 50,
-          paddingTop: '14px',
-          cursor: 'pointer',
-          textOverflow: 'ellipsis',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          width: 'calc(100% - 36px)',
-        }}
+        hide={hide}
+        hasRendered={hasRendered}
       >
         {originalTextSelection?.value}
-      </div>
+      </OriginalText>
     </Container>
   );
 };
