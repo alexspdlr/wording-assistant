@@ -283,6 +283,14 @@ const createRephraseSlice: StateCreator<
       return;
     }
 
+    // block deselect if nothing is selected
+    if (
+      get().uiState.originalTextSelection === null &&
+      get().uiState.activeTextSelection === null
+    ) {
+      return;
+    }
+
     // block deselect if deselectCompleted is already expected
     if (
       get().uiState.expectedResponse !== null &&
