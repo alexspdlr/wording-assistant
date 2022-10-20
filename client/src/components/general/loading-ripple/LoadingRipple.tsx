@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
 
 interface ContainerProps {
-  width: number;
-  height: number;
   padding: number;
   hide: boolean;
 }
@@ -11,9 +9,9 @@ const Container = styled('div')(
   (props: ContainerProps) => `
   display: flex;
   position: absolute;
-  width: ${props.width}px;
-  height: ${props.height}px; 
-  padding: ${props.padding}px; 
+
+  width: 100%;
+  height: 100%;  
   justify-content: center; 
   align-items: center; 
   z-index: ${props.hide ? '0' : '55'};
@@ -24,8 +22,6 @@ const Container = styled('div')(
 
 interface BorderProps {
   index: number;
-  width: number;
-  height: number;
 }
 
 const Border = styled('div')(
@@ -35,8 +31,8 @@ const Border = styled('div')(
     @keyframes lds-ripple {
         0% {
           
-          width: ${props.width}px;
-          height: ${props.height}px; 
+          width: 100%;
+          height: 100%; 
           opacity: 0; 
         }
 
@@ -76,14 +72,16 @@ const Border = styled('div')(
 
         100% {
 
-            width: ${props.width * 0.75}px; 
-            height: ${props.height * 0.75}px;  
+            width: 75%; 
+            height: 75%;  
             opacity: 0; 
         }
       } 
  
   border: 1px solid ${defaultProps.theme.palette.primary.main}; 
+  border-bottom-right-radius: 6px; 
   opacity: 1;  
+  position: absolute; 
   animation: lds-ripple 1.75s ease-in infinite; 
   transition-delay: 1s;
     `
@@ -91,30 +89,15 @@ const Border = styled('div')(
 
 interface LoadingRippleProps {
   hide: boolean;
-  width: number | null;
-  height: number | null;
 }
 
 const LoadingRipple = (props: LoadingRippleProps) => {
-  const { width, height, hide } = props;
+  const { hide } = props;
   const padding = 4;
 
-  if (width === null || height === null) {
-    return null;
-  }
-
   return (
-    <Container
-      hide={hide}
-      width={width - 2 * padding}
-      height={height - 2 * padding}
-      padding={padding}
-    >
-      <Border
-        index={0}
-        width={width - 2 * padding}
-        height={height - 2 * padding}
-      />
+    <Container hide={hide} padding={padding}>
+      <Border index={0} />
     </Container>
   );
 };

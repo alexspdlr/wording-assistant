@@ -117,24 +117,8 @@ const RephraseTarget = (props: RephraseTargetProps) => {
 
   const theme = useTheme();
 
-  const [textAreaSize, setTextAreaSize] = useState({
-    width: 0,
-    height: 0,
-  });
-
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-
-  const windowWidth = useWindowWidth();
-  const windowHeight = useWindowHeight();
-
-  useEffect(() => {
-    if (textAreaRef.current) {
-      setTextAreaSize({
-        width: textAreaRef.current.clientWidth,
-        height: textAreaRef.current.clientHeight,
-      });
-    }
-  }, [windowWidth, windowHeight]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <>
@@ -168,16 +152,13 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                 </>
               ) : (
                 <div
+                  ref={containerRef}
                   style={{
                     position: 'relative',
                     width: '100%',
                   }}
                 >
-                  <LoadingRipple
-                    hide={!loadingRephrasing}
-                    width={textAreaSize.width || 0}
-                    height={textAreaSize.height || 0}
-                  />
+                  <LoadingRipple hide={!loadingRephrasing} />
 
                   <TargetTextArea
                     textAreaRef={textAreaRef}
