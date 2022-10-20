@@ -113,10 +113,16 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       const selectionString = selection?.toString();
 
       if (selectionString && selection && textareaRef.current) {
+        const trimmed = selectionString.trim();
+        const trimmedStartIndex =
+          textareaRef.current.selectionStart +
+          selectionString.indexOf(trimmed.charAt(0));
+        const trimmedEndIndex = trimmedStartIndex + trimmed.length;
+
         selectText({
-          value: selectionString,
-          startIndex: textareaRef.current.selectionStart,
-          endIndex: textareaRef.current.selectionEnd,
+          value: trimmed,
+          startIndex: trimmedStartIndex,
+          endIndex: trimmedEndIndex,
         });
       }
     }
