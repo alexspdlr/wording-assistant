@@ -1,7 +1,7 @@
 import { ThemeProvider, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useContext, useEffect, useState } from 'react';
-import themeConstant from './constants/theme';
+import theme from './constants';
 import Routes from './Routes';
 import useBoundStore from './store';
 
@@ -29,9 +29,7 @@ const App = () => {
 
   return (
     <>
-      <ThemeProvider
-        theme={isDarkMode === 'dark' ? themeConstant.dark : themeConstant.light}
-      >
+      <ThemeProvider theme={isDarkMode === 'dark' ? theme.dark : theme.light}>
         <GlobalStyles>
           <GlobalBackground />
           <Routes />

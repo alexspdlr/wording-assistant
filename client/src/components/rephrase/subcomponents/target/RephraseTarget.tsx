@@ -23,6 +23,7 @@ const Wrapper = styled('div')(
   align-content: stretch;
   align-items: stretch;
   position: relative;
+  padding-bottom: 60px
   `
 );
 

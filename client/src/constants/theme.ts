@@ -5,14 +5,6 @@ interface ThemeMode {
   dark: Theme;
 }
 
-/*
-primary: {
-      main: '#307FE2',
-      light: '#62a2f0',
-      dark: '#2773D2',
-      contrastText: '#ffffff',
-    },
-*/
 const darkTheme: Theme = {
   activeMode: 'dark',
   palette: {

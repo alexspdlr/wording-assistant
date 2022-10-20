@@ -45,14 +45,26 @@ const Container = styled('div')(
 
 interface SourceHighlighterProps {
   value: string;
-  startIndex: number | null;
-  endIndex: number | null;
 }
 
 const SourceHighlighter = (props: SourceHighlighterProps) => {
-  const { value, startIndex, endIndex } = props;
+  const { value } = props;
 
   /* ----------------------------- GET STORE DATA ----------------------------- */
+
+  const activeTextSelection = useBoundStore(
+    (state) => state.uiState.activeTextSelection
+  );
+
+  const startIndex =
+    activeTextSelection?.startIndex !== (null || 0 || undefined)
+      ? activeTextSelection.startIndex
+      : null;
+  const endIndex =
+    activeTextSelection?.endIndex !== (null || 0 || undefined)
+      ? activeTextSelection.endIndex
+      : null;
+
   const highlighterRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
   useRephraseToolTextboxSize(value, highlighterRef);
@@ -68,6 +80,9 @@ const SourceHighlighter = (props: SourceHighlighterProps) => {
       setDelayedStartIndex(startIndex);
       setDelayedEndIndex(endIndex);
     };
+
+    console.log('start index:', startIndex);
+    console.log('end index:', endIndex);
 
     if (startIndex !== null && endIndex !== null && startIndex !== endIndex) {
       updateIndicesDelayed(0);

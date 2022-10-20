@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { MAX_SOURCE_SELECTION_LENGTH } from 'src/constants';
 import useBoundStore from 'src/store';
 import { ActiveWorkerTextSelection } from 'src/types/socket';
 import { UiExpectedResponse } from 'src/types/store';
@@ -15,6 +16,8 @@ import useClickAway from 'src/utils/hooks/useClickAway';
 import useMouseIsDown from 'src/utils/hooks/useMouseIsDown';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
+import trimPartialWords from 'src/utils/trimPartialWords';
+import trimWhitespace from 'src/utils/trimWhitespace';
 import wait from 'src/utils/wait';
 import { Z_ASCII } from 'zlib';
 import SourceClearButton from './action-buttons/SourceClearButton';
@@ -39,7 +42,7 @@ const TextArea = styled('textarea')(
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-weight: 400; 
     overflow: visible;
-    margin: 0px 60px 60px 0px;  
+    margin: 0px 60px 40px 0px;  
     padding: 28px 0px 0px 28px;  
     -webkit-font-smoothing: antialiased; 
     line-height: 0;
@@ -113,17 +116,22 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       const selectionString = selection?.toString();
 
       if (selectionString && selection && textareaRef.current) {
-        const trimmed = selectionString.trim();
-        const trimmedStartIndex =
-          textareaRef.current.selectionStart +
-          selectionString.indexOf(trimmed.charAt(0));
-        const trimmedEndIndex = trimmedStartIndex + trimmed.length;
+        // trim whitespace
 
-        selectText({
-          value: trimmed,
-          startIndex: trimmedStartIndex,
-          endIndex: trimmedEndIndex,
-        });
+        const partialWordsTrimmedSelection = trimPartialWords(
+          textareaRef.current.value,
+          selectionString,
+          textareaRef.current.selectionStart
+        );
+
+        if (partialWordsTrimmedSelection) {
+          const trimmedSelection = trimWhitespace(
+            partialWordsTrimmedSelection.value,
+            partialWordsTrimmedSelection.startIndex
+          );
+
+          selectText(trimmedSelection);
+        }
       }
     }
   };
@@ -169,6 +177,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
 
       if (anchorNode?.id === 'source-container') {
         if (selection && selectionString) {
+          /*
           if (textareaRef.current) {
             const newRange = {
               startIndex: textareaRef.current?.selectionStart,
@@ -184,7 +193,8 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
                 startIndex: newRange.startIndex,
               });
             }
-          }
+          } 
+          */
         } else {
           deselectText();
         }
@@ -228,11 +238,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
 
   return (
     <>
-      <SourceHighlighter
-        value={value || ''}
-        startIndex={localActivetextSelection?.startIndex || null}
-        endIndex={localActivetextSelection?.endIndex || null}
-      />
+      <SourceHighlighter value={value || ''} />
       <TextArea
         id='source-value-input'
         ref={textareaRef}

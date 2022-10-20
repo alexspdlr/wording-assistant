@@ -22,7 +22,7 @@ const TextArea = styled('textarea')(
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-weight: 400; 
     overflow: visible;
-    background-color: transparent; 
+    background-color: transparent;  
     margin: 0px 0px 0px 0px;  
     padding: 28px 28px 0px 28px;  
     -webkit-font-smoothing: antialiased; 
