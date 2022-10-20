@@ -1,19 +1,9 @@
 import styled from '@emotion/styled';
 import { debounce } from 'lodash';
-import React, {
-  MutableRefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { useSearchParams } from 'react-router-dom';
-import LoadingRipple from 'src/components/general/loading-ripple';
+import React, { MutableRefObject, useCallback, useEffect } from 'react';
 import useBoundStore from 'src/store';
-import useClickAway from 'src/utils/hooks/useClickAway';
 import useIsTyping from 'src/utils/hooks/useIsTyping';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
-import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 import { TargetCursorIndexInfo } from '../RephraseTarget';
 
 interface TextAreaProps {}
@@ -29,10 +19,10 @@ const TextArea = styled('textarea')(
     outline: none;  
     display: block; 
     resize: none; 
-    background-color: transparent; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-weight: 400; 
     overflow: visible;
+    background-color: transparent; 
     margin: 0px 0px 0px 0px;  
     padding: 28px 28px 0px 28px;  
     -webkit-font-smoothing: antialiased; 
@@ -70,9 +60,6 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
   );
   const originalTextSelection = useBoundStore(
     (state) => state.uiState.originalTextSelection
-  );
-  const expectedResponse = useBoundStore(
-    (state) => state.uiState.expectedResponse
   );
   const updateTargetText = useBoundStore((state) => state.updateTargetText);
 
