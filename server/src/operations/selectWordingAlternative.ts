@@ -69,6 +69,7 @@ const selectWordingAlternative = async (
             isJSON(response.request().postData()) &&
             JSON.parse(response.request().postData() as string) &&
             ((JSON.parse(response.request().postData() as string).params &&
+              JSON.parse(response.request().postData() as string).params.jobs &&
               JSON.parse(
                 response.request().postData() as string
               ).params.jobs.some(

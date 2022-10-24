@@ -159,6 +159,10 @@ const createRephraseSlice: StateCreator<
         resolvingEndpoints.includes(endpoint)
       ) {
         // resolve expectation
+        console.log('*********');
+        console.log('serverResponsePayload:', payload);
+        console.log('expectedResponse:', expectedResponse);
+        console.log('*********');
         set(
           produce((state: RephraseState) => {
             state.uiState.expectedResponse = null;

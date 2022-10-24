@@ -41,7 +41,7 @@ const SocketContextComponent: React.FunctionComponent<
 
   useEffect(() => {
     socket.connect();
-    startListeners(() => uiState);
+    startListeners();
     // eslint-disable-next-line
   }, []);
 
@@ -51,7 +51,7 @@ const SocketContextComponent: React.FunctionComponent<
     // eslint-disable-next-line
   }, [socket]);
 
-  const startListeners = (getuiState: () => void) => {
+  const startListeners = () => {
     /** Messages */
 
     socket.on('setupCompleted', (payload: ServerResponsePayload) => {

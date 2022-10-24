@@ -79,9 +79,22 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   );
 
   const deselectText = useBoundStore((state) => state.deselectText);
+  const serverStateName = useBoundStore((state) => state.serverState.stateName);
 
-  const showLoadingSpinner = () =>
-    expectedResponse ? expectedResponse.endpoint === 'selectText' : false;
+  const showLoadingSpinner = () => {
+    if (expectedResponse) {
+      return expectedResponse.endpoint === 'selectText';
+    }
+
+    if (
+      serverStateName === 'processingInitialize' ||
+      serverStateName === 'processingSelectText'
+    ) {
+      return true;
+    }
+
+    return false;
+  };
 
   const showHint = () =>
     (expectedResponse && expectedResponse.endpoint === 'deselectText') ||
