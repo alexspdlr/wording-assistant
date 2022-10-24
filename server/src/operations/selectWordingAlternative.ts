@@ -57,14 +57,33 @@ const selectWordingAlternative = async (
       );
     });
 
-    /* Wait for preflight */
-
     /* Wait until the request for rewording is followed by a response (from DeepL) */
 
     try {
-      await page.waitForResponse(async (response) => response.ok(), {
-        timeout: 8000,
-      });
+      await page.waitForResponse(
+        async (response) => {
+          console.log('RESPONSE: ', response);
+
+          let responseJson;
+
+          try {
+            responseJson = await response.json();
+          } catch (error) {
+            return false;
+          }
+
+          if (!responseJson) {
+            return false;
+          }
+
+          const result =
+            responseJson.result.translations[0].beams[0].sentences[0].text;
+          return response.ok() && result;
+        },
+        {
+          timeout: 8000,
+        }
+      );
     } catch (error) {
       console.log(error);
     }
