@@ -62,25 +62,9 @@ const selectWordingAlternative = async (
     /* Wait until the request for rewording is followed by a response (from DeepL) */
 
     try {
-      await page.waitForResponse(
-        async (response) => {
-          return (
-            response.request().postData() &&
-            isJSON(response.request().postData()) &&
-            JSON.parse(response.request().postData() as string) &&
-            ((JSON.parse(response.request().postData() as string).params &&
-              JSON.parse(response.request().postData() as string).params.jobs &&
-              JSON.parse(
-                response.request().postData() as string
-              ).params.jobs.some(
-                (job: { kind: string }) => job.kind === 'default'
-              )) ||
-              JSON.parse(response.request().postData() as string)
-                .clientExperiments)
-          );
-        },
-        { timeout: 5000 }
-      );
+      await page.waitForResponse(async (response) => response.ok(), {
+        timeout: 8000,
+      });
     } catch (error) {
       console.log(error);
     }
