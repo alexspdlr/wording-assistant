@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import addAlphaToHexColor from './addAlphaToHexColor';
+import parse from 'html-react-parser';
 
 interface Range {
   startIndex: number;

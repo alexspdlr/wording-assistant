@@ -1,6 +1,7 @@
 import { Page } from 'puppeteer';
 import { PuppeteerResponse } from '../types';
 import isJSON from '../utils/isJSON';
+import { decode } from 'html-entities';
 
 const selectWordingAlternative = async (
   selectedAlternativeIndex: number,
@@ -13,29 +14,29 @@ const selectWordingAlternative = async (
     console.log('**** selectedAlternativeIndex', selectedAlternativeIndex);
     console.log('**** selectedAlternativeValue', selectedAlternativeValue);
 
-    const isCorrectTarget: boolean = await page.evaluate(
-      (selectedAlternativeIndex, selectedAlternativeValue) => {
+    const targetValue: string = await page.evaluate(
+      (selectedAlternativeIndex) => {
         const popover = document.querySelector(
           '[dl-test=translator-target-alternatives-popup]'
         );
-        console.log('**** popover', selectedAlternativeValue);
+
         if (popover) {
           console.log(
             '**** popover li elements',
             Array.from(popover.getElementsByTagName('li'))
           );
 
-          return (
-            Array.from(popover.getElementsByTagName('li'))[
-              selectedAlternativeIndex
-            ].innerHTML === selectedAlternativeValue
-          );
+          return Array.from(popover.getElementsByTagName('li'))[
+            selectedAlternativeIndex
+          ].innerHTML;
         }
-        return false;
+        return '';
       },
-      selectedAlternativeIndex,
-      selectedAlternativeValue
+      selectedAlternativeIndex
     );
+
+    const isCorrectTarget: boolean =
+      decode(targetValue) === selectedAlternativeValue;
 
     if (!isCorrectTarget) {
       throw 'selected wording alternative not found';
@@ -92,7 +93,7 @@ const selectWordingAlternative = async (
     return {
       type: 'response',
       data: {
-        rephrasingResult,
+        rephrasingResult: decode(rephrasingResult),
       },
     };
   } catch (error) {

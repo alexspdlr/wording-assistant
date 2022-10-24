@@ -1,5 +1,6 @@
 import waitUntil from 'async-wait-until';
 import { Console } from 'console';
+import { decode } from 'html-entities';
 import { Page } from 'puppeteer';
 import { PuppeteerResponse } from '../types';
 import delay from '../utils/delay';
@@ -74,7 +75,9 @@ const moveCursor = async (
     return {
       type: 'response',
       data: {
-        rephrasingAlternatives,
+        rephrasingAlternatives: rephrasingAlternatives.map(
+          (alternative: string) => decode(alternative)
+        ),
       },
     };
   } catch (error) {

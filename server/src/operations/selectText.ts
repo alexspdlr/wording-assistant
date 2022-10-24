@@ -33,12 +33,6 @@ const selectText = async (
       () => document.querySelector('#target-dummydiv')?.innerHTML !== '\r\n'
     );
 
-    // Store translation result
-    const translationResult = await page.$eval(
-      '#target-dummydiv',
-      (div) => div.innerHTML
-    );
-
     // Click swap languages button
     await page.$eval('button.lmt__language_container_switch', (button) => {
       const buttonTyped = button as HTMLButtonElement | null;
