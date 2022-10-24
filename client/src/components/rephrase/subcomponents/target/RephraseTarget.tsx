@@ -123,7 +123,11 @@ const RephraseTarget = (props: RephraseTargetProps) => {
 
   const showTargetWordPopoverPreconditions =
     !(popoverTargetRect === null || showHint() || showLoadingSpinner()) &&
-    !(expectedResponse === null && rephrasingOptions?.length === 0);
+    !(expectedResponse === null && rephrasingOptions?.length === 0) &&
+    !(
+      expectedResponse &&
+      expectedResponse.endpoint === 'selectWordingAlternative'
+    );
 
   const windowIsFocused = useWindowIsFocused();
 
