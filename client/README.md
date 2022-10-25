@@ -16,3 +16,11 @@
    2. Styled components are above exported components
    3. Prop-using styles at the end
  
+## Start Docker
+1. cd into client 
+2. run "docker build -t paraphrasing-app-server ." 
+3. start docker desktop
+4. click "run" on image called "paraphrasing-app-server"
+5. open "optional settings"
+6. enter desired local port, e.g. 3000
+7. open app on localhost:3000
