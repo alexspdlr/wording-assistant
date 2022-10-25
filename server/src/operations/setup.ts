@@ -4,6 +4,7 @@ const setup = async () => {
   /* Load broser & DeepL Page */
   const browser = await puppeteer.launch({
     headless: true,
+    args: ['--no-sandbox', '--disabled-setupid-sandbox'],
   });
   const page = await browser.newPage();
   page.setDefaultTimeout(8000);
