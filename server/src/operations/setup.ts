@@ -3,6 +3,7 @@ import puppeteer from 'puppeteer';
 const setup = async () => {
   /* Load broser & DeepL Page */
   const browser = await puppeteer.launch({
+    // executablePath: '/usr/bin/google-chrome',
     headless: true,
     args: ['--no-sandbox', '--disabled-setupid-sandbox'],
   });

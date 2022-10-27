@@ -1,21 +1,8 @@
 import http from 'http';
 import express from 'express';
 import { ServerSocket } from './classes/ServerSocket/ServerSocket';
-import basicAuth from 'express-basic-auth';
-import path from 'path';
 
 const app = express();
-
-// password
-app.use(
-  basicAuth({
-    challenge: true,
-    users: { test: 'test' },
-  })
-);
-
-app.use(express.static(path.join(__dirname, '..', '..', 'client', 'build')));
-app.use(express.static('public'));
 
 /** Server Handling */
 const httpServer = http.createServer(app);
@@ -25,7 +12,15 @@ const server = new ServerSocket(httpServer);
 // server.printPuppets();
 /** Log the request */
 app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'client', 'build'));
+  console.info(
+    `METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`
+  );
+
+  res.on('finish', () => {
+    console.info(
+      `METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`
+    );
+  });
 
   next();
 });
