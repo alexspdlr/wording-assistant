@@ -1,0 +1,11 @@
+version: '3'
+services: 
+  paraphrasing-app-client:
+    image: "paraphrasing-app-client"
+    stdin_open: true
+    ports:
+      - "3000:3000"
+  paraphrasing-app-server:
+    image: "paraphrasing-app-client"
+    ports:
+      - "5001:5001"

@@ -1,11 +1,15 @@
-FROM node:16
+FROM node:slim
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true 
 
-RUN apt-get update \
-    && apt-get install -y chromium \
-    fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
-    --no-install-recommends
+RUN apt-get update && apt-get install gnupg wget -y && \
+    wget --quiet --output-document=- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/google-archive.gpg && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
+    apt-get update && \
+    apt-get install google-chrome-stable -y --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+
 
 WORKDIR /app
 COPY --chown=node package.json .
@@ -14,15 +18,14 @@ COPY --chown=node tsconfig.json .
 COPY --chown=node src .
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 
 # check files list
 RUN ls -a
-RUN npm install
+RUN npm ci
 RUN npm run build
 
 COPY --chown=node . /app
 
 EXPOSE 3001
 
-CMD [ "node", "build/index.js" ] 
+CMD [ "node", "build/index.js" ]  

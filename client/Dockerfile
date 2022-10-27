@@ -1,21 +1,18 @@
-FROM node:15-alpine AS builder
+FROM nginx
 
-WORKDIR /app
+WORKDIR /usr/share/react
 
-COPY package.json package.json
+RUN curl -fsSL https://deb.nodesource.com/setup_17.x | bash -
+RUN apt-get install -y nodejs
 
-RUN npm install
+COPY package*.json ./
 
-COPY . .
+RUN npm install 
 
-RUN npm run build
+COPY . . 
 
-FROM nginx:alpine
+RUN npm run build 
 
-WORKDIR /usr/share/nginx/html
+RUN rm -r /usr/share/nginx/html/*
 
-RUN rm -rf *
-
-COPY --from=builder /app/build .
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"] 
+RUN cp -a build/. /usr/share/nginx/html
