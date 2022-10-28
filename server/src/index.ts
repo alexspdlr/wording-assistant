@@ -1,8 +1,6 @@
 import http from 'http';
 import express from 'express';
 import { ServerSocket } from './classes/ServerSocket/ServerSocket';
-import basicAuth from 'express-basic-auth';
-import path from 'path';
 
 const app = express();
 

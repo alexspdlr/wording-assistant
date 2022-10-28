@@ -2,12 +2,19 @@ version: '3.8'
 services: 
   client:
     build: ./client
-    stdin_open: true
     ports:
       - "80:80"
-    links:
-      - "server:app-server"
+    restart: always
+    networks:
+      - app-network
   server:
     build: ./server
     ports:
       - "3001:3001" 
+    networks:
+      - app-network
+    restart: always
+
+networks:
+      app-network:
+        driver: bridge  

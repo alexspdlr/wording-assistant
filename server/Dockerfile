@@ -10,7 +10,6 @@ USER node
 
 WORKDIR /app
 
-WORKDIR /app
 COPY --chown=node package.json .
 COPY --chown=node package-lock.json .
 COPY --chown=node tsconfig.json .
@@ -28,4 +27,4 @@ COPY --chown=node . /app
 
 EXPOSE 3001
 
-CMD [ "node", "build/index.js" ]
+CMD [ "node", "build/index.js" ] 
