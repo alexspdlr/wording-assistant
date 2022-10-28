@@ -33,7 +33,7 @@ const SocketContextComponent: React.FunctionComponent<
 
   const uiState = useBoundStore((state) => state.uiState);
 
-  const socket = useSocket('ws://localhost:3001', {
+  const socket = useSocket('ws://app-server:3001', {
     reconnectionAttempts: 5,
     reconnectionDelay: 500,
     autoConnect: false,

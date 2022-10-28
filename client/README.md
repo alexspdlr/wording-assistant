@@ -18,7 +18,7 @@
  
 ## Start Docker
 1. cd into client 
-2. run "docker build -t paraphrasing-app-server ." 
+2. run "docker build -t paraphrasing-app-client ." 
 3. start docker desktop
 4. click "run" on image called "paraphrasing-app-client"
 5. open "optional settings"

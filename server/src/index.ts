@@ -6,17 +6,6 @@ import path from 'path';
 
 const app = express();
 
-// password
-app.use(
-  basicAuth({
-    challenge: true,
-    users: { test: 'test' },
-  })
-);
-
-app.use(express.static(path.join(__dirname, '..', '..', 'client', 'build')));
-app.use(express.static('public'));
-
 /** Server Handling */
 const httpServer = http.createServer(app);
 
@@ -24,11 +13,6 @@ const httpServer = http.createServer(app);
 const server = new ServerSocket(httpServer);
 // server.printPuppets();
 /** Log the request */
-app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'client', 'build'));
-
-  next();
-});
 
 /** Parse the body of the request */
 app.use(express.urlencoded({ extended: true }));
@@ -70,4 +54,4 @@ app.use((req, res, next) => {
 });
 
 /** Listen */
-httpServer.listen(3001, () => console.info(`Server is running`));
+httpServer.listen(3001, '0.0.0.0', () => console.info(`Server is running`));
