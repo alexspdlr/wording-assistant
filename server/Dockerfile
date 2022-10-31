@@ -1,9 +1,15 @@
-FROM node:16
+FROM node:current-alpine
 
-RUN apt-get update \
-    && apt-get install -y chromium \
-    fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
-    --no-install-recommends
+RUN set -x \
+    && apk update \
+    && apk upgrade \
+    && apk add --no-cache \
+    udev \
+    ttf-freefont \
+    chromium 
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # non-root user that comes with `node` images.
 USER node 
@@ -15,8 +21,8 @@ COPY --chown=node package-lock.json .
 COPY --chown=node tsconfig.json .
 COPY --chown=node src .
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
+# ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+# ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium 
 
 # check files list
 RUN ls -a
@@ -27,4 +33,4 @@ COPY --chown=node . /app
 
 EXPOSE 3001
 
-CMD [ "node", "build/index.js" ] 
+CMD [ "npm", "start" ] 
