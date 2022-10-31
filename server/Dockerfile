@@ -1,15 +1,10 @@
-FROM node:current-alpine
+FROM node:alpine
 
-RUN set -x \
-    && apk update \
-    && apk upgrade \
-    && apk add --no-cache \
-    udev \
-    ttf-freefont \
-    chromium 
+RUN apk add chromium
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
+    PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM=true
 
 # non-root user that comes with `node` images.
 USER node 

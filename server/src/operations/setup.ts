@@ -6,16 +6,14 @@ const setup = async () => {
   const browser = await puppeteer.launch({
     headless: true,
     dumpio: true,
-    ignoreHTTPSErrors: true,
+    ignoreHTTPSErrors: false,
     args: [
       '--no-sandbox',
       '--disable-dev-shm-usage',
       '--devtools-flags=disable',
+      '--disable-setuid-sandbox',
     ],
   });
-
-  console.log('AFTER BRWOSER LAUNCH');
-
   const page = await browser.newPage();
   page.setDefaultTimeout(8000);
   await page.goto('https://www.deepl.com/en/translator#en/de/');

@@ -8,6 +8,7 @@ services:
     networks:
       - app-network
   server:
+    platform: linux/arm64
     cap_add:
       - SYS_ADMIN
     build: ./server
