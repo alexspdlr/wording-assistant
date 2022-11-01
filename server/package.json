@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "cd client && npm install",
     "start": "forever start build/index.js", 
     "build": "rimraf ./build && tsc && cd client && npm run build",
     "start-production": "npm run build && cd ../client && npm run build && cd ../server && forever start build/index.js"
