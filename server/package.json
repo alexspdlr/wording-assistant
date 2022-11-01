@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "forever start build/index.js", 
-    "build": "rimraf ./build && tsc && cd ../client && npm run build",
+    "build": "rimraf ./build && tsc && cd client && npm run build",
     "start-production": "npm run build && cd ../client && npm run build && cd ../server && forever start build/index.js"
   }, 
   "keywords": [],
