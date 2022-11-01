@@ -7,16 +7,13 @@ const setup = async () => {
     headless: true,
     dumpio: true,
     ignoreHTTPSErrors: false,
-    args: [
-      '--no-sandbox',
-      '--disable-dev-shm-usage',
-      '--devtools-flags=disable',
-      '--disable-setuid-sandbox',
-    ],
+    args: ['--no-sandbox'],
   });
   const page = await browser.newPage();
-  page.setDefaultTimeout(8000);
-  await page.goto('https://www.deepl.com/en/translator#en/de/');
+  page.setDefaultTimeout(10000);
+  await page.goto('https://www.deepl.com/en/translator#en/de/', {
+    waitUntil: 'networkidle2',
+  });
   return { page, browser };
 };
 
