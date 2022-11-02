@@ -7,7 +7,11 @@ const setup = async () => {
     headless: true,
     dumpio: true,
     ignoreHTTPSErrors: false,
-    args: ['--no-sandbox'],
+    args: [
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-setuid-sandbox',
+    ],
   });
   const page = await browser.newPage();
   page.setDefaultTimeout(10000);
