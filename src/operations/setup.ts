@@ -6,11 +6,12 @@ const setup = async () => {
   const browser = await puppeteer.launch({
     headless: true,
     dumpio: true,
-    ignoreHTTPSErrors: false,
     args: [
+      '--headless',
       '--no-sandbox',
-      '--disable-dev-shm-usage',
       '--disable-setuid-sandbox',
+      '--no-gpu',
+      '--disable-dev-shm-usage',
     ],
   });
   const page = await browser.newPage();
@@ -18,6 +19,7 @@ const setup = async () => {
   await page.goto('https://www.deepl.com/en/translator#en/de/', {
     waitUntil: 'networkidle2',
   });
+  console.log(' DeepL page has loaded !!! ');
   return { page, browser };
 };
 
