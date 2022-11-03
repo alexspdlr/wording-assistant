@@ -70,4 +70,4 @@ app.use((req, res, next) => {
 });
 
 /** Listen */
-httpServer.listen(3001, () => console.info(`Server is running`));
+httpServer.listen(3001, '0.0.0.0', () => console.info(`Server is running`));
