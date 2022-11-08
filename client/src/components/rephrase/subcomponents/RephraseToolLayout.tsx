@@ -1,13 +1,17 @@
 import styled from '@emotion/styled';
 import { relative } from 'path/posix';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Card from 'src/components/general/card';
+import useBoundStore from 'src/store';
 import copyToClipboard from 'src/utils/copyToClipboard';
+import generateDefaultWorkerState from 'src/utils/generateDefaultWorkerState';
+import useActiveElement from 'src/utils/hooks/useActiveElement';
+import useClickAway from 'src/utils/hooks/useClickAway';
 import isMobileDevice from 'src/utils/isMobileDevice';
 import { isMap } from 'util/types';
 import RephraseHint from './RephraseHint';
-import SourceCopyButton from './source/subcomponents/SourceCopyButton';
+import SourceActionButtons from './source/subcomponents/action-buttons/SourceActionButtons';
 import SourceTextArea from './source/subcomponents/SourceTextArea';
 import RephraseTarget from './target/RephraseTarget';
 
@@ -23,8 +27,13 @@ const Header = styled('div')(
     display: flex;
     justify-content: space-between;
     align-items: center; 
-    padding: 19px 12px 19px 24px;
+    padding: 21px 12px 21px 26px;
     font-weight: 600; 
+    color: ${
+      defaultProps.theme.activeMode === 'dark'
+        ? defaultProps.theme.palette.text.light
+        : defaultProps.theme.palette.primary.dark
+    };
     border: 1px solid ${defaultProps.theme.palette.border};
     border-right: ${props.isSource && `none`};
     border-left: ${!props.isSource && `none`};
@@ -120,11 +129,7 @@ const RephraseToolLayout = (props: RephraseToolLayoutProps) => {
             setSearchParams({ 'source-value': newVal })
           }
         />
-        {sourceValue && sourceValue.length > 0 && (
-          <SourceCopyButton
-            onClick={() => copyToClipboard(sourceValue || '')}
-          />
-        )}
+        {sourceValue && sourceValue.length > 0 && <SourceActionButtons />}
       </Body>
       <Body
         id='target-container'

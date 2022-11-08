@@ -6,10 +6,10 @@ const calculateRephraseToolTextSize = (
   textLength: number
 ): TextSize => {
   switch (breakpoint) {
-    case '2XL':
+    case '3XL':
       if (textLength < 55) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -21,15 +21,49 @@ const calculateRephraseToolTextSize = (
         };
       }
 
+      if (textLength < 1000) {
+        return {
+          fontSize: 20,
+          lineHeight: 30,
+        };
+      }
+
       return {
-        fontSize: 20,
-        lineHeight: 30,
+        fontSize: 16.1,
+        lineHeight: 24,
+      };
+
+    case '2XL':
+      if (textLength < 55) {
+        return {
+          fontSize: 25.99,
+          lineHeight: 39,
+        };
+      }
+
+      if (textLength < 175) {
+        return {
+          fontSize: 22,
+          lineHeight: 33,
+        };
+      }
+
+      if (textLength < 1000) {
+        return {
+          fontSize: 20,
+          lineHeight: 30,
+        };
+      }
+
+      return {
+        fontSize: 16.1,
+        lineHeight: 24,
       };
 
     case 'XL':
       if (textLength < 50) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -41,15 +75,22 @@ const calculateRephraseToolTextSize = (
         };
       }
 
+      if (textLength < 900) {
+        return {
+          fontSize: 20,
+          lineHeight: 30,
+        };
+      }
+
       return {
-        fontSize: 20,
-        lineHeight: 30,
+        fontSize: 16.1,
+        lineHeight: 24,
       };
 
     case 'L':
       if (textLength < 45) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -61,15 +102,22 @@ const calculateRephraseToolTextSize = (
         };
       }
 
+      if (textLength < 900) {
+        return {
+          fontSize: 20,
+          lineHeight: 30,
+        };
+      }
+
       return {
-        fontSize: 20,
-        lineHeight: 30,
+        fontSize: 16.1,
+        lineHeight: 24,
       };
 
     case 'M':
       if (textLength < 40) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -81,15 +129,22 @@ const calculateRephraseToolTextSize = (
         };
       }
 
+      if (textLength < 800) {
+        return {
+          fontSize: 20,
+          lineHeight: 30,
+        };
+      }
+
       return {
-        fontSize: 20,
-        lineHeight: 30,
+        fontSize: 16.1,
+        lineHeight: 24,
       };
 
     case 'S':
       if (textLength < 35) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -101,15 +156,22 @@ const calculateRephraseToolTextSize = (
         };
       }
 
+      if (textLength < 700) {
+        return {
+          fontSize: 20,
+          lineHeight: 30,
+        };
+      }
+
       return {
-        fontSize: 20,
-        lineHeight: 30,
+        fontSize: 16.1,
+        lineHeight: 24,
       };
 
     case 'XS':
       if (textLength < 25) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -121,15 +183,22 @@ const calculateRephraseToolTextSize = (
         };
       }
 
+      if (textLength < 600) {
+        return {
+          fontSize: 20,
+          lineHeight: 30,
+        };
+      }
+
       return {
-        fontSize: 20,
-        lineHeight: 30,
+        fontSize: 16.1,
+        lineHeight: 24,
       };
 
     case '2XS':
       if (textLength < 50) {
         return {
-          fontSize: 26,
+          fontSize: 25.99,
           lineHeight: 39,
         };
       }
@@ -141,9 +210,16 @@ const calculateRephraseToolTextSize = (
         };
       }
 
+      if (textLength < 500) {
+        return {
+          fontSize: 20,
+          lineHeight: 30,
+        };
+      }
+
       return {
-        fontSize: 20,
-        lineHeight: 30,
+        fontSize: 16.1,
+        lineHeight: 24,
       };
 
     default:
@@ -154,9 +230,16 @@ const calculateRephraseToolTextSize = (
         };
       }
 
+      if (textLength < 500) {
+        return {
+          fontSize: 20,
+          lineHeight: 30,
+        };
+      }
+
       return {
-        fontSize: 20,
-        lineHeight: 30,
+        fontSize: 16.1,
+        lineHeight: 24,
       };
   }
 };

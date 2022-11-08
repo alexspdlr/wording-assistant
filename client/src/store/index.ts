@@ -1,7 +1,7 @@
 import { RephraseSlice } from 'src/types/store';
 import create from 'zustand';
 import { AppSlice, createAppSlice } from './slices/appSlice';
-import { createRephraseSlice } from './slices/rephraseSlice';
+import createRephraseSlice from './slices/rephraseSlice';
 
 type StoreState = RephraseSlice & AppSlice; // & OtherSlice
 

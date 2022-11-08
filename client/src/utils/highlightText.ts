@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import addAlphaToHexColor from './addAlphaToHexColor';
+import parse from 'html-react-parser';
 
 interface Range {
   startIndex: number;
@@ -9,17 +11,14 @@ const highlightText = (
   text: string,
   highlightRanges: Range[],
   color: string,
-  opacity?: number
+  textColor: string
 ) => {
   return highlightRanges.reduceRight(
     (resultingString, range) =>
       `${resultingString.slice(
         0,
         range.startIndex
-      )}<mark style="padding:3px 0px 4px 0px; background-color: ${addAlphaToHexColor(
-        color,
-        opacity || 1
-      )}}; transition: inherit;">${resultingString.slice(
+      )}<mark style="padding:3px 0px 4px 0px; color:${textColor}; background-color: ${color};">${resultingString.slice(
         range.startIndex,
         range.endIndex
       )}</mark>${resultingString.slice(range.endIndex)}`,

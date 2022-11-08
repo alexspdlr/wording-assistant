@@ -11,13 +11,13 @@ const addLoadingTime = (page: string, time: number) =>
   });
 
 /* @ts-expect-error */
-const RephrasePage = lazy(() => addLoadingTime('RephrasePage', 300));
+const RephrasePage = lazy(() => addLoadingTime('RephrasePage', 100));
 /* @ts-expect-error */
-const ProcessPage = lazy(() => addLoadingTime('ProcessPage', 150));
+const ProcessPage = lazy(() => addLoadingTime('ProcessPage', 100));
 /* @ts-expect-error */
-const DocumentationPage = lazy(() => addLoadingTime('DocumentationPage', 150));
+const DocumentationPage = lazy(() => addLoadingTime('DocumentationPage', 100));
 /* @ts-expect-error */
-const AboutMePage = lazy(() => addLoadingTime('AboutMePage', 150));
+const AboutMePage = lazy(() => addLoadingTime('AboutMePage', 100));
 /* @ts-expect-error */
 const Page404 = lazy(() => addLoadingTime('404', 0));
 
@@ -50,26 +50,21 @@ const AppRoute = (props: AppRouteProps) => {
 
 const AppRoutes = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='' element={<AppLayout />}>
-          <Route path='*' element={<Page404 />} />
-          <Route index element={<AppRoute target={<RephrasePage />} />} />
-          <Route
-            path='documentation'
-            element={<AppRoute target={<DocumentationPage />} />}
-          />
-          <Route
-            path='process'
-            element={<AppRoute target={<ProcessPage />} />}
-          />
-          <Route
-            path='about-me'
-            element={<AppRoute target={<AboutMePage />} />}
-          />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path='' element={<AppLayout />}>
+        <Route path='*' element={<Page404 />} />
+        <Route index element={<AppRoute target={<RephrasePage />} />} />
+        <Route
+          path='documentation'
+          element={<AppRoute target={<DocumentationPage />} />}
+        />
+        <Route path='process' element={<AppRoute target={<ProcessPage />} />} />
+        <Route
+          path='about-me'
+          element={<AppRoute target={<AboutMePage />} />}
+        />
+      </Route>
+    </Routes>
   );
 };
 

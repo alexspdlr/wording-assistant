@@ -1,17 +1,24 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import CustomPopover from 'src/components/Popover';
 import useBoundStore from 'src/store';
+import { TextToken } from 'src/types/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import useClickAway from 'src/utils/hooks/useClickAway';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
+import useSourceTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import splitIntoWords from 'src/utils/splitIntoWords';
+import { TargetCursorIndexInfo } from '../RephraseTarget';
+import _ from 'lodash';
+import TargetOriginalSelection from './TargetOriginalSelection';
+import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
 
 const Container = styled('div')(
   () => `
   flex-grow: 1; 
   outline: none;
   display: block; 
-  z-index: 2;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica;
   font-weight: 400;
   overflow: visible; 
@@ -20,89 +27,181 @@ const Container = styled('div')(
   -khtml-user-select: none; 
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;
+  user-select: none; 
+  width: 100%; 
+  animation: fade 300ms;
+  @keyframes fade {
+    0% { opacity: 0; } 
+    50% {opacity: 0.8;}
+    100% { opacity: 1; }
+  }
+
       `
 );
 
-interface WordProps {
-  hovered: boolean;
-  otherTokenHovered: boolean;
+interface TextProps {
+  selected: boolean;
 }
 
-const Word = styled('span')(
-  (props: WordProps) => (defaultProps) =>
+const Text = styled('span')(
+  (props: TextProps) => (defaultProps) =>
     `
+    position: relative; 
   padding-top: 2px; 
   padding-bottom: 2px; 
   border-top: 1px solid ${defaultProps.theme.palette.background.light};
   border-bottom: 1px solid ${defaultProps.theme.palette.background.light};
   white-space: pre-wrap;
-
-  ${
-    props.hovered
-      ? `
-    background-color: ${addAlphaToHexColor(
-      defaultProps.theme.palette.primary.light,
-      0.175
-    )}; 
-    color: ${defaultProps.theme.palette.text.main};
+  background-color:transparent; 
+  color: transparent; 
     cursor: pointer; 
     transition: 0.2s background-color, 0.2s color;
-    `
-      : props.otherTokenHovered
-      ? `
-      color: ${addAlphaToHexColor(defaultProps.theme.palette.text.main, 0.5)};
-    transition: 0.2s color;
-    `
-      : `
-      color: ${defaultProps.theme.palette.text.main}; 
-      transition: 0.2s color;`
-  }
+  
   `
 );
 
 interface TargetSelectProps {
-  value: string;
+  targetCursorIndex: TargetCursorIndexInfo | null;
+  setPopoverTargetRect: Function;
+  showTargetWordPopover: boolean;
+  setShowTargetWordPopover: (show: boolean) => void;
+  resetToOriginalSelection: () => void;
+  targetTextAreaIsFocused: boolean;
 }
 
 const TargetSelect = (props: TargetSelectProps) => {
-  const { value } = props;
-  const containerRef = useRef(null);
-  useRephraseToolTextboxSize(value, containerRef);
-  const [hoveredWord, setHoveredWord] = useState<string | null>(null);
+  const {
+    targetCursorIndex,
+    setPopoverTargetRect,
+    showTargetWordPopover,
+    setShowTargetWordPopover,
+    resetToOriginalSelection,
+    targetTextAreaIsFocused,
+  } = props;
+  /* --------------------------- GET DATA FROM STORE -------------------------- */
 
-  const resetSelection = useBoundStore((state) => state.reset);
+  const activeTextSelection = useBoundStore(
+    (state) => state.uiState.activeTextSelection
+  );
+  const originalTextSelection = useBoundStore(
+    (state) => state.uiState.originalTextSelection
+  );
+  const activeRephrasingToken = useBoundStore(
+    (state) => state.uiState.activeRephrasingToken
+  );
+  const setActiveRephrasingToken = useBoundStore(
+    (state) => state.setActiveRephrasingToken
+  );
 
-  const onClickAway = (event: any) => {
-    resetSelection();
-  };
+  /* ---------------------------------- UTILS --------------------------------- */
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  useRephraseToolTextboxSize(activeTextSelection?.value || '', containerRef);
 
-  useClickAway(containerRef, onClickAway);
+  const theme = useTheme();
+
+  useEffect(() => {
+    const newSelectedWord =
+      targetCursorIndex || targetCursorIndex === 0
+        ? splitWords.find(
+            (word) =>
+              word.kind === 'text' &&
+              targetCursorIndex.index >= word.startIndex &&
+              targetCursorIndex.index <= word.endIndex
+          )
+        : null;
+
+    if (targetTextAreaIsFocused) {
+      setActiveRephrasingToken(newSelectedWord || null);
+    }
+
+    const targetElementRect = document
+      .getElementById('target-word-selected')
+      ?.getBoundingClientRect();
+
+    if (targetElementRect) {
+      setPopoverTargetRect(targetElementRect);
+    } else {
+      setPopoverTargetRect(null);
+    }
+
+    if (targetCursorIndex?.movementTriggeredBy === 'mouse') {
+      if (
+        activeRephrasingToken === null ||
+        !(
+          targetCursorIndex.index >= activeRephrasingToken.startIndex &&
+          targetCursorIndex.index <= activeRephrasingToken.endIndex
+        )
+      ) {
+        setShowTargetWordPopover(true);
+      } else {
+        setShowTargetWordPopover(!showTargetWordPopover);
+      }
+    } else {
+      if (targetCursorIndex?.index === newSelectedWord?.startIndex) {
+        setShowTargetWordPopover(true);
+      } else {
+        setShowTargetWordPopover(false);
+      }
+    }
+  }, [targetCursorIndex]);
+
+  const windowIsFocused = useWindowIsFocused();
+  useEffect(() => {
+    if (!windowIsFocused) {
+      setActiveRephrasingToken(null);
+      setPopoverTargetRect(null);
+      setShowTargetWordPopover(false);
+    }
+  }, [windowIsFocused]);
+
+  const splitWords = splitIntoWords(activeTextSelection?.value || '');
 
   return (
-    <Container ref={containerRef} tabIndex={0} id='target-select-container'>
-      <div style={{ padding: '24px 56px 72px 36px' }}>
-        {splitIntoWords(value).map((token, i) =>
-          token.kind === 'clickable' ? (
-            <Word
-              onMouseEnter={() => setHoveredWord(`token_${i}`)}
-              onMouseLeave={() => setHoveredWord(null)}
-              hovered={hoveredWord === `token_${i}`}
-              otherTokenHovered={
-                hoveredWord !== null && hoveredWord !== `token_${i}`
-              }
-              key={`token_${i}`}
-            >
-              {token.value}
-            </Word>
-          ) : (
-            <span key={`token_${i}`} style={{ whiteSpace: 'pre-wrap' }}>
-              {token.value}
-            </span>
-          )
-        )}
-      </div>
-    </Container>
+    <>
+      <Container ref={containerRef} tabIndex={0} id='target-select-container'>
+        <div
+          style={{
+            padding: '28px 28px 14px 28px',
+          }}
+        >
+          {splitWords.map((token, i) =>
+            token.kind === 'text' ? (
+              <Text
+                selected={
+                  targetCursorIndex !== null &&
+                  (targetCursorIndex.index || targetCursorIndex.index === 0
+                    ? targetCursorIndex.index >= token.startIndex &&
+                      targetCursorIndex.index <= token.endIndex
+                    : false)
+                }
+                key={`token_${i}`}
+                id={
+                  targetCursorIndex !== null &&
+                  (targetCursorIndex.index || targetCursorIndex.index === 0) &&
+                  targetCursorIndex.index >= token.startIndex &&
+                  targetCursorIndex.index <= token.endIndex
+                    ? `target-word-selected`
+                    : `target-word-${i}`
+                }
+              >
+                {token.value}
+              </Text>
+            ) : (
+              <span
+                key={`token_${i}`}
+                style={{ whiteSpace: 'pre-wrap', color: 'transparent' }}
+              >
+                {token.value}
+              </span>
+            )
+          )}
+        </div>
+        <TargetOriginalSelection
+          hide={_.isEqual(originalTextSelection, activeTextSelection)}
+          resetToOriginalSelection={resetToOriginalSelection}
+        />
+      </Container>
+    </>
   );
 };
 

@@ -10,7 +10,7 @@ const useClickAway = <T extends HTMLElement = HTMLElement>(
     const listener = (event: Event) => {
       const el = ref?.current;
       if (!el || el.contains((event?.target as Node) || null)) {
-        return;
+        return event;
       }
       onClickAway(event);
     };

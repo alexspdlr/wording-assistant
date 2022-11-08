@@ -1,12 +1,15 @@
 import { Theme } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
+import useHover from 'src/utils/hooks/useHover';
 
 interface TooltipProps {
   children: ReactNode;
   content: string;
   direction?: 'left' | 'right' | 'top' | 'bottom';
   delay?: number;
+  permanent?: boolean;
+  hidden?: boolean;
 }
 
 const Wrapper = styled('div')(
@@ -116,14 +119,16 @@ ${direction(props, defaultProps.theme)}
 );
 
 const Tooltip = (props: TooltipProps) => {
-  const { children, content, direction, delay } = props;
+  const { children, content, direction, delay, permanent, hidden } = props;
   const [tooltipActive, setTooltipActive] = useState(false);
+  const [hoverRef, isHovered] = useHover();
 
   let timeout: string | number | NodeJS.Timeout | undefined;
+
   const reveal = () => {
     timeout = setTimeout(() => {
       setTooltipActive(true);
-    }, delay || 500);
+    }, delay || 600);
   };
 
   const hide = () => {
@@ -131,13 +136,23 @@ const Tooltip = (props: TooltipProps) => {
     setTooltipActive(false);
   };
 
+  useEffect(() => {
+    if (isHovered) {
+      reveal();
+    } else {
+      hide();
+    }
+  }, [isHovered]);
+
   return (
-    <Wrapper onMouseEnter={reveal} onMouseLeave={hide}>
+    <Wrapper ref={hoverRef}>
       <Tip
         direction={direction || 'top'}
         margin={7}
         arrowSize={6}
-        isRevealed={tooltipActive}
+        isRevealed={
+          (!hidden && isHovered && tooltipActive) || permanent === true
+        }
       >
         {content}
       </Tip>

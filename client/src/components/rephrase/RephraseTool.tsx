@@ -1,26 +1,19 @@
 import styled from '@emotion/styled';
-import { ReactComponent as RephraseTextIcon } from 'src/assets/RephraseTextIcon.svg';
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ReactComponent as RephraseFilesIcon } from 'src/assets/RephraseFilesIcon.svg';
+import { ReactComponent as RephraseTextIcon } from 'src/assets/RephraseTextIcon.svg';
+import Card from 'src/components/general/card';
 import ActiveToolButton from 'src/components/rephrase/subcomponents/RephraseActiveToolButton';
-import ToggleButton from 'src/components/general/toggle-button';
+import RephraseToolCard from 'src/components/rephrase/subcomponents/RephraseToolCard';
+import useBoundStore from 'src/store';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import Card from 'src/components/general/card';
-import RephraseToolCard from 'src/components/rephrase/subcomponents/RephraseToolCard';
-import RephraseSource from './subcomponents/source';
-import { useState } from 'react';
-import useBoundStore from 'src/store';
-import LoadingSpinner from '../general/loading-spinner';
-import TargetSelect from './subcomponents/target/subcomponents/TargetSelect';
-import RephraseTarget from './subcomponents/target/RephraseTarget';
-import Snackbar from '../general/snackbar';
 import Dialog from '../general/dialog';
-import theme from 'src/constants/theme';
-import useLocalStorage from 'src/utils/hooks/useLocalStorage';
-import Tooltip from '../general/tooltip';
-import { useSearchParams } from 'react-router-dom';
-import SourceTextArea from './subcomponents/source/subcomponents/SourceTextArea';
+import Snackbar from '../general/snackbar';
 import RephraseToolLayout from './subcomponents/RephraseToolLayout';
+import RephraseSource from './subcomponents/source';
+import RephraseTarget from './subcomponents/target/RephraseTarget';
 
 /* ------------------------------- GridLayout ------------------------------- */
 interface GridLayoutProps {
@@ -79,6 +72,7 @@ const CommentCard = styled(Card)(
   color: ${defaultProps.theme.palette.text.disabled};
   padding: 18px 24px;
   border: 1px solid ${defaultProps.theme.palette.border};
+  font-size: 16.1px; 
   height: 20px; 
   ${props.gridArea && `grid-area: ${props.gridArea};`}  
   `
@@ -160,13 +154,21 @@ const RephraseTool = () => {
 
   const isErrorActive = useBoundStore((state) => state.isErrorActive);
 
+  const isConnectedToServer = useBoundStore(
+    (state) => state.isConnectedToServer
+  );
+
   return (
     <>
-      {isErrorActive && (
+      {(isErrorActive || !isConnectedToServer) && (
         <SnackbarContainer>
           <Snackbar
             variant='error'
-            message=' Sorry, something went wrong. Please reload the page or try again later.'
+            message={
+              !isConnectedToServer
+                ? 'The server cannot be reached. Please make sure you are connect to the internet & reload the page.'
+                : 'Sorry, something went wrong. Please reload the page or try again later.'
+            }
           />
         </SnackbarContainer>
       )}

@@ -45,6 +45,7 @@ const Wrapper = styled(Card)(
     justify-content: space-between;
     cursor: pointer;
     border: 1px solid ${defaultProps.theme.palette.border}; 
+    transition: background-color 150ms ease-in-out; 
     ${
       props.active
         ? 'border-bottom: 0px; border-radius: 8px 8px 4px 4px;'
@@ -54,7 +55,6 @@ const Wrapper = styled(Card)(
     } 
     `
 );
-
 interface ActiveToolButtonProps {
   icon: ReactElement<any, string | JSXElementConstructor<any>>;
   text: string;

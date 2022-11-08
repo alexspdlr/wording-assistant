@@ -24,11 +24,12 @@ const Button = styled('button')(
   border: 0px;  
   border-radius: 4px; 
   cursor: pointer; 
+  transition: background-color 150ms ease-in-out, border-color 150ms ease-in-out, color 150ms ease-in-out; 
   &:hover {
     background-color: ${
-      props.variant !== 'outlined' && defaultProps.theme.activeMode === 'dark'
+      props.variant !== 'outlined'
         ? defaultProps.theme.palette.primary.dark
-        : defaultProps.theme.palette.primary.main
+        : defaultProps.theme.palette.background.main
     };    
     color: ${
       props.variant === 'outlined' && defaultProps.theme.palette.primary.main

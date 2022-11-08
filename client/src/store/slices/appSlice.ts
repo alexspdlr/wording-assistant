@@ -1,4 +1,4 @@
-import { AppState, AppActions } from 'src/types/store';
+import { AppActions, AppState } from 'src/types/store';
 import { StateCreator } from 'zustand';
 
 const locallyStoredColorMode = () => {
@@ -24,7 +24,8 @@ const ininitalState: AppState = {
 export interface AppSlice extends AppState, AppActions {}
 
 export const createAppSlice: StateCreator<AppSlice, [], [], AppSlice> = (
-  set
+  set,
+  get
 ) => ({
   ...ininitalState,
   setLightMode: () => {
