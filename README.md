@@ -20,3 +20,15 @@
 13. Run the newly created image by running "docker run -it -d -p 3001:3001 app-image"
 14. OPTIONAL: View log running "docker logs -f <container-id>" (container-id is logged in the console after running the image)
 15. Open http://<droplet-ip>:3001 on your local machine and check if it works
+
+
+
+https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04
+UBUNTU LOGIN ON SERVER: 
+ssh alex@206.81.19.237
+
+VNC: 
+https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-vnc-on-ubuntu-22-04
+
+connect to :
+localhost:59000

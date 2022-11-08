@@ -13,12 +13,6 @@ const selectText = async (
       await resetPage(page, browser);
     }
 
-    console.log(`
-    
-    1
-
-    `);
-
     // Paste client input into translator source
     await page.evaluate((clienSourceInput) => {
       const translatorSourceInput = document.querySelector(
@@ -28,34 +22,16 @@ const selectText = async (
       if (translatorSourceInput) translatorSourceInput.value = clienSourceInput;
     }, clienSourceInput);
 
-    console.log(`
-    
-    2 ${clienSourceInput}
-
-    `);
-
     // Tab out and back into translator input field to trigger translation
     await page.keyboard.press('Tab');
     await page.keyboard.down('ShiftLeft');
     await page.keyboard.press('Tab');
     await page.keyboard.up('ShiftLeft');
 
-    console.log(`
-    
-    3
-
-    `);
-
     // Wait until translation is finished
     await page.waitForFunction(
       () => document.querySelector('#target-dummydiv')?.innerHTML !== '\r\n'
     );
-
-    console.log(`
-    
-    4
-
-    `);
 
     // Click swap languages button
     await page.$eval('button.lmt__language_container_switch', (button) => {
@@ -63,12 +39,6 @@ const selectText = async (
 
       buttonTyped?.click();
     });
-
-    console.log(`
-    
-    5
-
-    `);
 
     // Wait until languages are swapped
 
@@ -82,12 +52,6 @@ const selectText = async (
         translatorSourceInput.innerHTML !== '\r\n'
       );
     }, {});
-
-    console.log(`
-    
-    6
-
-    `);
 
     // Paste client input into translator target
     await page.evaluate((clienSourceInput) => {

@@ -17,7 +17,7 @@ export class ServerSocket {
   public io: Server;
   public activePuppets: Puppet[];
   public waitingPuppets: Queue<Puppet>;
-  private minNumberOfMaintainedPuppets = 3;
+  private minNumberOfMaintainedPuppets = 2;
 
   /* ------------------------------- CONSTRUCTOR ------------------------------ */
 
@@ -31,7 +31,7 @@ export class ServerSocket {
       pingTimeout: 5000,
       cookie: false,
       cors: {
-        origin: '*', //TODO: update this to only allow legit URL
+        origin: 'http://localhost:8080',
       },
     });
 

@@ -22,17 +22,6 @@ const RephrasePage = () => {
       <Section backgroundColor={theme.palette.background.dark}>
         <RephraseTool />
       </Section>
-      <div style={{ display: 'flex' }}>
-        BREAKPOINT: {activeBreakpoint}
-        <div style={{ backgroundColor: 'yellow' }}>
-          Expected response:
-          <div>{JSON.stringify(uiState.expectedResponse)}</div>
-        </div>
-        <div style={{}}>
-          SERVER STATE:
-          <div>{JSON.stringify(serverState.stateName)}</div>
-        </div>
-      </div>
 
       <Section backgroundColor={theme.palette.background.main}>
         <InfoSection />

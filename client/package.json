@@ -34,13 +34,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build"
   },
-  "proxy": "http://0.0.0.0:3001",
+  "proxy": "http://0.0.0.0:80", 
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ]
-  }, 
+  },
   "browserslist": {
     "production": [
       ">0.2%",
