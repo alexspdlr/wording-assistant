@@ -1,27 +1,38 @@
 import puppeteer_reset_page from '../../../operations/resetPage';
 import { PuppetState, ServerResponseEvent_Extended } from '../../../types';
 import { ActiveWorkerState } from '../../../types/socket';
-import generateDefaultWorkerState from '../../ServerSocket/util/generateDefaultWorkerState';
 
-const deselectText = async (
+/**
+ * The function is triggered by the client-action-event "deselectText" and:
+ *
+ *   - forms and returns a server-response-event with information about the "processing"-state of the puppet-worker BEFORE executing the client-action-event
+ *
+ *   - executes the client-action-event
+ *
+ *   - forms and returns a server-response-event with information about the new state of the puppet-worker AFTER executing the client-action-event
+ *
+ * @param eventId
+ * @param localState
+ * @param updateLocalState
+ * @param respondToPuppet
+ */
+
+const handleDeselectText = async (
   eventId: string,
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void
 ) => {
   if (localState.page && localState.browser) {
-    /* -------------------------------------------------------------------------- */
-    /*                                    START                                   */
-    /* -------------------------------------------------------------------------- */
+    /* ------------------ Before executing client-action-event ------------------ */
 
-    // CREATE NEW WORKER STATE & RESPONSE
     const newWorkerState_Start: ActiveWorkerState = {
       stateName: 'processingDeselectText',
       data: {
         id: localState.workerState.data.id,
         originalTextSelection: null,
         activeTextSelection: null,
-        cursorIndex: 0,
+        caretIndex: 0,
         rephrasingOptions: [],
       },
     };
@@ -34,26 +45,23 @@ const deselectText = async (
       },
     };
 
-    // UPDATE LOCAL STATE & RESPOND
     updateLocalState(newWorkerState_Start);
 
     respondToPuppet(response_Start);
 
-    /* -------------------------------------------------------------------------- */
-    /*                                   FINISH                                   */
-    /* -------------------------------------------------------------------------- */
+    /* ----------------------- Execute client-action-event ---------------------- */
 
-    // ACTION
-    await puppeteer_reset_page(localState.page, localState.browser);
+    await puppeteer_reset_page(localState.page);
 
-    // CREATE NEW WORKER STATE & RESPONSE
+    /* ------------------- After executing client-action-event ------------------ */
+
     const newWorkerState_Finish: ActiveWorkerState = {
       stateName: 'waitingForSelectText',
       data: {
         id: localState.workerState.data.id,
         originalTextSelection: null,
         activeTextSelection: null,
-        cursorIndex: 0,
+        caretIndex: 0,
         rephrasingOptions: [],
       },
     };
@@ -66,11 +74,10 @@ const deselectText = async (
       },
     };
 
-    // UPDATE LOCAL STATE & RESPOND
     updateLocalState(newWorkerState_Finish);
 
     respondToPuppet(response_Finish);
   }
 };
 
-export default deselectText;
+export default handleDeselectText;

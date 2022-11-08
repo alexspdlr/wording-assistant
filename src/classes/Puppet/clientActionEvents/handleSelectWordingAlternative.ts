@@ -1,4 +1,3 @@
-import { Browser, Page } from 'puppeteer';
 import selectWordingAlternative from '../../../operations/selectWordingAlternative';
 import { PuppetState, ServerResponseEvent_Extended } from '../../../types';
 import {
@@ -7,7 +6,24 @@ import {
 } from '../../../types/socket';
 import handleError from '../otherEvents/handleError';
 
-const selectWordingAlternativeExported = async (
+/**
+ * The function is triggered by the client-action-event "selectWordingAlternative" and:
+ *
+ *   - forms and returns a server-response-event with information about the "processing"-state of the puppet-worker BEFORE executing the client-action-event
+ *
+ *   - executes the client-action-event
+ *
+ *   - forms and returns a server-response-event with information about the new state of the puppet-worker AFTER executing the client-action-event
+ *
+ * @param eventId
+ * @param localState
+ * @param updateLocalState
+ * @param respondToPuppet
+ * @param selectedAlternativeIndex
+ * @param selectedAlternativeValue
+ */
+
+const handleSelectWordingAlternative = async (
   eventId: string,
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
@@ -16,11 +32,8 @@ const selectWordingAlternativeExported = async (
   selectedAlternativeValue: string
 ) => {
   if (localState.page && localState.browser) {
-    /* -------------------------------------------------------------------------- */
-    /*                                    START                                   */
-    /* -------------------------------------------------------------------------- */
+    /* ------------------ Before executing client-action-event ------------------ */
 
-    // CREATE NEW WORKER STATE & RESPONSE
     const newWorkerState_Start: ActiveWorkerState = {
       stateName: 'processingSelectWordingAlternative',
       data: {
@@ -36,23 +49,20 @@ const selectWordingAlternativeExported = async (
       },
     };
 
-    // UPDATE LOCAL STATE & RESPOND
     updateLocalState(newWorkerState_Start);
 
     respondToPuppet(response_Start);
 
-    /* -------------------------------------------------------------------------- */
-    /*                                   FINISH                                   */
-    /* -------------------------------------------------------------------------- */
+    /* ----------------------- Execute client-action-event ---------------------- */
 
-    // ACTION
     const response = await selectWordingAlternative(
       selectedAlternativeIndex,
       selectedAlternativeValue,
       localState.page
     );
 
-    // HANDLE ERROR
+    /* ------------------- After executing client-action-event ------------------ */
+
     if (response.type === 'error') {
       await handleError(
         eventId,
@@ -62,8 +72,6 @@ const selectWordingAlternativeExported = async (
         response.data
       );
     } else {
-      // CREATE NEW WORKER STATE & RESPONSE
-
       const newActiveSelectionValue: string =
         response.data.rephrasingResult.trim() ||
         localState.workerState.data.activeTextSelection?.value;
@@ -94,7 +102,6 @@ const selectWordingAlternativeExported = async (
         },
       };
 
-      // UPDATE LOCAL STATE & RESPOND
       updateLocalState(newWorkerState_Finish);
 
       respondToPuppet(response_Finish);
@@ -102,4 +109,4 @@ const selectWordingAlternativeExported = async (
   }
 };
 
-export default selectWordingAlternativeExported;
+export default handleSelectWordingAlternative;

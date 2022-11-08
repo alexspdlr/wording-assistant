@@ -1,6 +1,11 @@
 import osu from 'node-os-utils';
 import { Puppet } from '../../Puppet/Puppet';
 
+/**
+ * Dev-util function that prints real-time information about the state of all puppets in the console
+ * @param getPuppets
+ * @param getWaitingPuppets
+ */
 const printServerInfo = (
   getPuppets: () => Puppet[],
   getWaitingPuppets: () => Puppet[]

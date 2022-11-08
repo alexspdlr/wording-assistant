@@ -11,7 +11,7 @@ const generateDefaultWorkerState = (
       id: id || '',
       originalTextSelection: null,
       activeTextSelection: null,
-      cursorIndex: 0,
+      caretIndex: 0,
       rephrasingOptions: [],
     },
   };

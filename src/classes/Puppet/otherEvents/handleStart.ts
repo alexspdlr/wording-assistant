@@ -1,10 +1,22 @@
 import { Browser, Page } from 'puppeteer';
 import puppeteer_setup from '../../../operations/setup';
 import { PuppetState, ServerResponseEvent_Extended } from '../../../types';
-
 import { ActiveWorkerState } from '../../../types/socket';
 
-const start = async (
+/**
+ * The function is triggered when the connection to a socket is established and:
+ *
+ *   - sets up an associated browser controlled by puppeteer
+ *
+ *   - forms and returns a server-response-event with information about the new state of the puppet-worker AFTER the setting up an associated browser
+ *
+ * @param localState
+ * @param updateLocalState
+ * @param respondToPuppet
+ * @param id
+ */
+
+const handleStart = async (
   localState: PuppetState,
   updateLocalState: (
     workerState: ActiveWorkerState,
@@ -14,10 +26,10 @@ const start = async (
   respondToPuppet: (response: ServerResponseEvent_Extended) => void,
   id: string
 ) => {
-  // ACTION
+  /* --------------------------- Set up the browser --------------------------- */
   const { page, browser } = await puppeteer_setup();
 
-  // CREATE NEW WORKER STATE & RESPONSE
+  /* ---------------------- After setting up the browser ---------------------- */
   const newWorkerState: ActiveWorkerState = {
     stateName: 'waitingForSelectText',
     data: {
@@ -34,9 +46,8 @@ const start = async (
     },
   };
 
-  // UPDATE LOCAL STATE & RESPOND
   updateLocalState(newWorkerState, page, browser);
 
   respondToPuppet(response);
 };
-export default start;
+export default handleStart;

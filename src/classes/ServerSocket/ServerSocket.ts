@@ -2,7 +2,7 @@ import { Server as HttpServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import {
   ClientActionPayload_DeselectText,
-  ClientActionPayload_MoveCursor,
+  ClientActionPayload_moveCaret,
   ClientActionPayload_SelectText,
   ClientActionPayload_SelectWordingAlternative,
   ClientActionPayload_UpdateTargetText,
@@ -11,6 +11,23 @@ import {
 import { Puppet } from '../Puppet/Puppet';
 import { Queue } from '../Queue/Queue';
 import printServerInfo from './util/printServerInfo';
+
+/**
+ *
+ *  An object of the ServerSocket class:
+ *
+ *    - wraps & provides the http server with all socket endpoints that are available to the client
+ *
+ *    - prepares & manages the puppet queue, which is used to keep <minNumberOfMaintainedPuppets> puppets "ready-to-be-used" at all times,
+ *      preventing cold starts for newly connecting clients (read more at http://wording-assistant.com/documentation)
+ *
+ *    - forwards incoming client-action-events to the corresponding puppet
+ *
+ *    - sends a server-response-event to the client as soon as the preceding client-action-event has been executed
+ *
+ *    - manages the state of actively used puppets in order to provide information about them to the app-maintaner or a client
+ *
+ */
 
 export class ServerSocket {
   public static instance: ServerSocket;
@@ -49,11 +66,11 @@ export class ServerSocket {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*                             RECEIVE FROM CLIENT                            */
+  /*                                 CLIENT API                                 */
   /* -------------------------------------------------------------------------- */
 
   private startSocketListeners = (socket: Socket) => {
-    // spawn puppet if no puppet available in queue, else assign head of queue to socket
+    // Spawn a puppet if no puppet is available in puppet-queue, else assign the "head"-puppet of the puppet-queue to the socket
     if (
       this.waitingPuppets.length() === 0 ||
       this.waitingPuppets.head()?.workerState.stateName !==
@@ -82,9 +99,9 @@ export class ServerSocket {
       });
     });
 
-    socket.on('moveCursor', (payload: ClientActionPayload_MoveCursor) => {
+    socket.on('moveCaret', (payload: ClientActionPayload_moveCaret) => {
       this.findPuppetById(socket.id)?.dispatchEvent({
-        endpoint: 'moveCursor',
+        endpoint: 'moveCaret',
         payload,
       });
     });

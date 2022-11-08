@@ -9,7 +9,7 @@ import useClickAway from 'src/utils/hooks/useClickAway';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import useSourceTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import splitIntoWords from 'src/utils/splitIntoWords';
-import { TargetCursorIndexInfo } from '../RephraseTarget';
+import { TargetCaretIndexInfo } from '../RephraseTarget';
 import _ from 'lodash';
 import TargetOriginalSelection from './TargetOriginalSelection';
 import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
@@ -61,7 +61,7 @@ const Text = styled('span')(
 );
 
 interface TargetSelectProps {
-  targetCursorIndex: TargetCursorIndexInfo | null;
+  targetCaretIndex: TargetCaretIndexInfo | null;
   setPopoverTargetRect: Function;
   showTargetWordPopover: boolean;
   setShowTargetWordPopover: (show: boolean) => void;
@@ -71,7 +71,7 @@ interface TargetSelectProps {
 
 const TargetSelect = (props: TargetSelectProps) => {
   const {
-    targetCursorIndex,
+    targetCaretIndex,
     setPopoverTargetRect,
     showTargetWordPopover,
     setShowTargetWordPopover,
@@ -101,12 +101,12 @@ const TargetSelect = (props: TargetSelectProps) => {
 
   useEffect(() => {
     const newSelectedWord =
-      targetCursorIndex || targetCursorIndex === 0
+      targetCaretIndex || targetCaretIndex === 0
         ? splitWords.find(
             (word) =>
               word.kind === 'text' &&
-              targetCursorIndex.index >= word.startIndex &&
-              targetCursorIndex.index <= word.endIndex
+              targetCaretIndex.index >= word.startIndex &&
+              targetCaretIndex.index <= word.endIndex
           )
         : null;
 
@@ -124,12 +124,12 @@ const TargetSelect = (props: TargetSelectProps) => {
       setPopoverTargetRect(null);
     }
 
-    if (targetCursorIndex?.movementTriggeredBy === 'mouse') {
+    if (targetCaretIndex?.movementTriggeredBy === 'mouse') {
       if (
         activeRephrasingToken === null ||
         !(
-          targetCursorIndex.index >= activeRephrasingToken.startIndex &&
-          targetCursorIndex.index <= activeRephrasingToken.endIndex
+          targetCaretIndex.index >= activeRephrasingToken.startIndex &&
+          targetCaretIndex.index <= activeRephrasingToken.endIndex
         )
       ) {
         setShowTargetWordPopover(true);
@@ -137,13 +137,13 @@ const TargetSelect = (props: TargetSelectProps) => {
         setShowTargetWordPopover(!showTargetWordPopover);
       }
     } else {
-      if (targetCursorIndex?.index === newSelectedWord?.startIndex) {
+      if (targetCaretIndex?.index === newSelectedWord?.startIndex) {
         setShowTargetWordPopover(true);
       } else {
         setShowTargetWordPopover(false);
       }
     }
-  }, [targetCursorIndex]);
+  }, [targetCaretIndex]);
 
   const windowIsFocused = useWindowIsFocused();
   useEffect(() => {
@@ -168,18 +168,18 @@ const TargetSelect = (props: TargetSelectProps) => {
             token.kind === 'text' ? (
               <Text
                 selected={
-                  targetCursorIndex !== null &&
-                  (targetCursorIndex.index || targetCursorIndex.index === 0
-                    ? targetCursorIndex.index >= token.startIndex &&
-                      targetCursorIndex.index <= token.endIndex
+                  targetCaretIndex !== null &&
+                  (targetCaretIndex.index || targetCaretIndex.index === 0
+                    ? targetCaretIndex.index >= token.startIndex &&
+                      targetCaretIndex.index <= token.endIndex
                     : false)
                 }
                 key={`token_${i}`}
                 id={
-                  targetCursorIndex !== null &&
-                  (targetCursorIndex.index || targetCursorIndex.index === 0) &&
-                  targetCursorIndex.index >= token.startIndex &&
-                  targetCursorIndex.index <= token.endIndex
+                  targetCaretIndex !== null &&
+                  (targetCaretIndex.index || targetCaretIndex.index === 0) &&
+                  targetCaretIndex.index >= token.startIndex &&
+                  targetCaretIndex.index <= token.endIndex
                     ? `target-word-selected`
                     : `target-word-${i}`
                 }

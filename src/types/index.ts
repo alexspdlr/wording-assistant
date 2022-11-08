@@ -41,5 +41,6 @@ export interface PuppeteerError {
 
 export interface PuppeteerResponse {
   type: 'response' | 'error';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 }

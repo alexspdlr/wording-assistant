@@ -1,6 +1,19 @@
 import { Page } from 'puppeteer';
 import { PuppeteerResponse } from '../types';
 
+/**
+ *
+ *  Simulates the client-action-event "updateTargetText" by executing the following steps on the DeepL Website using Puppeter:
+ *
+ *    1. Paste the new target text (specified by client) into the translator target
+ *    2. Return the new target text
+ *
+ * @param page
+ * @param textAreaSelector
+ * @param newTargetText
+ * @returns newTargetText
+ */
+
 const updateTargetText = async (
   page: Page,
   textAreaSelector: string,
@@ -9,7 +22,7 @@ const updateTargetText = async (
   try {
     await page.waitForSelector(textAreaSelector);
 
-    // paste new text into target field
+    // Paste the new text into the translator target
     await page.evaluate((newTargetText) => {
       const translatorTargetInput = document.querySelector(
         '[dl-test=translator-target-input]'
@@ -23,20 +36,11 @@ const updateTargetText = async (
       }
     }, newTargetText);
 
-    // move cursor to trigger dummy div update
+    // Move the caret to trigger an update of the dummy div
     await page.keyboard.press('ArrowLeft');
     await page.keyboard.press('ArrowRight');
 
-    /*
-    // move cursor
-    const rephrasingOptions = await puppeteer_move_cursor(
-      page,
-      '[dl-test=translator-target-input]',
-      targetIndex
-    );
-
-    */
-
+    // Return new text
     return {
       type: 'response',
       data: {

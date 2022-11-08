@@ -38,7 +38,7 @@ const Container = styled('div')(
   `
 );
 
-export interface TargetCursorIndexInfo {
+export interface TargetCaretIndexInfo {
   index: number;
   movementTriggeredBy: 'mouse' | 'keyboard';
 }
@@ -55,11 +55,11 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const originalTextSelection = useBoundStore(
     (state) => state.uiState.originalTextSelection
   );
-  const moveCursor = useBoundStore((state) => state.moveCursor);
+  const moveCaret = useBoundStore((state) => state.moveCaret);
 
   // maybe move these useStates into ui state !?
-  const [targetCursorIndex, setTargetCursorIndex] =
-    useState<TargetCursorIndexInfo | null>(null);
+  const [targetCaretIndex, setTargetCaretIndex] =
+    useState<TargetCaretIndexInfo | null>(null);
   const [showTargetWordPopover, setShowTargetWordPopover] =
     useState<boolean>(false);
   const [targetTextAreaIsFocused, setTargetTextAreaIsFocused] = useState(false);
@@ -103,7 +103,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   useEffect(() => {
     if (activeRephrasingToken && !isTypingInTarget) {
       console.log('active token _________:', activeRephrasingToken);
-      moveCursor(activeRephrasingToken?.startIndex, activeRephrasingToken);
+      moveCaret(activeRephrasingToken?.startIndex, activeRephrasingToken);
     }
   }, [activeRephrasingToken]);
 
@@ -183,13 +183,13 @@ const RephraseTarget = (props: RephraseTargetProps) => {
 
                   <TargetTextArea
                     textAreaRef={textAreaRef}
-                    setTargetCursorIndex={setTargetCursorIndex}
+                    setTargetCaretIndex={setTargetCaretIndex}
                     setIsTypingInTarget={setIsTypingInTarget}
                     setTargetTextAreaIsFocused={setTargetTextAreaIsFocused}
                   />
 
                   <TargetSelect
-                    targetCursorIndex={targetCursorIndex}
+                    targetCaretIndex={targetCaretIndex}
                     setPopoverTargetRect={setPopoverTargetRect}
                     showTargetWordPopover={showTargetWordPopover}
                     setShowTargetWordPopover={setShowTargetWordPopover}

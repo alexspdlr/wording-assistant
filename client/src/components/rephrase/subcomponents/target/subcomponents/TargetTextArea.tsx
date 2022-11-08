@@ -4,7 +4,7 @@ import React, { MutableRefObject, useCallback, useEffect } from 'react';
 import useBoundStore from 'src/store';
 import useIsTyping from 'src/utils/hooks/useIsTyping';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
-import { TargetCursorIndexInfo } from '../RephraseTarget';
+import { TargetCaretIndexInfo } from '../RephraseTarget';
 
 interface TextAreaProps {}
 
@@ -37,7 +37,7 @@ const TextArea = styled('textarea')(
 
 interface TargetTextAreaProps {
   textAreaRef: MutableRefObject<any>;
-  setTargetCursorIndex: (target: TargetCursorIndexInfo | null) => void;
+  setTargetCaretIndex: (target: TargetCaretIndexInfo | null) => void;
   setIsTypingInTarget: (bool: boolean) => void;
   setTargetTextAreaIsFocused: (bool: boolean) => void;
 }
@@ -45,7 +45,7 @@ interface TargetTextAreaProps {
 const TargetTextArea = (props: TargetTextAreaProps) => {
   const {
     textAreaRef,
-    setTargetCursorIndex,
+    setTargetCaretIndex,
     setIsTypingInTarget,
     setTargetTextAreaIsFocused,
   } = props;
@@ -138,7 +138,7 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
             textAreaRef.current.selectionEnd &&
           e.nativeEvent.type !== 'mouseup'
         ) {
-          setTargetCursorIndex(
+          setTargetCaretIndex(
             textAreaRef.current.selectionStart ||
               textAreaRef.current.selectionStart === 0
               ? {
@@ -155,7 +155,7 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
           textAreaRef.current.selectionStart ===
             textAreaRef.current.selectionEnd
         ) {
-          setTargetCursorIndex(
+          setTargetCaretIndex(
             textAreaRef.current.selectionStart ||
               textAreaRef.current.selectionStart === 0
               ? {

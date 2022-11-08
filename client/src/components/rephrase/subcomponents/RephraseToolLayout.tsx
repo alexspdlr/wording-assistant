@@ -1,15 +1,6 @@
 import styled from '@emotion/styled';
-import { relative } from 'path/posix';
-import { ReactNode, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Card from 'src/components/general/card';
-import useBoundStore from 'src/store';
-import copyToClipboard from 'src/utils/copyToClipboard';
-import generateDefaultWorkerState from 'src/utils/generateDefaultWorkerState';
-import useActiveElement from 'src/utils/hooks/useActiveElement';
-import useClickAway from 'src/utils/hooks/useClickAway';
-import isMobileDevice from 'src/utils/isMobileDevice';
-import { isMap } from 'util/types';
 import RephraseHint from './RephraseHint';
 import SourceActionButtons from './source/subcomponents/action-buttons/SourceActionButtons';
 import SourceTextArea from './source/subcomponents/SourceTextArea';

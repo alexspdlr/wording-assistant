@@ -1,5 +1,11 @@
 import { ActiveWorkerState } from '../../../types/socket';
 
+/**
+ * Util function that generates the initial state for the worker thread of a newly created puppet
+ * @param variant
+ * @param id
+ * @returns inital ActiveWorkerState
+ */
 const generateDefaultWorkerState = (
   variant: 'start' | 'exit',
   id?: string
@@ -11,7 +17,7 @@ const generateDefaultWorkerState = (
       id: id || '',
       originalTextSelection: null,
       activeTextSelection: null,
-      cursorIndex: 0,
+      caretIndex: 0,
       rephrasingOptions: [],
     },
   };

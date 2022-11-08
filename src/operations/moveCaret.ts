@@ -1,11 +1,22 @@
-import waitUntil from 'async-wait-until';
-import { Console } from 'console';
 import { decode } from 'html-entities';
 import { Page } from 'puppeteer';
 import { PuppeteerResponse } from '../types';
-import delay from '../utils/delay';
 
-const moveCursor = async (
+/**
+ *
+ *  Simulates the client-action-event "moveCaret" by executing the following steps on the DeepL Website using Puppeter:
+ *
+ *    1. Move the caret to the position specified by the client
+ *    2. Wait until rephrasing alternatives are displayed
+ *    3. Return the list of rephrasing alternatives
+ *
+ * @param page
+ * @param textAreaSelector
+ * @param targetIndex
+ * @returns rephrasingAlternatives
+ */
+
+const moveCaret = async (
   page: Page,
   textAreaSelector: string,
   targetIndex: number
@@ -15,6 +26,7 @@ const moveCursor = async (
 
     const customTarget = targetIndex;
 
+    // Move the caret to the position specified by the client
     await page.evaluate(
       async (textAreaSelector, customTarget) => {
         const textAreaEl = document.querySelector(
@@ -31,11 +43,11 @@ const moveCursor = async (
       customTarget
     );
 
+    // Move the caret to trigger the DeepL NLP engine
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowLeft');
 
-    /* Wait until popover is rendered and filled with alternatives */
-
+    // Wait until the alternatives are displayed
     try {
       await page.waitForSelector(
         '[dl-test=translator-target-alternatives-popup]',
@@ -58,8 +70,7 @@ const moveCursor = async (
       console.log(error);
     }
 
-    /* Store alternatives */
-
+    // Store alternatives
     const rephrasingAlternatives = await page.evaluate(() => {
       const popover = document.querySelector(
         '[dl-test=translator-target-alternatives-popup]'
@@ -72,6 +83,7 @@ const moveCursor = async (
       return [];
     });
 
+    // Return alternatives
     return {
       type: 'response',
       data: {
@@ -84,11 +96,11 @@ const moveCursor = async (
     return {
       type: 'error',
       data: {
-        location: 'moveCursor',
+        location: 'moveCaret',
         message: String(error),
       },
     };
   }
 };
 
-export default moveCursor;
+export default moveCaret;

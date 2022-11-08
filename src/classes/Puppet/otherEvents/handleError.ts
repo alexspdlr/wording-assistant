@@ -6,6 +6,22 @@ import {
 } from '../../../types';
 import { ActiveWorkerState } from '../../../types/socket';
 
+/**
+ * The function is triggered when an error occurs and:
+ *
+ *   - forms and returns a server-response-event with information about the "processing Error"-state of the puppet-worker
+ *
+ *   - resets the page to its initial state
+ *
+ *   - forms and returns a server-response-event with information about the new state of the puppet-worker AFTER the reset
+ *
+ * @param eventId
+ * @param localState
+ * @param updateLocalState
+ * @param respondToPuppet
+ * @param error
+ */
+
 const handleError = async (
   eventId: string,
   localState: PuppetState,
@@ -14,13 +30,10 @@ const handleError = async (
   error: PuppeteerError
 ) => {
   if (localState.page && localState.browser) {
-    /* -------------------------------------------------------------------------- */
-    /*                                    START                                   */
-    /* -------------------------------------------------------------------------- */
+    /* ---------------------------- Before resetting ---------------------------- */
 
     console.log(`ERROR (${error.location}): ${error.message}`);
 
-    // CREATE NEW WORKER STATE & RESPONSE
     const newWorkerState_Start: ActiveWorkerState = {
       stateName: 'processingError',
       data: {
@@ -36,26 +49,23 @@ const handleError = async (
       },
     };
 
-    // UPDATE LOCAL STATE & RESPOND
     updateLocalState(newWorkerState_Start);
 
     respondToPuppet(response_Start);
 
-    /* -------------------------------------------------------------------------- */
-    /*                                   FINISH                                   */
-    /* -------------------------------------------------------------------------- */
+    /* ------------------------------- Reset Page ------------------------------- */
 
-    // ACTION
-    await puppeteer_reset_page(localState.page, localState.browser);
+    await puppeteer_reset_page(localState.page);
 
-    // CREATE NEW WORKER STATE & RESPONSE
+    /* ----------------------------- After resetting ---------------------------- */
+
     const newWorkerState_Finish: ActiveWorkerState = {
       stateName: 'waitingForSelectText',
       data: {
         id: localState.workerState.data.id,
         originalTextSelection: null,
         activeTextSelection: null,
-        cursorIndex: 0,
+        caretIndex: 0,
         rephrasingOptions: [],
       },
     };
@@ -68,7 +78,6 @@ const handleError = async (
       },
     };
 
-    // UPDATE LOCAL STATE & RESPOND
     updateLocalState(newWorkerState_Finish);
 
     respondToPuppet(response_Finish);

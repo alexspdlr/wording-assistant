@@ -3,28 +3,38 @@ import { parentPort } from 'worker_threads';
 import {
   ClientActionEvent_Extended,
   ClientActionPayload_StartWorker,
-  PuppeteerError,
   PuppetState,
   ServerResponseEvent_Extended,
 } from '../../types';
-import updateTargetText from './clientActionEvents/updateTargetText';
-import deselectText from './clientActionEvents/deselectText';
-import exit from './otherEvents/exit';
-import moveCursor from './clientActionEvents/moveCursor';
-import selectText from './clientActionEvents/selectText';
-import start from './otherEvents/start';
-import selectWordingAlternative from './clientActionEvents/selectWordingAlternative';
-import { EventManager } from '../EventManager/EventManager';
 import {
   ActiveWorkerState,
   ClientActionPayload,
-  ClientActionPayload_MoveCursor,
+  ClientActionPayload_moveCaret,
   ClientActionPayload_SelectText,
   ClientActionPayload_SelectWordingAlternative,
   ClientActionPayload_UpdateTargetText,
 } from '../../types/socket';
+import { EventManager } from '../EventManager/EventManager';
 import generateDefaultWorkerState from '../ServerSocket/util/generateDefaultWorkerState';
-import handleError from './otherEvents/handleError';
+import handleDeselectText from './clientActionEvents/handleDeselectText';
+import handleMoveCaret from './clientActionEvents/handleMoveCaret';
+import handleSelectText from './clientActionEvents/handleSelectText';
+import handleSelectWordingAlternative from './clientActionEvents/handleSelectWordingAlternative';
+import handleUpdateTargetText from './clientActionEvents/handleUpdateTargetText';
+import handleExit from './otherEvents/handleExit';
+import handleStart from './otherEvents/handleStart';
+
+/**
+ *
+ *  The worker thread of a puppet:
+ *
+ *    - receives client-action-events from the puppet object, which are then executed by puppeteer
+ *
+ *    - maintains a local state, which some puppeteer-actions must access
+ *
+ *    - returns a server-response-event to the parent thread after execution of a received client-action-event
+ *
+ */
 
 /* ----------------------- CROSS THREAD COMMUNICATION ----------------------- */
 
@@ -40,7 +50,7 @@ const respondToPuppet = (response: ServerResponseEvent_Extended) =>
 const processEvent = async (event: ClientActionEvent_Extended) => {
   switch (event.endpoint) {
     case 'startWorker':
-      await start(
+      await handleStart(
         localState,
         updateLocalState,
         respondToPuppet,
@@ -49,7 +59,7 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
       return;
 
     case 'selectText':
-      await selectText(
+      await handleSelectText(
         (event.payload as ClientActionPayload).eventId,
         localState,
         updateLocalState,
@@ -59,7 +69,7 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
 
       return;
     case 'deselectText':
-      await deselectText(
+      await handleDeselectText(
         (event.payload as ClientActionPayload).eventId,
         localState,
         updateLocalState,
@@ -68,18 +78,18 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
 
       return;
 
-    case 'moveCursor':
-      await moveCursor(
+    case 'moveCaret':
+      await handleMoveCaret(
         (event.payload as ClientActionPayload).eventId,
         localState,
         updateLocalState,
         respondToPuppet,
-        (event.payload as ClientActionPayload_MoveCursor).newCursorIndex
+        (event.payload as ClientActionPayload_moveCaret).newCaretIndex
       );
       return;
 
     case 'updateTargetText':
-      await updateTargetText(
+      await handleUpdateTargetText(
         (event.payload as ClientActionPayload).eventId,
         localState,
         updateLocalState,
@@ -90,7 +100,7 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
       return;
 
     case 'selectWordingAlternative':
-      await selectWordingAlternative(
+      await handleSelectWordingAlternative(
         (event.payload as ClientActionPayload).eventId,
         localState,
         updateLocalState,
@@ -103,7 +113,7 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
       return;
 
     case 'terminateWorker':
-      await exit(localState, updateLocalState, respondToPuppet);
+      await handleExit(localState, updateLocalState, respondToPuppet);
       return;
     default:
       return;
@@ -111,8 +121,6 @@ const processEvent = async (event: ClientActionEvent_Extended) => {
 };
 
 /* ---------------------------------- STATE --------------------------------- */
-
-// TODO: ADD EVENT MANAGER, CONVERT COMMUNICATION TO PARENT WITH _Extended Types & update rest
 
 const localState: PuppetState = {
   page: null,

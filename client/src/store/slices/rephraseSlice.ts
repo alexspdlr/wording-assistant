@@ -4,7 +4,7 @@ import {
   ActiveWorkerTextSelection,
   ClientActionEvent,
   ClientActionPayload_DeselectText,
-  ClientActionPayload_MoveCursor,
+  ClientActionPayload_moveCaret,
   ClientActionPayload_SelectText,
   ClientActionPayload_SelectWordingAlternative,
   ClientActionPayload_UpdateTargetText,
@@ -21,7 +21,7 @@ const ininitalState: RephraseState = {
     stateName: 'disconnected',
     data: {
       id: '',
-      cursorIndex: 0,
+      caretIndex: 0,
       originalTextSelection: null,
       activeTextSelection: null,
       rephrasingOptions: [],
@@ -329,9 +329,9 @@ const createRephraseSlice: StateCreator<
     socketEmit(socket, event);
   },
 
-  /* ------------------------------- MOVE CURSOR ------------------------------ */
-  moveCursor: async (
-    newCursorIndex: number,
+  /* ------------------------------- MOVE CARET ------------------------------ */
+  moveCaret: async (
+    newCaretIndex: number,
     newActiveRephrasingToken: TextToken | null
   ) => {
     // PREPARE
@@ -351,18 +351,18 @@ const createRephraseSlice: StateCreator<
         state.uiState.activeRephrasingToken = newActiveRephrasingToken;
         state.uiState.expectedResponse = {
           eventId,
-          endpoint: 'moveCursor',
+          endpoint: 'moveCaret',
         };
       })
     );
 
-    const payload: ClientActionPayload_MoveCursor = {
+    const payload: ClientActionPayload_moveCaret = {
       eventId,
-      newCursorIndex,
+      newCaretIndex,
     };
 
     const event: ClientActionEvent = {
-      endpoint: 'moveCursor',
+      endpoint: 'moveCaret',
       payload,
     };
 

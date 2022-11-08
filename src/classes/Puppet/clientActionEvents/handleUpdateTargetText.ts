@@ -1,4 +1,4 @@
-import puppeteer_select_text from '../../../operations/selectText';
+import puppeteer_update_target_text from '../../../operations/updateTargetText';
 import { PuppetState, ServerResponseEvent_Extended } from '../../../types';
 import {
   ActiveWorkerState,
@@ -6,52 +6,62 @@ import {
 } from '../../../types/socket';
 import handleError from '../otherEvents/handleError';
 
-const selectText = async (
+/**
+ * The function is triggered by the client-action-event "updateTargetText" and:
+ *
+ *   - forms and returns a server-response-event with information about the "processing"-state of the puppet-worker BEFORE executing the client-action-event
+ *
+ *   - executes the client-action-event
+ *
+ *   - forms and returns a server-response-event with information about the new state of the puppet-worker AFTER executing the client-action-event
+ *
+ * @param eventId
+ * @param localState
+ * @param updateLocalState
+ * @param respondToPuppet
+ * @param newActiveTextSelection
+ */
+
+const handleUpdateTargetText = async (
   eventId: string,
   localState: PuppetState,
   updateLocalState: (workerState: ActiveWorkerState) => void,
   respondToPuppet: (response: ServerResponseEvent_Extended) => void,
-  originalTextSelection: ActiveWorkerTextSelection
+  newActiveTextSelection: ActiveWorkerTextSelection
 ) => {
   if (localState.page && localState.browser) {
-    /* -------------------------------------------------------------------------- */
-    /*                                    START                                   */
-    /* -------------------------------------------------------------------------- */
+    /* ------------------ Before executing client-action-event ------------------ */
 
-    // CREATE NEW WORKER STATE & RESPONSE
     const newWorkerState_Start: ActiveWorkerState = {
-      stateName: 'processingSelectText',
+      stateName: 'processingUpdateTargetText',
       data: {
         ...localState.workerState.data,
-        originalTextSelection: originalTextSelection,
+        activeTextSelection: newActiveTextSelection,
       },
     };
 
     const response_Start: ServerResponseEvent_Extended = {
-      endpoint: 'selectTextStarted',
+      endpoint: 'updateTargetTextStarted',
       payload: {
         eventId,
         workerState: newWorkerState_Start,
       },
     };
 
-    // UPDATE LOCAL STATE & RESPOND
     updateLocalState(newWorkerState_Start);
 
     respondToPuppet(response_Start);
 
-    /* -------------------------------------------------------------------------- */
-    /*                                   FINISH                                   */
-    /* -------------------------------------------------------------------------- */
+    /* ----------------------- Execute client-action-event ---------------------- */
 
-    // ACTION
-    const response = await puppeteer_select_text(
-      originalTextSelection.value,
+    const response = await puppeteer_update_target_text(
       localState.page,
-      localState.browser
+      '[dl-test=translator-target-input]',
+      newActiveTextSelection.value
     );
 
-    // HANDLE ERROR
+    /* ------------------- After executing client-action-event ------------------ */
+
     if (response.type === 'error') {
       await handleError(
         eventId,
@@ -62,28 +72,28 @@ const selectText = async (
       );
     } else {
       const newActiveSelectionValue: string =
-        response.data.result ||
+        response.data.targetText ||
         localState.workerState.data.activeTextSelection?.value;
 
       const newActiveTextSelection: ActiveWorkerTextSelection = {
         value: newActiveSelectionValue,
-        startIndex: originalTextSelection.startIndex,
+        startIndex:
+          localState.workerState.data.originalTextSelection?.startIndex || 0,
         endIndex:
-          originalTextSelection.startIndex + newActiveSelectionValue.length,
+          (localState.workerState.data.originalTextSelection?.startIndex || 0) +
+          newActiveSelectionValue.length,
       };
 
-      // CREATE NEW WORKER STATE & RESPONSE
       const newWorkerState_Finish: ActiveWorkerState = {
         stateName: 'waitingForTargetTextAction',
         data: {
           ...localState.workerState.data,
-          originalTextSelection: originalTextSelection,
           activeTextSelection: newActiveTextSelection,
         },
       };
 
       const response_Finish: ServerResponseEvent_Extended = {
-        endpoint: 'selectTextCompleted',
+        endpoint: 'updateTargetTextCompleted',
         payload: {
           eventId,
           workerState: newWorkerState_Finish,
@@ -98,4 +108,4 @@ const selectText = async (
   }
 };
 
-export default selectText;
+export default handleUpdateTargetText;
