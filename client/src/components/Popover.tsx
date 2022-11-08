@@ -1,27 +1,22 @@
-import React, { MouseEventHandler, ReactNode } from 'react';
 import styled from '@emotion/styled';
-import { Popover, Fade, Divider, Collapse } from '@mui/material';
-import Loader from './Loader';
+import { ReactNode } from 'react';
 import AnimateHeight from './AnimateHeight';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const PopoverContainer = styled('div')(
   (props) => `  
   -webkit-transition: all 0.25s ease-out;
   -moz-transition: all 0.25s ease-out;
   -o-transition: all 0.25s ease-out;
-  transition: all 0.25s ease-out; 
-    font-size: 22px; 
+  transition: all 0.25s ease-out;  
+  font-size: 22px; 
   font-weight: 400;   
-    `
-);
-
-const StyledCSSTransition = styled(CSSTransition)(
-  () => `
-  -webkit-transition: all 0.5s ;
-  -moz-transition: all 0.5s ;
-  -o-transition: all 0.5s ;
-  transition: all 0.5s ; 
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 15%);  
+  max-height: 250px;
+  max-width: 318px;
+  min-width: 100px;
+  width: auto;
+  height: auto;
+  background-color: ${props.theme.palette.background.main};
   `
 );
 
@@ -30,77 +25,31 @@ interface AlternativeProp {
 }
 const Alternative = styled('div')(
   (props: AlternativeProp) => ` 
-    -webkit-transition: all 0.25s ease-out; 
+  -webkit-transition: all 0.25s ease-out; 
   -moz-transition: all 0.25s ease-out;
   -o-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;  
   padding: 6px 11px 6px 11px; 
   font-weight: 300; 
   border-bottom: 1px solid rgba(0, 0, 0, 0.05); 
-  ${!props.disabled && `cursor: pointer;`} 
   ${
     !props.disabled &&
-    `&:hover {
-    background-color: rgba(0, 99, 149, 0.2); 
-  }`
-  } 
-    `
+    `cursor: pointer;
+    &:hover { background-color: rgba(254, 232, 193, 1); };`
+  }
+  `
 );
 
 interface CustomPopoverProps {
-  open: boolean;
-  anchorEl: HTMLElement | undefined;
   alternatives: string[];
-  rephrase: Function;
-  onClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
+  rephrase: (alternative: string) => void;
 }
 
-const CustomPopover = ({
-  open,
-  anchorEl,
-  alternatives,
-  rephrase,
-  onClose,
-}: CustomPopoverProps) => {
+const CustomPopover = ({ alternatives, rephrase }: CustomPopoverProps) => {
   return (
-    <Popover
-      open={open}
-      anchorEl={anchorEl}
-      onClose={onClose}
-      transitionDuration={0}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-      sx={{
-        mt: 0.4,
-        p: '0px !important',
-        boxShadow: `0 1px 4px 0 rgb(0 0 0 / 10%);`,
-        overflowY: 'scroll',
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none',
-        '*::-webkit-scrollbar': {
-          display: 'none',
-        },
-      }}
-      PaperProps={{
-        sx: {
-          borderRadius: '4px',
-          boxShadow: '0 1px 4px 0 rgb(0 0 0 / 10%)',
-          border: '1px solid #dae1e8',
-          maxHeight: '250px',
-          width: 'auto',
-          height: 'auto',
-        },
-      }}
-    >
+    <div style={{ position: 'relative' }}>
       <PopoverContainer>
         <AnimateHeight>
-          {' '}
           <div style={{ position: 'relative' }}>
             {alternatives.length > 0 ? (
               <>
@@ -116,7 +65,7 @@ const CustomPopover = ({
           </div>
         </AnimateHeight>
       </PopoverContainer>
-    </Popover>
+    </div>
   );
 };
 
