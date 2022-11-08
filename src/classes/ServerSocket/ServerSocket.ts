@@ -135,9 +135,7 @@ export class ServerSocket {
     this.io.to(socketId).emit(event.endpoint, event.payload);
   };
 
-  /* -------------------------------------------------------------------------- */
-  /*                                    UTILS                                   */
-  /* -------------------------------------------------------------------------- */
+  /* ---------------------------------- UTILS --------------------------------- */
 
   private spawnPuppet = (socketId: string) => {
     const newPuppet: Puppet = new Puppet(

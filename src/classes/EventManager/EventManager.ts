@@ -127,7 +127,7 @@ export class EventManager {
   }
 }
 
-/* ---------------------------------- utils --------------------------------- */
+/* ---------------------------------- UTILS --------------------------------- */
 
 const detemineIfPreconditionFulfilled = (
   endpoint: ClientActionEndpoint | 'startWorker' | 'terminateWorker',
