@@ -35,7 +35,11 @@ const TextArea = styled('textarea')(
     caret-color: ${defaultProps.theme.palette.text.light};
     transition: background-color 1000ms ease-in-out;
     ::selection{
-      background-color: #ffe4b3;  
+      background-color: ${
+        defaultProps.theme.activeMode === 'light'
+          ? '#ffe4b3'
+          : defaultProps.theme.palette.primary.light
+      } ;    
       color:  ${defaultProps.theme.palette.text.light}; 
     } 
     `
@@ -162,12 +166,14 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
       event.preventDefault();
     };
 
+    // Chrome & Safari
     document.addEventListener('selectionchange', selectionChangeListener);
     document
       .getElementById('source-value-input')
       ?.addEventListener('dragstart', dragStartListener);
 
     return () => {
+      // Chrome & Safari
       document.removeEventListener('selectionchange', selectionChangeListener);
       document
         .getElementById('source-value-input')
@@ -191,6 +197,7 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
 
   return (
     <>
+      {navigator.userAgent.toString()}
       <SourceHighlighter value={value || ''} />
       <TextArea
         id='source-value-input'

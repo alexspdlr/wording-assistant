@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
-import ImageAlex from 'src/assets/ImageAlex.png';
+import ImageAlexHexagonsLight from 'src/assets/ImageAlexHexagonsLight.png';
+import ImageAlexHexagonsDark from 'src/assets/ImageAlexHexagonsDark.png';
 import { ReactComponent as QuotesIcon } from 'src/assets/QuotesIcon.svg';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import Button from '../general/button';
 import QuoteSignature from './subcomponents/QuoteSignature';
 import QuoteText from './subcomponents/QuoteText';
+import { useTheme } from '@emotion/react';
 
 /* ---------------------------- Styled components --------------------------- */
 
@@ -74,7 +76,7 @@ const LowerSectionLeft = styled('div')(
 
 const PositionedImageAlex = styled('img')(
   () => ` 
-  width: 200px;
+  width: 220px;
   padding-right: 16px;
   `
 );
@@ -86,6 +88,7 @@ const PositionedImageAlex = styled('img')(
 const QuoteSection = () => {
   const activeBreakpoint = useBreakpoint();
   const isBreakpointSmallerS = compareBreakpoint(activeBreakpoint, '<', 'S');
+  const theme = useTheme();
 
   return (
     <Container isBreakpointSmallerS={isBreakpointSmallerS}>
@@ -99,7 +102,14 @@ const QuoteSection = () => {
             <QuoteSignature />
           </LowerSectionLeft>
           {compareBreakpoint(activeBreakpoint, '>', 'XS') && (
-            <PositionedImageAlex src={ImageAlex} alt='Image of Alex' />
+            <PositionedImageAlex
+              src={
+                theme.activeMode === 'light'
+                  ? ImageAlexHexagonsLight
+                  : ImageAlexHexagonsDark
+              }
+              alt='Image of Alex'
+            />
           )}
         </LowerSection>
       </QuoteCard>

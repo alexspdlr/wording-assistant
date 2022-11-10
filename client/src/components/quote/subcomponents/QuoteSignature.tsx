@@ -32,6 +32,8 @@ const Signature = styled('img')(
     width: 160px;
     padding-right: 16px;
     padding-top: 10px; 
+    resize-mode: contain; 
+    flex: 1;
         `
 );
 

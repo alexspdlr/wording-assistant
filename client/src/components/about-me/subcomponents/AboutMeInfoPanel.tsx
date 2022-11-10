@@ -1,6 +1,7 @@
 import { useTheme } from '@emotion/react';
 import { useState } from 'react';
-import CutoutAlex from 'src/assets/CutoutAlex.png';
+import CutoutAlex from 'src/assets/AlexCutout.png';
+import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import AboutMeUnderline from './AboutMeUnderline';
@@ -34,7 +35,10 @@ const AboutMeInfoPanel = () => {
         style={{
           display: cutoutAlexLoading ? 'none' : 'block',
           width: 'calc(100% - 40px)',
-          backgroundColor: theme.palette.background.main,
+          backgroundColor:
+            theme.activeMode === 'light'
+              ? theme.palette.background.dark
+              : theme.palette.background.main,
           padding: '20px 20px 0 20px',
           borderRadius: '5px 5px 0 0',
         }}
