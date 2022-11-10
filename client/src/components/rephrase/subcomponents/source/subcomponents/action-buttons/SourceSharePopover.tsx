@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import copyToClipboard from 'src/utils/copyToClipboard';
 
+/* ---------------------------- Styled components --------------------------- */
 interface PopoverContainerProps {
   hide: boolean;
 }
@@ -23,9 +24,7 @@ const PopoverContainer = styled('div')(
     font-size: 14px; 
     font-weight: 600; 
     width: 240px; 
-
     animation: grow 300ms;
-
     @keyframes grow {
       from {
         opacity: 0;
@@ -39,10 +38,8 @@ const PopoverContainer = styled('div')(
   `
 );
 
-interface CopyButtonProps {}
-
 const CopyButton = styled('div')(
-  (props: CopyButtonProps) => (defaultProps) =>
+  (defaultProps) =>
     `  
    background-color: ${defaultProps.theme.palette.primary.dark};
    color: ${defaultProps.theme.palette.primary.contrastText};
@@ -61,10 +58,8 @@ const CopyButton = styled('div')(
   `
 );
 
-interface URLInputProps {}
-
 const URLInput = styled('input')(
-  (props: URLInputProps) => (defaultProps) =>
+  (defaultProps) =>
     `  
     margin-top: 6px;
     margin-bottom: 10px;
@@ -80,6 +75,20 @@ const URLInput = styled('input')(
     background-color: ${defaultProps.theme.palette.background.light};
   `
 );
+
+const ButtonPosition = styled('div')(
+  () =>
+    `  
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  } 
+  `
+);
+
+/* -------------------------------------------------------------------------- */
+/*                             SourceSharePopover                             */
+/* -------------------------------------------------------------------------- */
 
 interface SourceSharePopoverProps {
   showSourceSharePopover: boolean;
@@ -108,15 +117,9 @@ const SourceSharePopover = (props: SourceSharePopoverProps) => {
     <PopoverContainer hide={!showSourceSharePopover}>
       Share URL <br />
       <URLInput disabled value={String(window.location.href)} />
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
+      <ButtonPosition>
         <CopyButton onClick={handleButtonClick}>{buttonContent}</CopyButton>
-      </div>
+      </ButtonPosition>
     </PopoverContainer>
   );
 };

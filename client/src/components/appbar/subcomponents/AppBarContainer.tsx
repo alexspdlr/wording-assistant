@@ -4,8 +4,7 @@ import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import useScrollPosition from 'src/utils/hooks/useScrollPosition';
 import pageMarginFromBreakpoint from 'src/utils/pageMarginFromBreakpoint';
 
-/* -------------------------------- Container ------------------------------- */
-
+/* ---------------------------- Styled components --------------------------- */
 interface ContainerProps {
   horizontalPadding: number;
   isScrolledToTop: boolean;
@@ -29,8 +28,6 @@ const Container = styled('div')(
   } 
   `
 );
-
-/* -------------------------------- Layout ------------------------------- */
 
 interface LayoutProps {
   horizontalPadding: number;

@@ -1,32 +1,27 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { ReactComponent as RephraseFilesIcon } from 'src/assets/RephraseFilesIcon.svg';
 import { ReactComponent as RephraseTextIcon } from 'src/assets/RephraseTextIcon.svg';
 import Card from 'src/components/general/card';
 import ActiveToolButton from 'src/components/rephrase/subcomponents/RephraseActiveToolButton';
-import RephraseToolCard from 'src/components/rephrase/subcomponents/RephraseToolCard';
 import useBoundStore from 'src/store';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import Dialog from '../general/dialog';
 import Snackbar from '../general/snackbar';
 import RephraseToolLayout from './subcomponents/RephraseToolLayout';
-import RephraseSource from './subcomponents/source';
-import RephraseTarget from './subcomponents/target/RephraseTarget';
 
-/* ------------------------------- GridLayout ------------------------------- */
+/* ---------------------------- Styled components --------------------------- */
+
 interface GridLayoutProps {
   isMobileLayout: boolean;
 }
-
 const GridLayout = styled('div')(
   (props: GridLayoutProps) => ` 
   padding-top: 24px; 
   padding-bottom: 56px; 
   display: grid;
   grid-row-gap: 8px;
-
   ${
     props.isMobileLayout
       ? 'grid-template-columns: 100%; grid-template-rows: repeat(2, 1fr) 58px;'
@@ -35,12 +30,9 @@ const GridLayout = styled('div')(
   `
 );
 
-/* -------------------------- ActiveToolsContainer -------------------------- */
-
 interface ActiveToolsContainerProps {
   gridArea: string;
 }
-
 const ActiveToolsContainer = styled('div')(
   (props: ActiveToolsContainerProps) => `  
     display: flex;
@@ -49,19 +41,15 @@ const ActiveToolsContainer = styled('div')(
     `
 );
 
-/* ---------------------------- SnackbarContainer --------------------------- */
-
 const SnackbarContainer = styled('div')(
   () => `  
     padding-top: 18px; 
     `
 );
 
-/* ------------------------------- CommentCard ------------------------------ */
 interface CommentCardProps {
   gridArea: string;
 }
-
 const CommentCard = styled(Card)(
   (props: CommentCardProps) => (defaultProps) =>
     `  
@@ -78,69 +66,14 @@ const CommentCard = styled(Card)(
   `
 );
 
-/* ------------------------------- RephraseToolSection ------------------------------ */
-interface RephraseToolSectionProps {
-  isMobileLayout: boolean;
-}
-
-const RephraseToolSection = (props: RephraseToolSectionProps) => {
-  const { isMobileLayout } = props;
-  const [searchParams, setSearchParams] = useSearchParams();
-  const sourceValue = searchParams.get('source-value');
-
-  if (isMobileLayout) {
-    return (
-      <>
-        <RephraseToolCard
-          gridArea='1 / 1 / 2 / 2'
-          headerTitle='Enter your text'
-          isSource
-          isMobileLayout={isMobileLayout}
-        >
-          <RephraseSource />
-        </RephraseToolCard>
-        <RephraseToolCard
-          isMobileLayout={isMobileLayout}
-          gridArea='2 / 1 / 3 / 2'
-          headerTitle='Paraphrase'
-          isSource={false}
-        >
-          <RephraseTarget />
-        </RephraseToolCard>
-      </>
-    );
-  }
-  return (
-    <div
-      style={{
-        display: 'flex',
-        borderRadius: '8px',
-        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px 0px',
-        marginTop: '10px',
-
-        height: '60vh',
-        maxHeight: sourceValue && sourceValue.length > 0 ? 'none' : '600px',
-      }}
-    >
-      <RephraseToolCard
-        isMobileLayout={isMobileLayout}
-        gridArea='2 / 1 / 3 / 2'
-        headerTitle='Enter your text'
-        isSource
-      >
-        <RephraseSource />
-      </RephraseToolCard>
-      <RephraseToolCard
-        isMobileLayout={isMobileLayout}
-        gridArea='2 / 2 / 3 / 3'
-        headerTitle='Paraphrase'
-        isSource={false}
-      >
-        <RephraseTarget />
-      </RephraseToolCard>
-    </div>
-  );
-};
+const ComingSoonContent = styled('div')(
+  (defaultProps) => `
+  padding: 50px;
+  font-size: 36px;
+  font-weight: 500;
+  color: ${defaultProps.theme.palette.text.main};
+  `
+);
 
 /* -------------------------------------------------------------------------- */
 /*                                RephraseTool                                */
@@ -151,9 +84,7 @@ const RephraseTool = () => {
   const isMobileLayout = compareBreakpoint(activeBreakpoint, '<', 'S');
   const [rephraseFilesDialogOpen, setRephraseFilesDialogOpen] =
     useState<boolean>(false);
-
   const isErrorActive = useBoundStore((state) => state.isErrorActive);
-
   const isConnectedToServer = useBoundStore(
     (state) => state.isConnectedToServer
   );
@@ -191,7 +122,6 @@ const RephraseTool = () => {
           </ActiveToolsContainer>
         )}
 
-        {/*  <RephraseToolSection isMobileLayout={isMobileLayout} /> */}
         <RephraseToolLayout />
 
         <CommentCard
@@ -209,11 +139,7 @@ const RephraseTool = () => {
         verticalPosition='center'
         darkenBackground
       >
-        <div
-          style={{ padding: 50, color: 'white', fontSize: 36, fontWeight: 500 }}
-        >
-          Coming soon
-        </div>
+        <ComingSoonContent>Coming soon</ComingSoonContent>
       </Dialog>
     </>
   );

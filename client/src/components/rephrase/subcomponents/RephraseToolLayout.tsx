@@ -6,7 +6,7 @@ import SourceActionButtons from './source/subcomponents/action-buttons/SourceAct
 import SourceTextArea from './source/subcomponents/SourceTextArea';
 import RephraseTarget from './target/RephraseTarget';
 
-/* --------------------------------- Header --------------------------------- */
+/* ---------------------------- Styled components --------------------------- */
 
 interface HeaderProps {
   isSource: boolean;
@@ -26,62 +26,50 @@ const Header = styled('div')(
         : defaultProps.theme.palette.primary.dark
     };
     border: 1px solid ${defaultProps.theme.palette.border};
+    border-bottom: none; 
     border-right: ${props.isSource && `none`};
     border-left: ${!props.isSource && `none`};
-    border-bottom: none; 
     border-radius: ${props.isSource ? `8px 0px 0px 0px` : `0px 8px 0px 0px`}; 
-
-        `
+      `
 );
-
-/* ---------------------------- Body --------------------------- */
 
 interface BodyProps {
   isSource: boolean;
 }
-
 const Body = styled('div')(
   (props: BodyProps) => (defaultProps) =>
     `    
-  border-right: ${
-    props.isSource && `1px solid ${defaultProps.theme.palette.border}`
-  };
-  border: 1px solid ${defaultProps.theme.palette.border};
-  border-right: ${props.isSource && '1px solid transparent'};
-  display: flex; 
-  flex-grow: 1;
-  border-radius: ${props.isSource ? `0px 0px 0px 8px` : `0px 0px 8px 0px`}; 
-  &:focus-within {
+    display: flex; 
+    flex-grow: 1;
+    transition: border 150ms linear;
+    border-right: ${
+      props.isSource && `1px solid ${defaultProps.theme.palette.border}`
+    };
+    border: 1px solid ${defaultProps.theme.palette.border};
+    border-right: ${props.isSource && '1px solid transparent'};
+    border-radius: ${props.isSource ? `0px 0px 0px 8px` : `0px 0px 8px 0px`}; 
+    &:focus-within {
     border: 1px solid ${defaultProps.theme.palette.primary.light};
-  }
-
-  transition: border 150ms linear;
-        `
+    }
+    `
 );
-
-/* ---------------------------- ToolCardContainer --------------------------- */
-
-interface ToolCardContainerProps {}
 
 const ToolCardContainer = styled(Card)(
-  (props: ToolCardContainerProps) => (defaultProps) =>
+  () =>
     `  
-        display: flex; 
-        width: 100%;  
-        flex-direction: column;  
-        border: none; 
-        overflow: hidden;
-        `
+    display: flex; 
+    width: 100%;  
+    flex-direction: column;  
+    border: none; 
+    overflow: hidden;
+  `
 );
 
 /* -------------------------------------------------------------------------- */
-/*                                  ToolCard                                  */
+/*                             RephraseToolLayout                             */
 /* -------------------------------------------------------------------------- */
 
-interface RephraseToolLayoutProps {}
-
-const RephraseToolLayout = (props: RephraseToolLayoutProps) => {
-  const {} = props;
+const RephraseToolLayout = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const sourceValue = searchParams.get('source-value');
 

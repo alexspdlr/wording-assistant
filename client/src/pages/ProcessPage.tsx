@@ -1,8 +1,8 @@
 import { useTheme } from '@emotion/react';
 import { useState } from 'react';
 import ProcessHeader from 'src/assets/ProcessHeader.png';
-import Content from 'src/components/general/content';
-import Section from 'src/components/section';
+import Content from 'src/components/general/text-content';
+import Section from 'src/components/appbody-section';
 
 const ProcessPage = () => {
   const [headerImageLoading, setHeaderImageLoading] = useState(true);

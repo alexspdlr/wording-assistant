@@ -1,6 +1,9 @@
-import { ContentSubSection, ContentSection } from 'src/types/content';
+import {
+  TextContentSubSection,
+  TextContentSection,
+} from 'src/types/textContent';
 
-const testSubSections: ContentSubSection[] = [
+const testSubSections: TextContentSubSection[] = [
   {
     title: 'Beispiel',
     id: 'section_one',
@@ -149,7 +152,7 @@ const testSubSections: ContentSubSection[] = [
   },
 ];
 
-export const testSection: ContentSection = {
+export const testSection: TextContentSection = {
   title: 'Test Section',
   id: 'test_section',
   body: [

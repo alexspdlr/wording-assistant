@@ -1,6 +1,6 @@
-import { ContentSection } from 'src/types/content';
+import { TextContentSection } from 'src/types/textContent';
 
-const introductionSection: ContentSection = {
+const introductionSection: TextContentSection = {
   title: 'Introduction',
   id: 'introduction',
   body: [

@@ -1,58 +1,49 @@
 import styled from '@emotion/styled';
 import { useSearchParams } from 'react-router-dom';
-import useBoundStore from 'src/store';
-import copyToClipboard from 'src/utils/copyToClipboard';
 import RephraseHint from '../RephraseHint';
 import SourceActionButtons from './subcomponents/action-buttons/SourceActionButtons';
 import SourceTextArea from './subcomponents/SourceTextArea';
 
+/* ---------------------------- Styled components --------------------------- */
+
 const Wrapper = styled('div')(
   () => `
   width: 100%;
-  background-color: red; 
   display: flex; 
   flex-grow: 1;
   `
 );
 
-interface ContainerProps {}
-
 const Container = styled('div')(
-  (props: ContainerProps) => `   
+  () => `   
   width: 100%;  
   display: flex; 
   flex-grow: 1;
-  background-color: blue; 
   `
 );
 
-interface RephraseSourceProps {}
+/* -------------------------------------------------------------------------- */
+/*                               RephraseSource                               */
+/* -------------------------------------------------------------------------- */
 
-const RephraseSource = (props: RephraseSourceProps) => {
+const RephraseSource = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get('source-value');
-  const isMobileDevice = false;
 
   return (
     <Wrapper>
       <Container id='source-container'>
-        {isMobileDevice ? (
-          <>{/* <SourceSelect value={value || ''} />*/}</>
-        ) : (
-          <>
-            <RephraseHint
-              hideHint={value ? value.length > 0 : false}
-              title='Paste or write your text'
-              subtitle='Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'
-            />
-            <SourceTextArea
-              value={value || ''}
-              setValue={(newVal: any) =>
-                setSearchParams({ 'source-value': newVal })
-              }
-            />
-          </>
-        )}
+        <RephraseHint
+          hideHint={value ? value.length > 0 : false}
+          title='Paste or write your text'
+          subtitle='Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'
+        />
+        <SourceTextArea
+          value={value || ''}
+          setValue={(newVal: any) =>
+            setSearchParams({ 'source-value': newVal })
+          }
+        />
       </Container>
       <SourceActionButtons />
     </Wrapper>

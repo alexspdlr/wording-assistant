@@ -1,4 +1,7 @@
-import { ContentSection, ContentSubSection } from 'src/types/content';
+import {
+  TextContentSection,
+  TextContentSubSection,
+} from 'src/types/textContent';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import { ActiveSectionState } from '../../Documentation';
@@ -11,10 +14,10 @@ import DocumentationTopMenu from './subcomponents/DocumentationTopMenu';
 /* -------------------------------------------------------------------------- */
 
 interface DocumentationMenuProps {
-  sections: ContentSection[];
-  activeSection: ContentSection | null;
+  sections: TextContentSection[];
+  activeSection: TextContentSection | null;
   setActiveSectionState: (data: ActiveSectionState) => void;
-  activeSubSection: ContentSubSection | null;
+  activeSubSection: TextContentSubSection | null;
 }
 
 const DocumentationMenu = (props: DocumentationMenuProps) => {
@@ -40,7 +43,7 @@ const DocumentationMenu = (props: DocumentationMenuProps) => {
               activeSubSection: null,
             })
           }
-          setActiveSubSection={(subSection: ContentSubSection) => {
+          setActiveSubSection={(subSection: TextContentSubSection) => {
             setActiveSectionState({
               activeSection: section,
               activeSubSection: subSection,

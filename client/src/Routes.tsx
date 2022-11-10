@@ -1,8 +1,8 @@
 import { useTheme } from '@emotion/react';
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import LoadingSpinner from './components/general/loading-spinner';
-import Section from './components/section';
+import AppBodySection from './components/appbody-section';
 import AppLayout from './layout/AppLayout';
 
 const addLoadingTime = (page: string, time: number) =>
@@ -24,7 +24,7 @@ const Page404 = lazy(() => addLoadingTime('404', 0));
 const LoadingScreen = () => {
   const theme = useTheme();
   return (
-    <Section backgroundColor={theme.palette.background.dark}>
+    <AppBodySection backgroundColor={theme.palette.background.dark}>
       <div
         style={{
           height: 'calc(100vh - 437px)',
@@ -35,7 +35,7 @@ const LoadingScreen = () => {
       >
         <LoadingSpinner />
       </div>
-    </Section>
+    </AppBodySection>
   );
 };
 

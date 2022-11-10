@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
+/* -------------------------------------------------------------------------- */
+/*                                 AppBarItem                                 */
+/* -------------------------------------------------------------------------- */
 interface AppBarItemProps {
   isFirstItem?: boolean;
 }

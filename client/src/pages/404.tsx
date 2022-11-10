@@ -1,4 +1,4 @@
-import Section from 'src/components/section';
+import Section from 'src/components/appbody-section';
 import { ReactComponent as RobotOops } from 'src/assets/RobotOops.svg';
 import { Link } from 'react-router-dom';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';

@@ -1,12 +1,12 @@
 import { useTheme } from '@emotion/react';
 import { useState } from 'react';
-import PersonCutout from 'src/assets/PersonCutout.png';
+import CutoutAlex from 'src/assets/CutoutAlex.png';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import AboutMeUnderline from './AboutMeUnderline';
 
 const AboutMeInfoPanel = () => {
-  const [personCutoutLoading, setPersonCutoutLoading] = useState(true);
+  const [cutoutAlexLoading, setCutoutAlexLoading] = useState(true);
   const activeBreakpoint = useBreakpoint();
   const isSmallLayout = compareBreakpoint(activeBreakpoint, '<', 'XS');
 
@@ -29,10 +29,10 @@ const AboutMeInfoPanel = () => {
       }}
     >
       <img
-        src={PersonCutout}
-        onLoad={() => setPersonCutoutLoading(false)}
+        src={CutoutAlex}
+        onLoad={() => setCutoutAlexLoading(false)}
         style={{
-          display: personCutoutLoading ? 'none' : 'block',
+          display: cutoutAlexLoading ? 'none' : 'block',
           width: 'calc(100% - 40px)',
           backgroundColor: theme.palette.background.main,
           padding: '20px 20px 0 20px',
@@ -40,7 +40,7 @@ const AboutMeInfoPanel = () => {
         }}
         alt='PersonCutout'
       />
-      {personCutoutLoading && (
+      {cutoutAlexLoading && (
         <div
           style={{
             padding: '20px 20px 0 20px',

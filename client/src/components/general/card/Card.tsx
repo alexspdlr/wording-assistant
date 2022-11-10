@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
 
+/* -------------------------------------------------------------------------- */
+/*                                    Card                                    */
+/* -------------------------------------------------------------------------- */
+
 const Card = styled('div')(
   (props) => `
   background-color: ${props.theme.palette.background.light}; 

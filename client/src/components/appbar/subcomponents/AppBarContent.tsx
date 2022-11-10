@@ -82,7 +82,7 @@ const RepositoryAppBarItemContent = styled('div')(
   `
 );
 
-/* -------------------------------- navItems -------------------------------- */
+/* -------------------------------- NavItems -------------------------------- */
 
 interface AppBarItemProps {
   content: string | ReactNode;

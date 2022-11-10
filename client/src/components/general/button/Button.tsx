@@ -1,8 +1,11 @@
 import styled from '@emotion/styled';
 
-type ButtonSize = 'medium' | 'large';
+/* -------------------------------------------------------------------------- */
+/*                                   Button                                   */
+/* -------------------------------------------------------------------------- */
+
 interface ButtonProps {
-  size?: ButtonSize;
+  size?: 'medium' | 'large';
   variant?: 'contained' | 'outlined';
 }
 

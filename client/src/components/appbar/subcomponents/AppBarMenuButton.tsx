@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 
+/* ---------------------------- Styled components --------------------------- */
+
 const AppBarMenuButtonStyled = styled('button')(
   (props) => `
   border: 0; 
@@ -29,6 +31,9 @@ const Line = styled('div')(
   `
 );
 
+/* -------------------------------------------------------------------------- */
+/*                            AppBarMenuButtonProps                           */
+/* -------------------------------------------------------------------------- */
 interface AppBarMenuButtonProps {
   onClick: () => void;
 }

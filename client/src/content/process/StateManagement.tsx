@@ -1,6 +1,6 @@
-import { ContentSection } from 'src/types/content';
+import { TextContentSection } from 'src/types/textContent';
 
-const stateManagementSection: ContentSection = {
+const stateManagementSection: TextContentSection = {
   title: 'State Management',
   id: 'state_management',
   body: [

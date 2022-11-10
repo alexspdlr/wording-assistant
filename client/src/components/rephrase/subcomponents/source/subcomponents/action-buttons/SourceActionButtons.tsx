@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ReactComponent as CopyIcon } from 'src/assets/CopyIcon.svg';
 import { ReactComponent as ShareIcon } from 'src/assets/ShareIcon.svg';
@@ -9,6 +9,8 @@ import Tooltip from 'src/components/general/tooltip';
 import copyToClipboard from 'src/utils/copyToClipboard';
 import useClickAway from 'src/utils/hooks/useClickAway';
 import SourceSharePopover from './SourceSharePopover';
+
+/* ---------------------------- Styled components --------------------------- */
 
 const Fragment = styled('div')(
   () => `
@@ -29,16 +31,26 @@ const Layout = styled('div')(
         `
 );
 
-interface SourceActionButtonsProps {}
+const PositionedButton = styled('div')(
+  () => `
+  position: relative;
+        `
+);
 
-const SourceActionButtons = (props: SourceActionButtonsProps) => {
+/* -------------------------------------------------------------------------- */
+/*                             SourceActionButtons                            */
+/* -------------------------------------------------------------------------- */
+
+const SourceActionButtons = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
-  const value = searchParams.get('source-value');
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [copyButtonTooltip, setCopyButtonTooltip] =
     useState('Copy to Clipboard');
+  const [showSharePopover, setShowSharePopover] = useState<boolean>(false);
 
+  const value = searchParams.get('source-value');
   const msg = new SpeechSynthesisUtterance();
   msg.addEventListener('end', () => setIsSpeaking(false));
 
@@ -56,6 +68,14 @@ const SourceActionButtons = (props: SourceActionButtonsProps) => {
     }
   };
 
+  const popoverTargetRef = useRef<HTMLDivElement>(null);
+
+  const onClickAway = () => {
+    setShowSharePopover(false);
+  };
+
+  useClickAway(popoverTargetRef, onClickAway);
+
   useEffect(() => {
     if (copiedToClipboard === true) {
       setTimeout(() => {
@@ -66,16 +86,6 @@ const SourceActionButtons = (props: SourceActionButtonsProps) => {
       }, 1500);
     }
   }, [copiedToClipboard]);
-
-  const popoverTargetRef = useRef<HTMLDivElement>(null);
-
-  const [showSharePopover, setShowSharePopover] = useState<boolean>(false);
-
-  const onClickAway = () => {
-    setShowSharePopover(false);
-  };
-
-  useClickAway(popoverTargetRef, onClickAway);
 
   return (
     <>
@@ -111,7 +121,7 @@ const SourceActionButtons = (props: SourceActionButtonsProps) => {
             direction='top'
             hidden={showSharePopover}
           >
-            <div ref={popoverTargetRef} style={{ position: 'relative' }}>
+            <PositionedButton ref={popoverTargetRef}>
               <IconButton
                 active={showSharePopover}
                 onClick={() => {
@@ -127,7 +137,7 @@ const SourceActionButtons = (props: SourceActionButtonsProps) => {
                   showSourceSharePopover={showSharePopover}
                 />
               }
-            </div>
+            </PositionedButton>
           </Tooltip>
         </Fragment>
       </Layout>

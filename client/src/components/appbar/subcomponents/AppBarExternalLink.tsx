@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
 
+/* -------------------------------------------------------------------------- */
+/*                             AppBarExternalLink                             */
+/* -------------------------------------------------------------------------- */
 interface AppBarExternalLinkProps {
   isFirstItem?: boolean;
 }

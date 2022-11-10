@@ -3,17 +3,22 @@ import { createRef, useEffect, useState } from 'react';
 import DocumentationMenu from 'src/components/documentation/subcomponents/menu';
 import introductionSection from 'src/content/documentation/introduction/Introduction';
 import { testSection } from 'src/content/documentation/Test';
-import { ContentSection, ContentSubSection } from 'src/types/content';
+import {
+  TextContentSection,
+  TextContentSubSection,
+} from 'src/types/textContent';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import DocumentationBody from './subcomponents/DocumentationBody';
 
+/* ---------------------------- Shared interfaces --------------------------- */
+
 export interface ActiveSectionState {
-  activeSection: ContentSection | null;
-  activeSubSection: ContentSubSection | null;
+  activeSection: TextContentSection | null;
+  activeSubSection: TextContentSubSection | null;
 }
 
-/* -------------------------------- Container ------------------------------- */
+/* ---------------------------- Styled components --------------------------- */
 
 interface ContainerProps {
   isSmallLayout: boolean;
