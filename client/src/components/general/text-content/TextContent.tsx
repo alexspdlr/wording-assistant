@@ -34,7 +34,7 @@ const SubSectionHeading = styled('h2')(
 
 interface TextContentProps {
   type: 'section' | 'subsection';
-  title: string;
+  title?: string;
   bodyItems?: TextContentBody[];
 }
 

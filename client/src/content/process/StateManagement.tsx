@@ -18,7 +18,6 @@ const stateManagementSection: TextContentSection = {
 - much bolierplate & overkill for this application -> but goal is to show that I can design scalable software 
 `,
     },
-
     {
       type: 'ReactNode',
 
