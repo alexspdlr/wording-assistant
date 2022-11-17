@@ -197,7 +197,6 @@ const SourceTextArea = (props: SourceTextAreaProps) => {
 
   return (
     <>
-      {navigator.userAgent.toString()}
       <SourceHighlighter value={value || ''} />
       <TextArea
         id='source-value-input'

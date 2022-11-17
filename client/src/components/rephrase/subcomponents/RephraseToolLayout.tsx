@@ -83,7 +83,7 @@ const RephraseToolLayout = () => {
       }}
     >
       <Header isSource style={{ gridArea: '1 / 1 / 2 / 2' }}>
-        Enter Text
+        Enter Text - English only (TODO: Dynamic hints here)
       </Header>
       <Header isSource={false} style={{ gridArea: '1 / 2 / 2 / 3' }}>
         Paraphrase
@@ -99,8 +99,10 @@ const RephraseToolLayout = () => {
       >
         <RephraseHint
           hideHint={sourceValue ? sourceValue.length > 0 : false}
-          title='Paste or write your text'
-          subtitle='Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'
+          title='Paste or type your text'
+          subtitle={`Paste (${
+            navigator.userAgent.indexOf('Mac') !== -1 ? '⌘' : 'Ctrl'
+          } + V) or type the complete input text here. You can then rephrase it sentence by sentence.`}
         />
         <SourceTextArea
           value={sourceValue || ''}

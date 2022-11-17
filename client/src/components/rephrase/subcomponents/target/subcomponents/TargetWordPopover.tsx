@@ -13,8 +13,8 @@ const PopoverPosition = styled('div')(
     `  
     position: absolute;
     z-index: 5;
-    top: ${props.topInset};
-    left: ${props.leftInset}; 
+    top: ${props.topInset}px;
+    left: ${props.leftInset}px; 
   `
 );
 

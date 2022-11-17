@@ -35,8 +35,10 @@ const RephraseSource = () => {
       <Container id='source-container'>
         <RephraseHint
           hideHint={value ? value.length > 0 : false}
-          title='Paste or write your text'
-          subtitle='Paste (Ctrl + V) or write the complete input text here. You can then rephrase it sentence by sentence.'
+          title='Paste or type your text'
+          subtitle={`Paste (${
+            navigator.userAgent.indexOf('Mac') !== -1 ? '⌘' : 'Ctrl'
+          } + V) or type the complete input text here. You can then rephrase it sentence by sentence.`}
         />
         <SourceTextArea
           value={value || ''}

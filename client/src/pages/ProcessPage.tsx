@@ -124,7 +124,7 @@ While testing a very basic, initial implementation of that design I realised tha
               {
                 type: 'Markdown',
                 value: `
-After taking a step back to rethink my approach, I realised what the obvious solution to my problem was. I was so simple and ubiquitous that I was annoyed I hadn't realised it sooner. The same action that is commonly used to describe which piece of text a user wants to delete or copy could be used to choose text to rephrase:
+After taking a step back to rethink my approach, I realised what the obvious solution to my problem was. It was so simple and ubiquitous that I was annoyed I hadn't seen it sooner. The same action that is commonly used to describe which piece of text a user wants to delete or copy could be used to choose text to rephrase:
 
 S*electing text with the cursor.*
 
