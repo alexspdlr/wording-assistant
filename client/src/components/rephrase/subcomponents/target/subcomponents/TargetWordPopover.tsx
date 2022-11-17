@@ -51,7 +51,8 @@ interface AlternativeProp {
   disabled?: boolean;
 }
 const Alternative = styled('div')(
-  (props: AlternativeProp) => ` 
+  (props: AlternativeProp) => (defaultProps) =>
+    ` 
   -webkit-transition: all 0.1s ease; 
   -moz-transition: all 0.1s ease;
   -o-transition: all 0.1s ease;
@@ -63,7 +64,11 @@ const Alternative = styled('div')(
   ${
     !props.disabled &&
     `cursor: pointer;
-    &:hover { background-color: rgba(254, 232, 193, 1); };`
+    &:hover { background-color: ${
+      defaultProps.theme.activeMode === 'light'
+        ? '#ffe4b3'
+        : defaultProps.theme.palette.primary.light
+    }; };`
   }
   `
 );

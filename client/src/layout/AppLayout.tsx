@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
 import AppBar from 'src/components/appbar';
 import Footer from 'src/components/footer';
+import useWindowWidth from 'src/utils/hooks/useWindowWidth';
 
 const Container = styled('div')(
   () => `  
@@ -17,16 +18,21 @@ const Body = styled('div')(
     `
 );
 
+interface GlobalMinWidthProps {
+  width: number;
+}
+
 const GlobalMinWidth = styled('div')(
-  (props) => `
+  (props: GlobalMinWidthProps) => `
   min-width: 650px; 
-  overflow-x: scroll;
+  overflow-x: ${props.width < 651 ? 'scroll' : 'auto'};
 `
 );
 
 const AppLayout = () => {
+  const windowWidth = useWindowWidth();
   return (
-    <GlobalMinWidth>
+    <GlobalMinWidth width={windowWidth}>
       <Container>
         <AppBar />
         <Body>

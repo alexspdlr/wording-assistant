@@ -47,5 +47,5 @@ app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
-// Listen to port 80
-httpServer.listen(80, () => console.info(`Server is running`));
+// Listen to port 3000
+httpServer.listen(3000, () => console.info(`Server is running`));
