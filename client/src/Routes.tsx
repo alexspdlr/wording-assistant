@@ -1,6 +1,6 @@
 import { useTheme } from '@emotion/react';
-import React, { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import LoadingSpinner from './components/general/loading-spinner';
 import AppBodySection from './components/appbody-section';
 import AppLayout from './layout/AppLayout';
