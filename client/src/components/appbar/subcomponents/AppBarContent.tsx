@@ -111,7 +111,7 @@ const navItems: AppBarItemProps[] = [
       </RepositoryAppBarItemContent>
     ),
     hideFromSize: 'M',
-    link: 'https://github.com',
+    link: 'https://github.com/alexspdlr/wording-assistant',
   },
 ];
 
