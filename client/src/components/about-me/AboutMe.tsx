@@ -43,7 +43,15 @@ const InfoSection = () => {
   const theme = useTheme();
   return (
     <>
-      <AboutMeContactButton size='large'>Contact</AboutMeContactButton>
+      <AboutMeContactButton
+        size='large'
+        onClick={() =>
+          // eslint-disable-next-line no-restricted-globals
+          (location.href = `https://www.linkedin.com/in/alexander-spindeler-254178206/`)
+        }
+      >
+        Contact
+      </AboutMeContactButton>
       <ColoredBackgroundSection />
       <Section
         backgroundColor={
