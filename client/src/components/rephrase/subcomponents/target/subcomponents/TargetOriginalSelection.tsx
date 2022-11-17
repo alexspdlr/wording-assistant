@@ -1,9 +1,10 @@
-import { useTheme } from '@emotion/react';
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useBoundStore from 'src/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
-import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
+
+/* ---------------------------- Styled components --------------------------- */
 
 interface ContainerProps {
   hide: boolean;
@@ -23,10 +24,8 @@ const Container = styled('div')(
       0.6
     )}; 
     opacity: ${props.hide ? '0' : '1'}; 
-
-      transition: opacity 300ms ease-out;
-    
-      `
+    transition: opacity 300ms ease-out;
+    `
 );
 
 interface OriginalTextProps {
@@ -37,33 +36,35 @@ interface OriginalTextProps {
 const OriginalText = styled('div')(
   (props: OriginalTextProps) => (defaultProps) =>
     `
-  
   white-space: nowrap;
-    text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-weight: 400;
+  color: ${defaultProps.theme.palette.text.light};
+  position: absolute;
+  z-index: ${props.hide && !props.hasRendered ? -1 : 4};
+  padding-top: 8px;
+  cursor: pointer;
+  width: calc(100% - 36px);
+  font-size: 16.1px;
+  line-height: 25px;
+  &:hover {
+    color: ${defaultProps.theme.palette.primary.main};
+  }
+  @supports (-webkit-line-clamp: 3) {
     overflow: hidden;
-    font-weight: 400;
-    color: ${defaultProps.theme.palette.text.light};
-    position: absolute;
-    z-index: ${props.hide && !props.hasRendered ? -1 : 4};
-    padding-top: 8px;
-    cursor: pointer;
-    width: calc(100% - 36px);
-    font-size: 16.1px;
-    line-height: 25px;
-
-    &:hover {
-      color: ${defaultProps.theme.palette.primary.main};
-    }
-
-    @supports (-webkit-line-clamp: 3) {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: initial;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-    }`
+    text-overflow: ellipsis;
+    white-space: initial;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+    `
 );
+
+/* -------------------------------------------------------------------------- */
+/*                           TargetOriginalSelection                          */
+/* -------------------------------------------------------------------------- */
 
 interface TargetOriginalSelectionProps {
   hide: boolean;
@@ -73,7 +74,6 @@ interface TargetOriginalSelectionProps {
 const TargetOriginalSelection = (props: TargetOriginalSelectionProps) => {
   const { hide, resetToOriginalSelection } = props;
   const [hasRendered, setHasRendered] = useState(false);
-  const theme = useTheme();
   const originalTextSelection = useBoundStore(
     (state) => state.uiState.originalTextSelection
   );

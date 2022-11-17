@@ -1,15 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from '@emotion/styled';
 import { debounce } from 'lodash';
 import React, { MutableRefObject, useCallback, useEffect } from 'react';
 import useBoundStore from 'src/store';
 import useIsTyping from 'src/utils/hooks/useIsTyping';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
-import { TargetCursorIndexInfo } from '../RephraseTarget';
+import { TargetCaretIndexInfo } from '../RephraseTarget';
 
-interface TextAreaProps {}
+/* ---------------------------- Styled components --------------------------- */
 
 const TextArea = styled('textarea')(
-  (props: TextAreaProps) => (defaultProps) =>
+  (defaultProps) =>
     `   
     position: absolute; 
     z-index: 2; 
@@ -26,7 +27,7 @@ const TextArea = styled('textarea')(
     margin: 0px 0px 0px 0px;  
     padding: 28px 28px 0px 28px;  
     -webkit-font-smoothing: antialiased; 
-    line-height: 0;
+    line-height: 0; 
     color: ${defaultProps.theme.palette.text.light}; 
     transition: color 300ms ease-in-out;
     ::selection{
@@ -35,9 +36,13 @@ const TextArea = styled('textarea')(
     `
 );
 
+/* -------------------------------------------------------------------------- */
+/*                               TargetTextArea                               */
+/* -------------------------------------------------------------------------- */
+
 interface TargetTextAreaProps {
   textAreaRef: MutableRefObject<any>;
-  setTargetCursorIndex: (target: TargetCursorIndexInfo | null) => void;
+  setTargetCaretIndex: (target: TargetCaretIndexInfo | null) => void;
   setIsTypingInTarget: (bool: boolean) => void;
   setTargetTextAreaIsFocused: (bool: boolean) => void;
 }
@@ -45,13 +50,12 @@ interface TargetTextAreaProps {
 const TargetTextArea = (props: TargetTextAreaProps) => {
   const {
     textAreaRef,
-    setTargetCursorIndex,
+    setTargetCaretIndex,
     setIsTypingInTarget,
     setTargetTextAreaIsFocused,
   } = props;
 
-  /* --------------------------- GET DATA FROM STORE -------------------------- */
-
+  // FROM STORE
   const activeTextSelection = useBoundStore(
     (state) => state.uiState.activeTextSelection
   );
@@ -63,27 +67,12 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
   );
   const updateTargetText = useBoundStore((state) => state.updateTargetText);
 
-  /* ---------------------------------- UTILS --------------------------------- */
-
-  const [isTyping, register] = useIsTyping();
-  useEffect(() => {
-    if (textAreaRef.current) register(textAreaRef.current);
-  }, [textAreaRef.current]);
-
-  useEffect(() => {
-    setIsTypingInTarget(isTyping);
-  }, [isTyping]);
-
-  useRephraseToolTextboxSize(activeTextSelection?.value || '', textAreaRef);
-
+  // UTILS
   const calculateMinHeight = () => {
     const viewportHeight = window.innerHeight;
-
     const margin = 60;
-
     const maxHeight = 490 - margin;
     const minHeight = 300 - margin;
-
     let targetHeight = viewportHeight * 0.5 - margin;
 
     if (targetHeight > maxHeight) {
@@ -97,6 +86,60 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
     return `${targetHeight}px`;
   };
 
+  const handleTextareaChange = (e: any) => {
+    if (originalTextSelection) {
+      setActiveTextSelection({
+        startIndex: originalTextSelection.startIndex,
+        endIndex: originalTextSelection.startIndex + e.target.value.length,
+        value: e.target.value,
+      });
+
+      updateTargetTextMemoized(
+        e.target.value,
+        originalTextSelection.startIndex,
+        originalTextSelection.startIndex + e.target.value.length
+      );
+    }
+  };
+
+  const handleTextareaSelect = (e: any) => {
+    if (
+      textAreaRef.current &&
+      textAreaRef.current.selectionStart === textAreaRef.current.selectionEnd &&
+      e.nativeEvent.type !== 'mouseup'
+    ) {
+      setTargetCaretIndex(
+        textAreaRef.current.selectionStart ||
+          textAreaRef.current.selectionStart === 0
+          ? {
+              index: textAreaRef.current.selectionStart,
+              movementTriggeredBy: 'keyboard',
+            }
+          : null
+      );
+    }
+  };
+
+  const handleTextareaClick = (e: any) => {
+    if (
+      textAreaRef.current &&
+      textAreaRef.current.selectionStart === textAreaRef.current.selectionEnd
+    ) {
+      setTargetCaretIndex(
+        textAreaRef.current.selectionStart ||
+          textAreaRef.current.selectionStart === 0
+          ? {
+              index: textAreaRef.current.selectionStart,
+              movementTriggeredBy: 'mouse',
+            }
+          : null
+      );
+    }
+  };
+
+  // OTHER HOOKS
+  const [isTyping, register] = useIsTyping();
+  useRephraseToolTextboxSize(activeTextSelection?.value || '', textAreaRef);
   const updateTargetTextMemoized = useCallback(
     debounce((value, startIndex, endIndex) => {
       updateTargetText({
@@ -108,6 +151,16 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
     []
   );
 
+  // USE EFFECTS
+  useEffect(() => {
+    if (textAreaRef.current) register(textAreaRef.current);
+  }, [textAreaRef.current]);
+
+  useEffect(() => {
+    setIsTypingInTarget(isTyping);
+  }, [isTyping]);
+
+  // RENDER
   return (
     <TextArea
       id='target-value-input'
@@ -116,56 +169,9 @@ const TargetTextArea = (props: TargetTextAreaProps) => {
       disabled={!activeTextSelection}
       onFocus={() => setTargetTextAreaIsFocused(true)}
       onBlur={() => setTargetTextAreaIsFocused(false)}
-      onChange={(e) => {
-        if (originalTextSelection) {
-          setActiveTextSelection({
-            startIndex: originalTextSelection.startIndex,
-            endIndex: originalTextSelection.startIndex + e.target.value.length,
-            value: e.target.value,
-          });
-
-          updateTargetTextMemoized(
-            e.target.value,
-            originalTextSelection.startIndex,
-            originalTextSelection.startIndex + e.target.value.length
-          );
-        }
-      }}
-      onSelect={(e) => {
-        if (
-          textAreaRef.current &&
-          textAreaRef.current.selectionStart ===
-            textAreaRef.current.selectionEnd &&
-          e.nativeEvent.type !== 'mouseup'
-        ) {
-          setTargetCursorIndex(
-            textAreaRef.current.selectionStart ||
-              textAreaRef.current.selectionStart === 0
-              ? {
-                  index: textAreaRef.current.selectionStart,
-                  movementTriggeredBy: 'keyboard',
-                }
-              : null
-          );
-        }
-      }}
-      onClick={(e) => {
-        if (
-          textAreaRef.current &&
-          textAreaRef.current.selectionStart ===
-            textAreaRef.current.selectionEnd
-        ) {
-          setTargetCursorIndex(
-            textAreaRef.current.selectionStart ||
-              textAreaRef.current.selectionStart === 0
-              ? {
-                  index: textAreaRef.current.selectionStart,
-                  movementTriggeredBy: 'mouse',
-                }
-              : null
-          );
-        }
-      }}
+      onChange={handleTextareaChange}
+      onSelect={handleTextareaSelect}
+      onClick={handleTextareaClick}
       spellCheck={false}
       style={{
         minHeight: calculateMinHeight(),

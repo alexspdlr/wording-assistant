@@ -1,6 +1,10 @@
 import AppBarContent from './subcomponents/AppBarContent';
 import AppBarContainer from './subcomponents/AppBarContainer';
 
+/* -------------------------------------------------------------------------- */
+/*                                   AppBar                                   */
+/* -------------------------------------------------------------------------- */
+
 const AppBar = () => {
   return (
     <AppBarContainer>

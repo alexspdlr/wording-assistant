@@ -17,15 +17,24 @@ const Body = styled('div')(
     `
 );
 
+const GlobalMinWidth = styled('div')(
+  (props) => `
+  min-width: 650px; 
+  overflow-x: scroll;
+`
+);
+
 const AppLayout = () => {
   return (
-    <Container>
-      <AppBar />
-      <Body>
-        <Outlet />
-      </Body>
-      <Footer />
-    </Container>
+    <GlobalMinWidth>
+      <Container>
+        <AppBar />
+        <Body>
+          <Outlet />
+        </Body>
+        <Footer />
+      </Container>
+    </GlobalMinWidth>
   );
 };
 export default AppLayout;

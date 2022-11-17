@@ -1,7 +1,20 @@
+import { decode } from 'html-entities';
 import { Page } from 'puppeteer';
 import { PuppeteerResponse } from '../types';
-import isJSON from '../utils/isJSON';
-import { decode } from 'html-entities';
+
+/**
+ *
+ *  Simulates the client-action-event "selectWordingAlternative" by executing the following steps on the DeepL Website using Puppeter:
+ *
+ *    1. Check wether the selected alternative has the correct value
+ *    2. Select the wording-alternative chosen by the client
+ *    3. Return the newly reworded text
+ *
+ * @param selectedAlternativeIndex
+ * @param selectedAlternativeValue
+ * @param page
+ * @returns the newly reworded text
+ */
 
 const selectWordingAlternative = async (
   selectedAlternativeIndex: number,
@@ -9,11 +22,7 @@ const selectWordingAlternative = async (
   page: Page
 ): Promise<PuppeteerResponse> => {
   try {
-    /* Check if selected option has the correct value -> throw error if not */
-
-    console.log('**** selectedAlternativeIndex', selectedAlternativeIndex);
-    console.log('**** selectedAlternativeValue', selectedAlternativeValue);
-
+    // Check whether the selected alternative has the correct value
     const targetValue: string = await page.evaluate(
       (selectedAlternativeIndex) => {
         const popover = document.querySelector(
@@ -42,13 +51,14 @@ const selectWordingAlternative = async (
       throw 'selected wording alternative not found';
     }
 
-    /* Focus selected option & press enter */
+    // Focus selected alternative & press "Enter"
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const i of [...Array(selectedAlternativeIndex + 1).keys()]) {
       await page.keyboard.press('ArrowDown');
     }
     await page.keyboard.press('Enter');
 
-    /* Wait until popover closed */
+    // Wait until the alternative popover is closed
     await page.waitForFunction(() => {
       return (
         document.querySelector(
@@ -57,8 +67,7 @@ const selectWordingAlternative = async (
       );
     });
 
-    /* Wait until the request for rewording is followed by a response (from DeepL) */
-
+    // Wait until the request for rphrasing is followed by a response (from DeepL)
     try {
       await page.waitForResponse(
         async (response) => {
@@ -88,12 +97,13 @@ const selectWordingAlternative = async (
       console.log(error);
     }
 
-    /* Store rephrasing result */
+    // Store the rephrasing result
     const rephrasingResult = await page.$eval(
       '#target-dummydiv',
       (div) => div.innerHTML
     );
 
+    // Return the rephrasing result
     return {
       type: 'response',
       data: {

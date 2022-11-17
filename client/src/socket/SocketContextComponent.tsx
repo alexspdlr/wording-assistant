@@ -66,12 +66,12 @@ const SocketContextComponent: React.FunctionComponent<
       handleServerResponse(payload, 'selectTextCompleted');
     });
 
-    socket.on('moveCursorStarted', (payload: ServerResponsePayload) => {
-      handleServerResponse(payload, 'moveCursorStarted');
+    socket.on('moveCaretStarted', (payload: ServerResponsePayload) => {
+      handleServerResponse(payload, 'moveCaretStarted');
     });
 
-    socket.on('moveCursorCompleted', (payload: ServerResponsePayload) => {
-      handleServerResponse(payload, 'moveCursorCompleted');
+    socket.on('moveCaretCompleted', (payload: ServerResponsePayload) => {
+      handleServerResponse(payload, 'moveCaretCompleted');
     });
 
     socket.on('updateTargetTextStarted', (payload: ServerResponsePayload) => {

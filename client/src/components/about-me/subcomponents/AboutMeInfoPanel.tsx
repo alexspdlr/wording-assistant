@@ -1,12 +1,13 @@
 import { useTheme } from '@emotion/react';
 import { useState } from 'react';
-import PersonCutout from 'src/assets/PersonCutout.png';
+import CutoutAlex from 'src/assets/AlexCutout.png';
+import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import AboutMeUnderline from './AboutMeUnderline';
 
 const AboutMeInfoPanel = () => {
-  const [personCutoutLoading, setPersonCutoutLoading] = useState(true);
+  const [cutoutAlexLoading, setCutoutAlexLoading] = useState(true);
   const activeBreakpoint = useBreakpoint();
   const isSmallLayout = compareBreakpoint(activeBreakpoint, '<', 'XS');
 
@@ -29,18 +30,21 @@ const AboutMeInfoPanel = () => {
       }}
     >
       <img
-        src={PersonCutout}
-        onLoad={() => setPersonCutoutLoading(false)}
+        src={CutoutAlex}
+        onLoad={() => setCutoutAlexLoading(false)}
         style={{
-          display: personCutoutLoading ? 'none' : 'block',
+          display: cutoutAlexLoading ? 'none' : 'block',
           width: 'calc(100% - 40px)',
-          backgroundColor: theme.palette.background.main,
+          backgroundColor:
+            theme.activeMode === 'light'
+              ? theme.palette.background.dark
+              : theme.palette.background.main,
           padding: '20px 20px 0 20px',
           borderRadius: '5px 5px 0 0',
         }}
         alt='PersonCutout'
       />
-      {personCutoutLoading && (
+      {cutoutAlexLoading && (
         <div
           style={{
             padding: '20px 20px 0 20px',
@@ -82,8 +86,8 @@ const AboutMeInfoPanel = () => {
             padding: '0 10px 30px 10px',
           }}
         >
-          23-year-old software architecture student with a passion for creating
-          useful, easy-to-use software products
+          24-year-old software architecture student with a passion for creating
+          useful, easy-to-use software products.
         </span>
 
         <div
@@ -105,8 +109,9 @@ const AboutMeInfoPanel = () => {
             padding: '0 10px 30px 10px',
           }}
         >
-          React, Javascript, Python, Jira, NoSQL, Figma, Firebase, Google, Open
-          Office, Dropbox, Youtube, Tic Tac Toe
+          React.js, Typescript, ReactRedux, Zustand.js, Jest, Cypress.io, Git,
+          Node.js, Express.js, CSS & CSS Animations, Native SVG Editing, Figma,
+          Photoshop
         </span>
         <div style={{ padding: '10px 30px 30px 30px' }}>
           <span style={{ fontWeight: 600 }}>Contact</span>

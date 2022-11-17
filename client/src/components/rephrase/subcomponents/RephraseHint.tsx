@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
-import { Breakpoint } from 'src/types/breakpoint';
 import calculateRephraseHintHeadingSize from 'src/utils/calculateRephraseHintHeadingSize';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
+
+/* ---------------------------- Styled components --------------------------- */
 
 const Container = styled('div')(
   () => `
@@ -52,6 +53,10 @@ const HintBody = styled('p')(
       padding-top: 7px;
       `
 );
+
+/* -------------------------------------------------------------------------- */
+/*                                RephraseHint                                */
+/* -------------------------------------------------------------------------- */
 
 interface RephraseHintProps {
   hideHint: boolean;

@@ -1,37 +1,34 @@
 import styled from '@emotion/styled';
+import ImageAlexHexagonsLight from 'src/assets/ImageAlexHexagonsLight.png';
+import ImageAlexHexagonsDark from 'src/assets/ImageAlexHexagonsDark.png';
 import { ReactComponent as QuotesIcon } from 'src/assets/QuotesIcon.svg';
-import PersonImage from 'src/assets/PersonImage.png';
-import SignatureDark from 'src/assets/SignatureDark.png';
-import SignatureLight from 'src/assets/SignatureLight.png';
-import Button from '../general/button';
-import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
+import useBreakpoint from 'src/utils/hooks/useBreakpoint';
+import Button from '../general/button';
+import QuoteSignature from './subcomponents/QuoteSignature';
+import QuoteText from './subcomponents/QuoteText';
 import { useTheme } from '@emotion/react';
 
-/* -------------------------------- Container ------------------------------- */
+/* ---------------------------- Styled components --------------------------- */
 
 interface ContainerProps {
-  smallLayout: boolean;
+  isBreakpointSmallerS: boolean;
 }
-
 const Container = styled('div')(
   (props: ContainerProps) => ` 
   display: flex;
   align-items: flex-start; 
   justify-content: center; 
    padding: 120px 0;
-   ${props.smallLayout ? 'padding: 60px 0;' : 'padding: 120px 0;'}
+   ${props.isBreakpointSmallerS ? 'padding: 60px 0;' : 'padding: 120px 0;'}
   `
 );
 
-/* -------------------------------- Paper ------------------------------- */
-
-interface PaperProps {
-  smallLayout: boolean;
+interface QuoteCardProps {
+  isBreakpointSmallerS: boolean;
 }
-
-const Paper = styled('div')(
-  (props: PaperProps) => (defaultProps) =>
+const QuoteCard = styled('div')(
+  (props: QuoteCardProps) => (defaultProps) =>
     ` 
   background-color: ${defaultProps.theme.palette.background.light};
   flex-grow: 1; 
@@ -41,7 +38,46 @@ const Paper = styled('div')(
   position: relative; 
   display: flex; 
   flex-direction: column; 
-  ${props.smallLayout && 'margin: 0 16px;'}
+  ${props.isBreakpointSmallerS && 'margin: 0 16px;'}
+  `
+);
+
+const PositionedQuoteIcon = styled(QuotesIcon)(
+  (defaultProps) =>
+    ` 
+    width: 94px;
+    position: absolute; 
+    top: -28px;
+    left: -28px;
+    color: ${
+      defaultProps.theme.activeMode === 'light'
+        ? defaultProps.theme.palette.primary.main
+        : defaultProps.theme.palette.primary.dark
+    };
+  `
+);
+
+const LowerSection = styled('div')(
+  () => ` 
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 40px 0 60px;
+  `
+);
+
+const LowerSectionLeft = styled('div')(
+  () => ` 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  `
+);
+
+const PositionedImageAlex = styled('img')(
+  () => ` 
+  width: 220px;
+  padding-right: 16px;
   `
 );
 
@@ -51,87 +87,40 @@ const Paper = styled('div')(
 
 const QuoteSection = () => {
   const activeBreakpoint = useBreakpoint();
+  const isBreakpointSmallerS = compareBreakpoint(activeBreakpoint, '<', 'S');
   const theme = useTheme();
+
   return (
-    <Container smallLayout={compareBreakpoint(activeBreakpoint, '<', 'S')}>
-      <Paper smallLayout={compareBreakpoint(activeBreakpoint, '<', 'S')}>
-        <div style={{ position: 'absolute', top: -28, left: -28 }}>
-          <QuotesIcon
-            width='94px'
-            style={{
-              color:
-                theme.activeMode === 'light'
-                  ? theme.palette.primary.main
-                  : theme.palette.primary.dark,
-            }}
-          />
-        </div>
-        <div
-          style={{
-            padding: '42px 40px 0 70px',
-            fontSize: compareBreakpoint(activeBreakpoint, '<', 'S')
-              ? '16px'
-              : '19px',
-            lineHeight: compareBreakpoint(activeBreakpoint, '<', 'S')
-              ? '26px'
-              : '28px',
-          }}
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur.
-        </div>
+    <Container isBreakpointSmallerS={isBreakpointSmallerS}>
+      <QuoteCard isBreakpointSmallerS={isBreakpointSmallerS}>
+        <PositionedQuoteIcon />
+        <QuoteText />
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '14px 40px 0 60px',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Button variant='contained'>Learn more </Button>
-
-            <div
-              style={{
-                marginBottom: 40,
-                display: 'flex',
-                flexDirection: 'column',
-                marginTop: 40,
-              }}
+        <LowerSection>
+          <LowerSectionLeft>
+            <Button
+              variant='contained'
+              onClick={() =>
+                // eslint-disable-next-line no-restricted-globals
+                (location.href = '/Process')
+              }
             >
-              <span style={{ fontSize: 16, fontWeight: 300 }}>
-                <span style={{ fontWeight: 600 }}>Alexander Spindeler,</span>{' '}
-                Applicant
-              </span>
-              <img
-                src={
-                  theme.activeMode === 'dark' ? SignatureDark : SignatureLight
-                }
-                style={{ width: 160, paddingRight: 16, paddingTop: 10 }}
-                alt='SignatureImage'
-              />
-            </div>
-          </div>
+              Learn more{' '}
+            </Button>
+            <QuoteSignature />
+          </LowerSectionLeft>
           {compareBreakpoint(activeBreakpoint, '>', 'XS') && (
-            <img
-              src={PersonImage}
-              style={{ width: 200, paddingRight: 16 }}
-              alt='PersonImage'
+            <PositionedImageAlex
+              src={
+                theme.activeMode === 'light'
+                  ? ImageAlexHexagonsLight
+                  : ImageAlexHexagonsDark
+              }
+              alt='Image of Alex'
             />
           )}
-        </div>
-      </Paper>
+        </LowerSection>
+      </QuoteCard>
     </Container>
   );
 };

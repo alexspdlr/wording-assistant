@@ -1,18 +1,15 @@
-import { useTheme } from '@emotion/react';
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from '@emotion/styled';
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
-import CustomPopover from 'src/components/Popover';
-import useBoundStore from 'src/store';
-import { TextToken } from 'src/types/store';
-import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
-import useClickAway from 'src/utils/hooks/useClickAway';
-import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
-import useSourceTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
-import splitIntoWords from 'src/utils/splitIntoWords';
-import { TargetCursorIndexInfo } from '../RephraseTarget';
 import _ from 'lodash';
-import TargetOriginalSelection from './TargetOriginalSelection';
+import { useEffect, useRef } from 'react';
+import useBoundStore from 'src/store';
+import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
+import splitIntoWords from 'src/utils/splitIntoWords';
+import { TargetCaretIndexInfo } from '../RephraseTarget';
+import TargetOriginalSelection from './TargetOriginalSelection';
+
+/* ---------------------------- Styled components --------------------------- */
 
 const Container = styled('div')(
   () => `
@@ -35,18 +32,19 @@ const Container = styled('div')(
     50% {opacity: 0.8;}
     100% { opacity: 1; }
   }
-
       `
 );
 
-interface TextProps {
-  selected: boolean;
-}
+const PositionedText = styled('div')(
+  () => `
+  padding: 28px 28px 14px 28px;
+      `
+);
 
 const Text = styled('span')(
-  (props: TextProps) => (defaultProps) =>
+  (defaultProps) =>
     `
-    position: relative; 
+  position: relative; 
   padding-top: 2px; 
   padding-bottom: 2px; 
   border-top: 1px solid ${defaultProps.theme.palette.background.light};
@@ -54,14 +52,25 @@ const Text = styled('span')(
   white-space: pre-wrap;
   background-color:transparent; 
   color: transparent; 
-    cursor: pointer; 
-    transition: 0.2s background-color, 0.2s color;
-  
+  cursor: pointer; 
+  transition: 0.2s background-color, 0.2s color;
   `
 );
 
+const NonText = styled('span')(
+  () =>
+    `
+    white-space: pre-wrap;
+    color: transparent;
+  `
+);
+
+/* -------------------------------------------------------------------------- */
+/*                                TargetSelect                                */
+/* -------------------------------------------------------------------------- */
+
 interface TargetSelectProps {
-  targetCursorIndex: TargetCursorIndexInfo | null;
+  targetCaretIndex: TargetCaretIndexInfo | null;
   setPopoverTargetRect: Function;
   showTargetWordPopover: boolean;
   setShowTargetWordPopover: (show: boolean) => void;
@@ -71,15 +80,15 @@ interface TargetSelectProps {
 
 const TargetSelect = (props: TargetSelectProps) => {
   const {
-    targetCursorIndex,
+    targetCaretIndex,
     setPopoverTargetRect,
     showTargetWordPopover,
     setShowTargetWordPopover,
     resetToOriginalSelection,
     targetTextAreaIsFocused,
   } = props;
-  /* --------------------------- GET DATA FROM STORE -------------------------- */
 
+  // FROM STORE
   const activeTextSelection = useBoundStore(
     (state) => state.uiState.activeTextSelection
   );
@@ -93,20 +102,23 @@ const TargetSelect = (props: TargetSelectProps) => {
     (state) => state.setActiveRephrasingToken
   );
 
-  /* ---------------------------------- UTILS --------------------------------- */
+  // UTILS
+  const splitWords = splitIntoWords(activeTextSelection?.value || '');
+
+  // OTHER HOOKS
   const containerRef = useRef<HTMLDivElement | null>(null);
   useRephraseToolTextboxSize(activeTextSelection?.value || '', containerRef);
+  const windowIsFocused = useWindowIsFocused();
 
-  const theme = useTheme();
-
+  // USE EFFECTS
   useEffect(() => {
     const newSelectedWord =
-      targetCursorIndex || targetCursorIndex === 0
+      targetCaretIndex || targetCaretIndex === 0
         ? splitWords.find(
             (word) =>
               word.kind === 'text' &&
-              targetCursorIndex.index >= word.startIndex &&
-              targetCursorIndex.index <= word.endIndex
+              targetCaretIndex.index >= word.startIndex &&
+              targetCaretIndex.index <= word.endIndex
           )
         : null;
 
@@ -124,12 +136,12 @@ const TargetSelect = (props: TargetSelectProps) => {
       setPopoverTargetRect(null);
     }
 
-    if (targetCursorIndex?.movementTriggeredBy === 'mouse') {
+    if (targetCaretIndex?.movementTriggeredBy === 'mouse') {
       if (
         activeRephrasingToken === null ||
         !(
-          targetCursorIndex.index >= activeRephrasingToken.startIndex &&
-          targetCursorIndex.index <= activeRephrasingToken.endIndex
+          targetCaretIndex.index >= activeRephrasingToken.startIndex &&
+          targetCaretIndex.index <= activeRephrasingToken.endIndex
         )
       ) {
         setShowTargetWordPopover(true);
@@ -137,15 +149,14 @@ const TargetSelect = (props: TargetSelectProps) => {
         setShowTargetWordPopover(!showTargetWordPopover);
       }
     } else {
-      if (targetCursorIndex?.index === newSelectedWord?.startIndex) {
+      if (targetCaretIndex?.index === newSelectedWord?.startIndex) {
         setShowTargetWordPopover(true);
       } else {
         setShowTargetWordPopover(false);
       }
     }
-  }, [targetCursorIndex]);
+  }, [targetCaretIndex]);
 
-  const windowIsFocused = useWindowIsFocused();
   useEffect(() => {
     if (!windowIsFocused) {
       setActiveRephrasingToken(null);
@@ -154,12 +165,11 @@ const TargetSelect = (props: TargetSelectProps) => {
     }
   }, [windowIsFocused]);
 
-  const splitWords = splitIntoWords(activeTextSelection?.value || '');
-
+  // RENDER
   return (
     <>
       <Container ref={containerRef} tabIndex={0} id='target-select-container'>
-        <div
+        <PositionedText
           style={{
             padding: '28px 28px 14px 28px',
           }}
@@ -167,19 +177,12 @@ const TargetSelect = (props: TargetSelectProps) => {
           {splitWords.map((token, i) =>
             token.kind === 'text' ? (
               <Text
-                selected={
-                  targetCursorIndex !== null &&
-                  (targetCursorIndex.index || targetCursorIndex.index === 0
-                    ? targetCursorIndex.index >= token.startIndex &&
-                      targetCursorIndex.index <= token.endIndex
-                    : false)
-                }
                 key={`token_${i}`}
                 id={
-                  targetCursorIndex !== null &&
-                  (targetCursorIndex.index || targetCursorIndex.index === 0) &&
-                  targetCursorIndex.index >= token.startIndex &&
-                  targetCursorIndex.index <= token.endIndex
+                  targetCaretIndex !== null &&
+                  (targetCaretIndex.index || targetCaretIndex.index === 0) &&
+                  targetCaretIndex.index >= token.startIndex &&
+                  targetCaretIndex.index <= token.endIndex
                     ? `target-word-selected`
                     : `target-word-${i}`
                 }
@@ -187,15 +190,10 @@ const TargetSelect = (props: TargetSelectProps) => {
                 {token.value}
               </Text>
             ) : (
-              <span
-                key={`token_${i}`}
-                style={{ whiteSpace: 'pre-wrap', color: 'transparent' }}
-              >
-                {token.value}
-              </span>
+              <NonText key={`token_${i}`}>{token.value}</NonText>
             )
           )}
-        </div>
+        </PositionedText>
         <TargetOriginalSelection
           hide={_.isEqual(originalTextSelection, activeTextSelection)}
           resetToOriginalSelection={resetToOriginalSelection}

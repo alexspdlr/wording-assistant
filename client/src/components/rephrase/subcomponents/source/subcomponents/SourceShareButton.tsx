@@ -4,6 +4,8 @@ import { ReactComponent as ShareIcon } from 'src/assets/ShareIcon.svg';
 import IconButton from 'src/components/general/icon-button';
 import Tooltip from 'src/components/general/tooltip';
 
+/* ---------------------------- Styled components --------------------------- */
+
 const Layout = styled('div')(
   () => `
     position: absolute;
@@ -14,10 +16,13 @@ const Layout = styled('div')(
         `
 );
 
+/* -------------------------------------------------------------------------- */
+/*                              SourceShareButton                             */
+/* -------------------------------------------------------------------------- */
+
 interface SourceShareButtonProps {
   onClick: MouseEventHandler<HTMLButtonElement>;
 }
-
 const SourceShareButton = (props: SourceShareButtonProps) => {
   const { onClick } = props;
   return (

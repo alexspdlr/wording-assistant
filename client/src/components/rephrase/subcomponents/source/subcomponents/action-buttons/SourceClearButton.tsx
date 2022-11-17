@@ -3,6 +3,8 @@ import { MouseEventHandler } from 'react';
 import { ReactComponent as ClearIcon } from 'src/assets/ClearIcon.svg';
 import IconButton from 'src/components/general/icon-button';
 
+/* ---------------------------- Styled components --------------------------- */
+
 const Layout = styled('div')(
   () => `
       position: absolute;
@@ -10,6 +12,10 @@ const Layout = styled('div')(
       right: 16px;
           `
 );
+
+/* -------------------------------------------------------------------------- */
+/*                              SourceClearButton                             */
+/* -------------------------------------------------------------------------- */
 
 interface SourceClearButtonProps {
   onClick: MouseEventHandler<HTMLButtonElement>;

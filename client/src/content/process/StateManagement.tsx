@@ -1,6 +1,6 @@
-import { ContentSection } from 'src/types/content';
+import { TextContentSection } from 'src/types/textContent';
 
-const stateManagementSection: ContentSection = {
+const stateManagementSection: TextContentSection = {
   title: 'State Management',
   id: 'state_management',
   body: [
@@ -18,7 +18,6 @@ const stateManagementSection: ContentSection = {
 - much bolierplate & overkill for this application -> but goal is to show that I can design scalable software 
 `,
     },
-
     {
       type: 'ReactNode',
 

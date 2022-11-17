@@ -1,13 +1,26 @@
 import styled from '@emotion/styled';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import useBoundStore from 'src/store';
 import useClickAway from 'src/utils/hooks/useClickAway';
-import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
+
+/* ---------------------------- Styled components --------------------------- */
+interface PopoverPositionProps {
+  topInset: number;
+  leftInset: number;
+}
+const PopoverPosition = styled('div')(
+  (props: PopoverPositionProps) => (defaultProps) =>
+    `  
+    position: absolute;
+    z-index: 5;
+    top: ${props.topInset}px;
+    left: ${props.leftInset}px; 
+  `
+);
 
 interface PopoverContainerProps {
   fontSize: string;
 }
-
 const PopoverContainer = styled('div')(
   (props: PopoverContainerProps) => (defaultProps) =>
     `  
@@ -55,6 +68,10 @@ const Alternative = styled('div')(
   `
 );
 
+/* -------------------------------------------------------------------------- */
+/*                              TargetWordPopover                             */
+/* -------------------------------------------------------------------------- */
+
 interface TargetWordPopoverProps {
   popoverTargetRect: DOMRect | null;
   setShowTargetWordPopover: (bool: boolean) => void;
@@ -62,18 +79,18 @@ interface TargetWordPopoverProps {
 
 const TargetWordPopover = (props: TargetWordPopoverProps) => {
   const { popoverTargetRect, setShowTargetWordPopover } = props;
+
+  // FROM STORE
   const alternatives = useBoundStore(
     (state) => state.uiState.rephrasingOptions
   );
-
   const selectWordingAlternative = useBoundStore(
     (state) => state.selectWordingAlternative
   );
 
+  // UTILS
   const fontSize =
     document.getElementById('target-value-input')?.style.fontSize || '22px';
-
-  const containerRef = useRef(null);
 
   const onClickAway = (event: any) => {
     if (!(event.target.id === 'target-value-input')) {
@@ -81,21 +98,19 @@ const TargetWordPopover = (props: TargetWordPopoverProps) => {
     }
   };
 
+  // OTHER HOOKS
+  const containerRef = useRef(null);
   useClickAway(containerRef, onClickAway);
 
+  // RENDER
   return (
     <>
       {popoverTargetRect && (
-        <div
-          style={{
-            position: 'absolute',
-            zIndex: 5,
-            top:
-              window.pageYOffset +
-              popoverTargetRect.y +
-              popoverTargetRect.height,
-            left: popoverTargetRect.x,
-          }}
+        <PopoverPosition
+          topInset={
+            window.pageYOffset + popoverTargetRect.y + popoverTargetRect.height
+          }
+          leftInset={popoverTargetRect.x}
         >
           <PopoverContainer
             ref={containerRef}
@@ -115,7 +130,7 @@ const TargetWordPopover = (props: TargetWordPopoverProps) => {
               <Alternative disabled>...</Alternative>
             )}
           </PopoverContainer>
-        </div>
+        </PopoverPosition>
       )}
     </>
   );

@@ -1,9 +1,10 @@
-import Section from 'src/components/section';
+import Section from 'src/components/appbody-section';
 import { ReactComponent as RobotOops } from 'src/assets/RobotOops.svg';
 import { Link } from 'react-router-dom';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import styled from '@emotion/styled';
+import { useTheme } from '@emotion/react';
 
 const Heading = styled('div')(
   () => `  
@@ -15,29 +16,29 @@ const Heading = styled('div')(
 );
 
 const ErrorCode = styled('div')(
-  () => `  
+  (defaultProps) => `  
       font-size: 16px;   
       font-weight: 600;
-      color: #0f2b46; 
+      color: ${defaultProps.theme.palette.text.main}; 
       margin-bottom: 2em; 
       line-height: 24px;
       `
 );
 
 const Text = styled('div')(
-  () => `  
+  (defaultProps) => `  
         font-size: 16px;   
         font-weight: 400;
-        color: #0f2b46; 
+        color: ${defaultProps.theme.palette.text.disabled}; 
         margin-bottom: 1em; 
         line-height: 24px;
         `
 );
 
 const PageLink = styled(Link)(
-  () => `  
+  (defaultProps) => `  
           font-size: 16px;  
-          color: #006494; 
+          color: ${defaultProps.theme.palette.primary.light}; 
           text-decoration: none;
           line-height: 24px;
           &:hover {
@@ -71,8 +72,10 @@ const Page404 = () => {
     { title: 'Tech Stack', link: '/tech-stack' },
   ];
 
+  const theme = useTheme();
+
   return (
-    <Section backgroundColor='#F1F1F1'>
+    <Section backgroundColor={theme.palette.background.dark}>
       <div
         style={{
           minHeight: 'calc(100vh - 300px)',

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import { ContentSubSection } from 'src/types/content';
+import { TextContentSubSection } from 'src/types/textContent';
 
-/* ------------------------------ MenuContainer ----------------------------- */
+/* ---------------------------- Styled components --------------------------- */
 
 interface MenuContainerProps {
   isFirstSection: boolean;
@@ -19,10 +19,8 @@ const MenuContainer = styled('div')(
         ? 'none'
         : `1px solid ${defaultProps.theme.palette.divider}`
     };
-          `
+    `
 );
-
-/* -------------------------------- MenuTitle ------------------------------- */
 
 interface MenuTitleProps {
   isActive: boolean;
@@ -31,28 +29,25 @@ interface MenuTitleProps {
 const MenuTitle = styled('div')(
   (props: MenuTitleProps) => (defaultProps) =>
     ` 
-        color: ${
-          props.isActive
-            ? defaultProps.theme.palette.tertiary.main
-            : defaultProps.theme.palette.primary.light
-        };
-        padding: ${props.isSmallLayout ? '11px 0 0 ' : '5px 0'};
-        font-size: ${props.isSmallLayout ? '16' : '19'}px;
-        line-height: ${props.isSmallLayout ? '25' : '28'}px; 
-        font-weight: ${props.isSmallLayout ? '400' : '500'};
-        cursor: pointer;
-        &:hover {
-          color: ${
-            props.isActive
-              ? defaultProps.theme.palette.tertiary.main
-              : defaultProps.theme.palette.primary.main
-          };
-        }
-        
-        `
+    color: ${
+      props.isActive
+        ? defaultProps.theme.palette.tertiary.main
+        : defaultProps.theme.palette.primary.light
+    };
+    padding: ${props.isSmallLayout ? '11px 0 0 ' : '5px 0'};
+    font-size: ${props.isSmallLayout ? '16' : '19'}px;
+    line-height: ${props.isSmallLayout ? '25' : '28'}px; 
+    font-weight: ${props.isSmallLayout ? '400' : '500'};
+    cursor: pointer;
+    &:hover {
+      color: ${
+        props.isActive
+          ? defaultProps.theme.palette.tertiary.main
+          : defaultProps.theme.palette.primary.main
+      };
+    }
+    `
 );
-
-/* ------------------------------ MenuSubtitle ------------------------------ */
 
 interface MenuSubtitleProps {
   isSmallLayout: boolean;
@@ -94,9 +89,9 @@ interface DocumentationMenuSectionProps {
   isLastSection: boolean;
   isActive: boolean;
   isSmallLayout: boolean;
-  subSections: ContentSubSection[] | undefined;
+  subSections: TextContentSubSection[] | undefined;
   setActiveSection: () => void;
-  setActiveSubSection: (subSection: ContentSubSection) => void;
+  setActiveSubSection: (subSection: TextContentSubSection) => void;
   activeSubSectionId: string | undefined;
 }
 
@@ -127,7 +122,7 @@ const DocumentationMenuSection = (props: DocumentationMenuSectionProps) => {
         {title}
       </MenuTitle>
 
-      {subSections?.map((subSection, index) => (
+      {subSections?.map((subSection) => (
         <MenuSubtitle
           key={subSection.id}
           isSmallLayout={isSmallLayout}

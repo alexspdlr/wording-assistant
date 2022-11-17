@@ -1,3 +1,6 @@
+/**
+ *  Basic implementation of a queue - in this application it is only used to manage waiting puppets.
+ */
 export class Queue<T> {
   private items: T[] = [];
 

@@ -16,7 +16,7 @@ export type ActiveWorkerStateName =
   | 'processingInitialize'
   | 'processingSelectText'
   | 'processingDeselectText'
-  | 'processingMoveCursor'
+  | 'processingmoveCaret'
   | 'processingUpdateTargetText'
   | 'processingSelectWordingAlternative'
   | 'processingTerminate'
@@ -30,7 +30,7 @@ export interface ActiveWorkerTextSelection {
 
 export interface ActiveWorkerStateData {
   id: string;
-  cursorIndex: number;
+  caretIndex: number;
   originalTextSelection: ActiveWorkerTextSelection | null;
   activeTextSelection: ActiveWorkerTextSelection | null;
   rephrasingOptions: string[];
@@ -48,14 +48,14 @@ export interface ClientActionEvent {
 export type ClientActionEndpoint =
   | 'selectText'
   | 'deselectText'
-  | 'moveCursor'
+  | 'moveCaret'
   | 'updateTargetText'
   | 'selectWordingAlternative';
 
 export type ClientActionPayload =
   | ClientActionPayload_SelectText
   | ClientActionPayload_DeselectText
-  | ClientActionPayload_MoveCursor
+  | ClientActionPayload_moveCaret
   | ClientActionPayload_UpdateTargetText
   | ClientActionPayload_SelectWordingAlternative;
 
@@ -68,9 +68,9 @@ export interface ClientActionPayload_DeselectText {
   eventId: string;
 }
 
-export interface ClientActionPayload_MoveCursor {
+export interface ClientActionPayload_moveCaret {
   eventId: string;
-  newCursorIndex: number;
+  newCaretIndex: number;
 }
 
 export interface ClientActionPayload_UpdateTargetText {
@@ -104,8 +104,8 @@ export type ServerResponseEndpoint =
   | 'selectTextCompleted'
   | 'deselectTextStarted'
   | 'deselectTextCompleted'
-  | 'moveCursorStarted'
-  | 'moveCursorCompleted'
+  | 'moveCaretStarted'
+  | 'moveCaretCompleted'
   | 'updateTargetTextStarted'
   | 'updateTargetTextCompleted'
   | 'selectWordingAlternativeStarted'

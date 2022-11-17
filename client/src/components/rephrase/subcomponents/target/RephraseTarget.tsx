@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useEffect, useRef, useState } from 'react';
@@ -6,15 +7,21 @@ import LoadingRipple from 'src/components/general/loading-ripple';
 import LoadingSpinner from 'src/components/general/loading-spinner';
 import useBoundStore from 'src/store';
 import { UiExpectedResponse } from 'src/types/store';
-import useWindowHeight from 'src/utils/hooks/useWindowHeight';
 import useWindowIsFocused from 'src/utils/hooks/useWindowIsFocused';
-import useWindowWidth from 'src/utils/hooks/useWindowWidth';
 import replaceCharactersBetween from 'src/utils/replaceCharactersBetween';
 import RephraseHint from '../RephraseHint';
 import TargetActions from './subcomponents/TargetActions';
 import TargetSelect from './subcomponents/TargetSelect';
 import TargetTextArea from './subcomponents/TargetTextArea';
 import TargetWordPopover from './subcomponents/TargetWordPopover';
+
+/* ---------------------------- Shared Interfaces --------------------------- */
+export interface TargetCaretIndexInfo {
+  index: number;
+  movementTriggeredBy: 'mouse' | 'keyboard';
+}
+
+/* ---------------------------- Styled components --------------------------- */
 
 const Wrapper = styled('div')(
   () => `
@@ -27,10 +34,8 @@ const Wrapper = styled('div')(
   `
 );
 
-interface ContainerProps {}
-
 const Container = styled('div')(
-  (props: ContainerProps) => `
+  () => `
   padding: 0; 
   flex-grow: 1; 
   position: relative;
@@ -38,36 +43,35 @@ const Container = styled('div')(
   `
 );
 
-export interface TargetCursorIndexInfo {
-  index: number;
-  movementTriggeredBy: 'mouse' | 'keyboard';
-}
+const LoadingSpinnerContainer = styled('div')(
+  () => `
+  padding: 40px; 
+  display: flex; 
+  justify-content: center; 
+  width: 100%; 
+  `
+);
 
-interface RephraseTargetProps {}
+const TargetActionContainer = styled('div')(
+  () => `
+  position: relative;
+  width: 100%;
+  `
+);
 
-const RephraseTarget = (props: RephraseTargetProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const value = searchParams.get('source-value');
+/* -------------------------------------------------------------------------- */
+/*                               RephraseTarget                               */
+/* -------------------------------------------------------------------------- */
+
+const RephraseTarget = () => {
+  // FROM STORE
   const activeTextSelection = useBoundStore(
     (state) => state.uiState.activeTextSelection
   );
-
   const originalTextSelection = useBoundStore(
     (state) => state.uiState.originalTextSelection
   );
-  const moveCursor = useBoundStore((state) => state.moveCursor);
-
-  // maybe move these useStates into ui state !?
-  const [targetCursorIndex, setTargetCursorIndex] =
-    useState<TargetCursorIndexInfo | null>(null);
-  const [showTargetWordPopover, setShowTargetWordPopover] =
-    useState<boolean>(false);
-  const [targetTextAreaIsFocused, setTargetTextAreaIsFocused] = useState(false);
-  const [popoverTargetRect, setPopoverTargetRect] = useState<DOMRect | null>(
-    null
-  );
-  const [isTypingInTarget, setIsTypingInTarget] = useState<boolean>(false);
-
+  const moveCaret = useBoundStore((state) => state.moveCaret);
   const expectedResponse: UiExpectedResponse | null = useBoundStore(
     (state) => state.uiState.expectedResponse
   );
@@ -77,22 +81,37 @@ const RephraseTarget = (props: RephraseTargetProps) => {
   const activeRephrasingToken = useBoundStore(
     (state) => state.uiState.activeRephrasingToken
   );
-
   const deselectText = useBoundStore((state) => state.deselectText);
   const serverStateName = useBoundStore((state) => state.serverState.stateName);
 
+  // OTHER HOOKS
+  const theme = useTheme();
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [targetCaretIndex, setTargetCaretIndex] =
+    useState<TargetCaretIndexInfo | null>(null);
+  const [showTargetWordPopover, setShowTargetWordPopover] =
+    useState<boolean>(false);
+  const [targetTextAreaIsFocused, setTargetTextAreaIsFocused] = useState(false);
+  const [popoverTargetRect, setPopoverTargetRect] = useState<DOMRect | null>(
+    null
+  );
+  const [isTypingInTarget, setIsTypingInTarget] = useState<boolean>(false);
+  const windowIsFocused = useWindowIsFocused();
+
+  // UTILS
+  const value = searchParams.get('source-value');
   const showLoadingSpinner = () => {
     if (expectedResponse) {
       return expectedResponse.endpoint === 'selectText';
     }
-
     if (
       serverStateName === 'processingInitialize' ||
       serverStateName === 'processingSelectText'
     ) {
       return true;
     }
-
     return false;
   };
 
@@ -100,15 +119,7 @@ const RephraseTarget = (props: RephraseTargetProps) => {
     (expectedResponse && expectedResponse.endpoint === 'deselectText') ||
     !activeTextSelection;
 
-  useEffect(() => {
-    if (activeRephrasingToken && !isTypingInTarget) {
-      console.log('active token _________:', activeRephrasingToken);
-      moveCursor(activeRephrasingToken?.startIndex, activeRephrasingToken);
-    }
-  }, [activeRephrasingToken]);
-
   const resetToOriginalSelection = () => {
-    // Update source text area
     if (value && activeTextSelection && originalTextSelection) {
       const newSourceValue = replaceCharactersBetween(
         value,
@@ -129,36 +140,30 @@ const RephraseTarget = (props: RephraseTargetProps) => {
       expectedResponse.endpoint === 'selectWordingAlternative'
     );
 
-  const windowIsFocused = useWindowIsFocused();
-
-  const loadingRephrasing =
+  const isLoadingRephrasing =
     expectedResponse !== null &&
     (expectedResponse.endpoint === 'selectWordingAlternative' ||
       expectedResponse.endpoint === 'updateTargetText');
 
-  const theme = useTheme();
+  // USE EFFECTS
+  useEffect(() => {
+    if (activeRephrasingToken && !isTypingInTarget) {
+      moveCaret(activeRephrasingToken?.startIndex, activeRephrasingToken);
+    }
+  }, [activeRephrasingToken]);
 
-  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
+  // RENDER
   return (
     <>
       <Wrapper>
         <Container>
           {showLoadingSpinner() ? (
-            <div
-              style={{
-                padding: '40px',
-                display: 'flex',
-                justifyContent: 'center',
-                width: '100%',
-              }}
-            >
+            <LoadingSpinnerContainer>
               <LoadingSpinner
                 size={26}
                 color={theme.activeMode === 'light' ? '#d1d1d1' : '#3b3b3b'}
               />
-            </div>
+            </LoadingSpinnerContainer>
           ) : (
             <>
               {showHint() ? (
@@ -172,31 +177,25 @@ const RephraseTarget = (props: RephraseTargetProps) => {
                   )}
                 </>
               ) : (
-                <div
-                  ref={containerRef}
-                  style={{
-                    position: 'relative',
-                    width: '100%',
-                  }}
-                >
-                  <LoadingRipple hide={!loadingRephrasing} />
+                <TargetActionContainer ref={containerRef}>
+                  <LoadingRipple hide={!isLoadingRephrasing} />
 
                   <TargetTextArea
                     textAreaRef={textAreaRef}
-                    setTargetCursorIndex={setTargetCursorIndex}
+                    setTargetCaretIndex={setTargetCaretIndex}
                     setIsTypingInTarget={setIsTypingInTarget}
                     setTargetTextAreaIsFocused={setTargetTextAreaIsFocused}
                   />
 
                   <TargetSelect
-                    targetCursorIndex={targetCursorIndex}
+                    targetCaretIndex={targetCaretIndex}
                     setPopoverTargetRect={setPopoverTargetRect}
                     showTargetWordPopover={showTargetWordPopover}
                     setShowTargetWordPopover={setShowTargetWordPopover}
                     resetToOriginalSelection={resetToOriginalSelection}
                     targetTextAreaIsFocused={targetTextAreaIsFocused}
                   />
-                </div>
+                </TargetActionContainer>
               )}
             </>
           )}

@@ -1,14 +1,14 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import Section from 'src/components/section';
+import Section from 'src/components/appbody-section';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import AboutMeBody from './subcomponents/AboutMeBody';
+import AboutMeBody from './subcomponents/body/AboutMeBody';
 import AboutMeContactButton from './subcomponents/AboutMeContactButton';
 import AboutMeInfoPanel from './subcomponents/AboutMeInfoPanel';
 import AboutMeRobot from './subcomponents/AboutMeRobot';
 
-/* ---------------------------- Styled Components --------------------------- */
+/* ---------------------------- Styled components --------------------------- */
 
 interface ContainerProps {
   isSmallLayout: boolean;
@@ -43,7 +43,15 @@ const InfoSection = () => {
   const theme = useTheme();
   return (
     <>
-      <AboutMeContactButton size='large'>Contact</AboutMeContactButton>
+      <AboutMeContactButton
+        size='large'
+        onClick={() =>
+          // eslint-disable-next-line no-restricted-globals
+          (location.href = `https://www.linkedin.com/in/alexander-spindeler-254178206/`)
+        }
+      >
+        Contact
+      </AboutMeContactButton>
       <ColoredBackgroundSection />
       <Section
         backgroundColor={

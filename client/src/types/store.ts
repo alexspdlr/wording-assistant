@@ -28,7 +28,7 @@ export interface TextToken {
 
 export type TextTokenReduced = Omit<TextToken, 'startIndex' | 'endIndex'>;
 
-interface UiState extends Omit<ActiveWorkerStateData, 'id' | 'cursorIndex'> {
+interface UiState extends Omit<ActiveWorkerStateData, 'id' | 'caretIndex'> {
   expectedResponse: UiExpectedResponse | null;
   activeRephrasingToken: TextToken | null;
 }
@@ -66,8 +66,8 @@ export interface RephraseActions {
   // client actions
   selectText: (newOriginalTextSelection: ActiveWorkerTextSelection) => void;
   deselectText: () => void;
-  moveCursor: (
-    newCursorIndex: number,
+  moveCaret: (
+    newCaretIndex: number,
     selectedTextToken: TextToken | null
   ) => void;
   updateTargetText: (newActiveTextSelection: ActiveWorkerTextSelection) => void;

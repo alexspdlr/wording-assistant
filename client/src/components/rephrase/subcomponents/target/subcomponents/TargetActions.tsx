@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
-import { MouseEventHandler } from 'react';
 import { ReactComponent as CheckIcon } from 'src/assets/check.svg';
 import { ReactComponent as ClearIcon } from 'src/assets/ClearIcon.svg';
 import IconButton from 'src/components/general/icon-button';
 import Tooltip from 'src/components/general/tooltip';
 import { MAX_SOURCE_SELECTION_LENGTH } from 'src/constants';
 import useBoundStore from 'src/store';
+
+/* ---------------------------- Styled components --------------------------- */
 
 const Fragment = styled('div')(
   () => `
@@ -28,6 +29,10 @@ const Layout = styled('div')(
     align-items: center; 
         `
 );
+
+/* -------------------------------------------------------------------------- */
+/*                                TargetActions                               */
+/* -------------------------------------------------------------------------- */
 
 interface TargetActionsProps {
   resetToOriginalSelection: () => void;

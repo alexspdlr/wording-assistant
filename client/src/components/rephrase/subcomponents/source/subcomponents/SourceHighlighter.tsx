@@ -1,13 +1,14 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import parse from 'html-react-parser';
-import { delay } from 'lodash';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useBoundStore from 'src/store';
 import addAlphaToHexColor from 'src/utils/addAlphaToHexColor';
 import highlightText from 'src/utils/highlightText';
 import useRephraseToolTextboxSize from 'src/utils/hooks/useRephraseToolTextboxSize';
 import wait from 'src/utils/wait';
+
+/* ---------------------------- Styled components --------------------------- */
 
 interface ContainerProps {
   textSelected: boolean;
@@ -43,6 +44,9 @@ const Container = styled('div')(
       `
 );
 
+/* -------------------------------------------------------------------------- */
+/*                              SourceHighlighter                             */
+/* -------------------------------------------------------------------------- */
 interface SourceHighlighterProps {
   value: string;
 }
@@ -50,39 +54,38 @@ interface SourceHighlighterProps {
 const SourceHighlighter = (props: SourceHighlighterProps) => {
   const { value } = props;
 
-  /* ----------------------------- GET STORE DATA ----------------------------- */
-
+  // FROM STORE
   const activeTextSelection = useBoundStore(
     (state) => state.uiState.activeTextSelection
   );
 
+  // OTHER HOOKS
+  const [delayedStartIndex, setDelayedStartIndex] = useState<number | null>(
+    null
+  );
+  const [delayedEndIndex, setDelayedEndIndex] = useState<number | null>();
+  const highlighterRef = useRef<HTMLDivElement | null>(null);
+  const theme = useTheme();
+  useRephraseToolTextboxSize(value, highlighterRef);
+
+  // UTILS
   const startIndex =
     activeTextSelection?.startIndex !== (null || 0 || undefined)
       ? activeTextSelection.startIndex
       : null;
+
   const endIndex =
     activeTextSelection?.endIndex !== (null || 0 || undefined)
       ? activeTextSelection.endIndex
       : null;
 
-  const highlighterRef = useRef<HTMLDivElement | null>(null);
-  const theme = useTheme();
-  useRephraseToolTextboxSize(value, highlighterRef);
-
-  const [delayedStartIndex, setDelayedStartIndex] = useState<number | null>(
-    null
-  );
-  const [delayedEndIndex, setDelayedEndIndex] = useState<number | null>();
-
+  // USE EFFECTS
   useEffect(() => {
     const updateIndicesDelayed = async (delay: number) => {
       await wait(delay);
       setDelayedStartIndex(startIndex);
       setDelayedEndIndex(endIndex);
     };
-
-    console.log('start index:', startIndex);
-    console.log('end index:', endIndex);
 
     if (startIndex !== null && endIndex !== null && startIndex !== endIndex) {
       updateIndicesDelayed(0);

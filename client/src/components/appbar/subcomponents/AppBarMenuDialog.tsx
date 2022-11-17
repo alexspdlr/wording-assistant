@@ -6,6 +6,8 @@ import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import { ReactComponent as ClearIcon } from 'src/assets/ClearIcon.svg';
 import { Link } from 'react-router-dom';
 
+/* ---------------------------- Styled components --------------------------- */
+
 const Container = styled('div')(
   () =>
     `  
@@ -67,6 +69,8 @@ const Divider = styled('div')(
   
   `
 );
+
+/* -------------------------------- menuItems -------------------------------- */
 
 interface MenuItem {
   title: string;
@@ -130,6 +134,10 @@ const lowerMenuItems: MenuItem[] = [
     link: 'https://www.deepl.com/pro?cta=header-pro',
   },
 ];
+
+/* -------------------------------------------------------------------------- */
+/*                              AppBarMenuDialog                              */
+/* -------------------------------------------------------------------------- */
 interface AppBarMenuDialogProps {
   open: boolean;
   setOpen: Function;
@@ -147,7 +155,6 @@ const AppBarMenuDialog = (props: AppBarMenuDialogProps) => {
       verticalPosition='start'
       darkenBackground={compareBreakpoint(activeBreakpoint, '<', '3XL')}
     >
-      {/* TODO: Replace example menu with menu component */}
       <Container>
         <IconButtonWrapper>
           <IconButton

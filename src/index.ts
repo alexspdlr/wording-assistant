@@ -6,35 +6,34 @@ import path from 'path';
 
 const app = express();
 
-// password
+// Add Basic Authentication
 app.use(
   basicAuth({
     challenge: true,
-    users: { test: 'test' },
+    users: { user: 'select-text-to-rephrase' },
   })
 );
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 app.use(express.static('public'));
 
-/** Server Handling */
+// Create the server
 const httpServer = http.createServer(app);
 
-/** Start Socket */
-const server = new ServerSocket(httpServer);
-// server.printPuppets();
-/** Log the request */
+// Wrap the server in socket.io
+new ServerSocket(httpServer);
+
+// Serve the client
 app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, '..', 'client', 'build'));
-
   next();
 });
 
-/** Parse the body of the request */
+// Parse the body of requests
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-/** Rules of our API */
+// API rules
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
@@ -50,18 +49,13 @@ app.use((req, res, next) => {
   next();
 });
 
-/** Healthcheck */
-app.get('/', (req, res, next) => {
+// Healthcheck for dev
+app.get('/', (req, res) => {
   return res.status(200).json({ serverStatus: 'running' });
 });
 
-/** Socket Information */
-app.get('/status', (req, res, next) => {
-  return res.status(200).json({ sockets: ServerSocket.instance.activePuppets });
-});
-
-/** Error handling */
-app.use((req, res, next) => {
+// Handle errors
+app.use((req, res) => {
   const error = new Error('Not found');
 
   res.status(404).json({
@@ -69,5 +63,5 @@ app.use((req, res, next) => {
   });
 });
 
-/** Listen */
+// Listen to port 80
 httpServer.listen(80, () => console.info(`Server is running`));

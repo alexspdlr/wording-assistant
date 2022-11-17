@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { ReactComponent as HireMeRobot } from 'src/assets/HireMeRobot.svg';
 
-/* ---------------------------- Styled Components --------------------------- */
+/* ---------------------------- Styled components --------------------------- */
 
 const Container = styled('div')(
   () => `  

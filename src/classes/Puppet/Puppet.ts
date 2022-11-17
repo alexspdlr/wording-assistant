@@ -6,12 +6,24 @@ import {
 } from '../../types';
 import {
   ActiveWorkerState,
-  ActiveWorkerStateName,
   ClientActionEvent,
   ServerResponseEvent,
 } from '../../types/socket';
-import { EventManager } from '../EventManager/EventManager';
 import generateDefaultWorkerState from '../ServerSocket/util/generateDefaultWorkerState';
+
+/**
+ *
+ *  An object of the puppet class is responsible for exactly one client. It:
+ *
+ *    - manages exactly one worker thread, in which puppeteer executes client-action-events
+ *
+ *    - synchronises information about the puppet with the state of the associated worker thread
+ *
+ *    - facilitates communication between the parent thread and the worker thread
+ *
+ *    - starts the worker thread when the client connects & kills it when the client disconnects
+ *
+ */
 
 export class Puppet {
   public static instance: Puppet;
@@ -39,7 +51,6 @@ export class Puppet {
     this.startWorkerListeners(this.worker);
     this.workerState = generateDefaultWorkerState('start', id);
 
-    // send start event to client
     const startEvent: ClientActionEvent_Extended = {
       endpoint: 'startWorker',
       payload: { workerId: this.id },
@@ -104,7 +115,6 @@ export class Puppet {
 
     console.log('EVENT: ', event.payload);
 
-    const eventData = event.payload.workerState.data;
     this.updateWorkerState(event.payload.workerState);
 
     this.respondToSocket(event as ServerResponseEvent);
