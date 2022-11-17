@@ -23,12 +23,6 @@ const httpServer = http.createServer(app);
 // Wrap the server in socket.io
 new ServerSocket(httpServer);
 
-// Serve the client
-app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, '..', 'client', 'build'));
-  next();
-});
-
 // Parse the body of requests
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -49,18 +43,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Healthcheck for dev
-app.get('/', (req, res) => {
-  return res.status(200).json({ serverStatus: 'running' });
-});
-
-// Handle errors
-app.use((req, res) => {
-  const error = new Error('Not found');
-
-  res.status(404).json({
-    message: error.message,
-  });
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 // Listen to port 80
