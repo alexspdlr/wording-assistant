@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 import Button from 'src/components/general/button';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
 import AboutMeUnderline from './AboutMeUnderline';
 
+/* ---------------------------- Styled components --------------------------- */
 interface SwitchBodyButtonProps {
   active: boolean;
 }
@@ -40,12 +40,17 @@ const SwitchBodyButtonGroupContainer = styled('div')(
         `
 );
 
-interface SwitchBodyButtonGroupProps {
+/* -------------------------------------------------------------------------- */
+/*                        AboutMeSwitchBodyButtonGroup                        */
+/* -------------------------------------------------------------------------- */
+interface AboutMeSwitchBodyButtonGroupProps {
   motivationalLetterActive: boolean;
   setMotivationalLetterActive: (boolean: boolean) => void;
 }
 
-const AboutMeSwitchBodyButtonGroup = (props: SwitchBodyButtonGroupProps) => {
+const AboutMeSwitchBodyButtonGroup = (
+  props: AboutMeSwitchBodyButtonGroupProps
+) => {
   const { motivationalLetterActive, setMotivationalLetterActive } = props;
   const activeBreakpoint = useBreakpoint();
   const isSmallLayout = compareBreakpoint(activeBreakpoint, '<', 'S');

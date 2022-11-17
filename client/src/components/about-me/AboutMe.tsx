@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Section from 'src/components/appbody-section';
 import compareBreakpoint from 'src/utils/compareBreakpoint';
 import useBreakpoint from 'src/utils/hooks/useBreakpoint';
-import AboutMeBody from './subcomponents/AboutMeBody';
+import AboutMeBody from './subcomponents/body/AboutMeBody';
 import AboutMeContactButton from './subcomponents/AboutMeContactButton';
 import AboutMeInfoPanel from './subcomponents/AboutMeInfoPanel';
 import AboutMeRobot from './subcomponents/AboutMeRobot';
