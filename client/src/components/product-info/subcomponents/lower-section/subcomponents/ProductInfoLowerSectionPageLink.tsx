@@ -26,16 +26,24 @@ interface ProductInfoLowerSectionPageLinkProps {
   title: string;
   buttonTitle: string;
   buttonVariant: 'contained' | 'outlined';
+  href: string;
 }
 
 const ProductInfoLowerSectionPageLink = (
   props: ProductInfoLowerSectionPageLinkProps
 ) => {
-  const { title, buttonTitle, buttonVariant } = props;
+  const { title, buttonTitle, buttonVariant, href } = props;
   return (
     <Container>
       <Heading>{title}</Heading>
-      <Button size='large' variant={buttonVariant}>
+      <Button
+        size='large'
+        variant={buttonVariant}
+        onClick={() =>
+          // eslint-disable-next-line no-restricted-globals
+          (location.href = `${href}`)
+        }
+      >
         {buttonTitle}
       </Button>
     </Container>

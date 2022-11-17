@@ -61,6 +61,7 @@ const ProductInfoLowerSectionProcess = () => {
           title='Read about the development process'
           buttonVariant='outlined'
           buttonTitle='Go to process page'
+          href='/process'
         />
       </PageLinkWrapper>
     </Container>

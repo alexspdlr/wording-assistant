@@ -48,6 +48,7 @@ const ProductInfoLowerSectionCodebase = () => {
           title='Explore the codebase'
           buttonVariant='contained'
           buttonTitle='View Repository'
+          href='https://github.com/alexspdlr/wording-assistant'
         />
       </PageLinkWrapper>
     </Container>

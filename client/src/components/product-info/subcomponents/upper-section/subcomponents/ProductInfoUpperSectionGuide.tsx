@@ -31,7 +31,16 @@ const ProductInfoUpperSectionGuide = () => {
       <Heading>
         Become an expert - <strong>Learn about the Wording Assistant</strong>
       </Heading>
-      <Button size='large'>Check out the guide</Button>
+
+      <Button
+        size='large'
+        onClick={() =>
+          // eslint-disable-next-line no-restricted-globals
+          (location.href = '/process')
+        }
+      >
+        Check out the process
+      </Button>
     </Container>
   );
 };

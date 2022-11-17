@@ -83,7 +83,7 @@ const RephraseToolLayout = () => {
       }}
     >
       <Header isSource style={{ gridArea: '1 / 1 / 2 / 2' }}>
-        Enter Text - English only (TODO: Dynamic hints here)
+        Enter Text - English only
       </Header>
       <Header isSource={false} style={{ gridArea: '1 / 2 / 2 / 3' }}>
         Paraphrase

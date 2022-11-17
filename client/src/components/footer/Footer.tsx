@@ -7,6 +7,7 @@ import FooterUpperContainer from './subcomponents/FooterUpperContainer';
 
 export interface LinkData {
   title: string;
+  href: string;
   chipTitle?: string;
 }
 
@@ -18,24 +19,31 @@ const Footer = () => {
   const theme = useTheme();
 
   const informationLinks: LinkData[] = [
-    { title: 'Documentation' },
-    { title: 'Process' },
-    { title: 'TechStack' },
-    { title: 'Repository', chipTitle: 'GITHUB' },
+    { title: 'Documentation', href: '/documentation' },
+    { title: 'Process', href: '/process' },
+    { title: 'About Me', href: '/about-me' },
+    {
+      title: 'Repository',
+      href: 'https://github.com/alexspdlr/wording-assistant',
+      chipTitle: 'GITHUB',
+    },
   ];
 
   const productsLinks: LinkData[] = [
-    { title: 'Translator' },
-    { title: 'Wording Assistant' },
-    { title: 'DeepL Pro' },
-    { title: 'Apps' },
+    { title: 'Translator', href: 'https://www.deepl.com/en/translator' },
+    { title: 'Wording Assistant', href: '/' },
+    { title: 'DeepL Pro', href: 'https://www.deepl.com/pro?cta=header-pro' },
+    { title: 'Apps', href: 'https://www.deepl.com/en/app/' },
   ];
 
   const companyLinks: LinkData[] = [
-    { title: 'Contact' },
-    { title: 'Press' },
-    { title: 'Careers' },
-    { title: 'Publisher' },
+    {
+      title: 'Contact',
+      href: 'https://www.deepl.com/contact-us?cta=pageFooter/',
+    },
+    { title: 'Press', href: 'https://www.deepl.com/press-release/' },
+    { title: 'Careers', href: 'https://jobs.deepl.com/' },
+    { title: 'Publisher', href: 'https://www.deepl.com/publisher/' },
   ];
 
   return (

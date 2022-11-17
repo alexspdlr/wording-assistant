@@ -98,7 +98,15 @@ const QuoteSection = () => {
 
         <LowerSection>
           <LowerSectionLeft>
-            <Button variant='contained'>Learn more </Button>
+            <Button
+              variant='contained'
+              onClick={() =>
+                // eslint-disable-next-line no-restricted-globals
+                (location.href = '/Process')
+              }
+            >
+              Learn more{' '}
+            </Button>
             <QuoteSignature />
           </LowerSectionLeft>
           {compareBreakpoint(activeBreakpoint, '>', 'XS') && (

@@ -68,10 +68,10 @@ const CommentCard = styled(Card)(
 
 const ComingSoonContent = styled('div')(
   (defaultProps) => `
-  padding: 50px;
-  font-size: 36px;
-  font-weight: 500;
-  color: ${defaultProps.theme.palette.text.main};
+  padding: 60px;
+  font-size: 24px;
+  font-weight: 400;
+  color: ${defaultProps.theme.palette.primary.light};
   `
 );
 

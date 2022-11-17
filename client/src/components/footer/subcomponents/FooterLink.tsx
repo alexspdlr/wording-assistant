@@ -38,12 +38,18 @@ const PositionedChip = styled(Chip)(
 
 interface FooterLinkProps {
   title: string;
+  href: string;
   chipTitle?: string;
 }
 const FooterLink = (props: FooterLinkProps) => {
-  const { title, chipTitle } = props;
+  const { title, chipTitle, href } = props;
   return (
-    <LinkContainer>
+    <LinkContainer
+      onClick={() =>
+        // eslint-disable-next-line no-restricted-globals
+        (location.href = `${href}`)
+      }
+    >
       <LinkTitle>{title}</LinkTitle>
       {chipTitle && <PositionedChip>{chipTitle}</PositionedChip>}
     </LinkContainer>

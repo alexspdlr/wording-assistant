@@ -39,20 +39,6 @@ const Heading = styled('span')(
 `
 );
 
-const MoreFeaturesLink = styled('div')(
-  (props) => ` 
-         color: ${props.theme.palette.primary.light};
-         font-size: 16px; 
-         font-weight: 600; 
-         cursor: pointer; 
-         padding-top: 15px;
-         margin-left: 3px;
-         &:hover {
-            text-decoration: underline ${props.theme.palette.primary.light}; 
-          }
-    `
-);
-
 /* -------------------------------------------------------------------------- */
 /*                       ProductInfoUpperSectionFeatures                      */
 /* -------------------------------------------------------------------------- */
@@ -87,8 +73,6 @@ const ProductInfoUpperSectionFeatures = () => {
         {upcomingFeatures.map((title) => (
           <ProductInfoUpperSectionFeature version='upcoming' title={title} />
         ))}
-
-        <MoreFeaturesLink>See more features</MoreFeaturesLink>
       </Section>
     </Container>
   );

@@ -87,11 +87,13 @@ const FooterUpperContainer = (props: FooterUpperContainerProps) => {
               <FooterLink
                 key={`information-link_${index}`}
                 title={link.title}
+                href={link.href}
                 chipTitle={link.chipTitle}
               />
             ) : (
               <FooterLink
                 key={`information-link_${index}`}
+                href={link.href}
                 title={link.title}
               />
             )
@@ -100,13 +102,21 @@ const FooterUpperContainer = (props: FooterUpperContainerProps) => {
         <LinkSection>
           <strong>Products</strong>
           {productsLinks.map((link, index) => (
-            <FooterLink key={`product-link_${index}`} title={link.title} />
+            <FooterLink
+              key={`product-link_${index}`}
+              href={link.href}
+              title={link.title}
+            />
           ))}
         </LinkSection>
         <LinkSection>
           <strong>Company</strong>
           {companyLinks.map((link, index) => (
-            <FooterLink key={`company-link_${index}`} title={link.title} />
+            <FooterLink
+              key={`company-link_${index}`}
+              href={link.href}
+              title={link.title}
+            />
           ))}
         </LinkSection>
       </Right>
