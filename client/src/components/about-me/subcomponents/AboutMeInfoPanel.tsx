@@ -86,8 +86,8 @@ const AboutMeInfoPanel = () => {
             padding: '0 10px 30px 10px',
           }}
         >
-          23-year-old software architecture student with a passion for creating
-          useful, easy-to-use software products
+          24-year-old software architecture student with a passion for creating
+          useful, easy-to-use software products.
         </span>
 
         <div
@@ -109,8 +109,9 @@ const AboutMeInfoPanel = () => {
             padding: '0 10px 30px 10px',
           }}
         >
-          React, Javascript, Python, Jira, NoSQL, Figma, Firebase, Google, Open
-          Office, Dropbox, Youtube, Tic Tac Toe
+          React.js, Typescript, ReactRedux, Zustand.js, Jest, Cypress.io, Git,
+          Node.js, Express.js, CSS & CSS Animations, Native SVG Editing, Figma,
+          Photoshop
         </span>
         <div style={{ padding: '10px 30px 30px 30px' }}>
           <span style={{ fontWeight: 600 }}>Contact</span>
