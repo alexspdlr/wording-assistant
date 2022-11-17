@@ -100,9 +100,9 @@ const navItems: AppBarItemProps[] = [
     ),
     link: '/',
   },
-  { content: 'Documentation', hideFromSize: '2XS', link: '/documentation' },
   { content: 'Process', hideFromSize: 'XS', link: '/process' },
   { content: 'About Me', hideFromSize: 'S', link: '/about-me' },
+  { content: 'Documentation', hideFromSize: '2XS', link: '/documentation' },
   {
     content: (
       <RepositoryAppBarItemContent>

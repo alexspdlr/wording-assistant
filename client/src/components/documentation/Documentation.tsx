@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { createRef, useEffect, useState } from 'react';
 import DocumentationMenu from 'src/components/documentation/subcomponents/menu';
 import introductionSection from 'src/content/documentation/introduction/Introduction';
-import { testSection } from 'src/content/documentation/Test';
 import {
   TextContentSection,
   TextContentSubSection,
@@ -44,7 +43,7 @@ const Container = styled('div')(
 const Documentation = () => {
   const activeBreakpoint = useBreakpoint();
   const isSmallLayout = compareBreakpoint(activeBreakpoint, '<', 'S');
-  const sections = [introductionSection, testSection];
+  const sections = [introductionSection];
   const [activeSectionState, setActiveSectionState] =
     useState<ActiveSectionState>({
       activeSection: sections[0],
