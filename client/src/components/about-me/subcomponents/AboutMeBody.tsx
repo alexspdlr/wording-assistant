@@ -240,8 +240,7 @@ const AboutMeBody = () => {
                 </strong>
               )}
             </span>
-            <strong>Ref: Frontend Developer (f/m/d) - GER, UK, NL, PL</strong>{' '}
-            <br />
+            <strong>Ref: Frontend Developer</strong> <br />
             <br />
             <br />
             Dear Mr. Landwehr,
